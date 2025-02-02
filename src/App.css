@@ -1,0 +1,931 @@
+/* ----------------------------------------------------------------- */
+/* ---------------------   Interes Modal   ------------------------- */
+/* ----------------------------------------------------------------- */
+.vertical-center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+}
+
+/* ----------------------------------------------------------------- */
+/* ---------------------   Interes Modal   ------------------------- */
+/* ----------------------------------------------------------------- */
+
+
+
+/* ---------------------------------------------------------------- */
+/* Vende Vehículo custom css */
+/* ---------------------------------------------------------------- */
+
+.steps-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+div.step{
+  color: black;
+  margin: 20px;
+  /* center content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+}
+
+div.step-circle{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+div.step-circle.active{
+  background-color: black;
+  color: white;
+}
+
+.prev-next-btn {
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.border-in-container{
+  border:1px solid #cecece;
+  border-radius: 5px;
+  /* set width of container to dont let expand much */
+  max-width: 600px;
+}
+.left-label-position{ 
+
+  text-align: left;
+  float: left;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.left-label-position-check{ 
+  text-align: left;
+  float: left;
+  
+}
+
+/* ---------------------------------------------------------------- */
+/* Vende Vehículo custom css */
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* Navbar */
+/* ---------------------------------------------------------------- */
+.navbar-page{
+  background-color: #B30000FA !important; 
+}
+.non-admin-header-wrapper {
+  padding-top: 65px; /* Adjust this value based on your navbar height */
+}
+
+.navbar-page {
+  min-height: 65px; /* Set a consistent minimum height */
+}
+
+.navbar-page .nav-link {
+  color: white !important;
+  font-weight: normal;
+  transition: all 0.2s ease;
+}
+
+.navbar-page .nav-link:hover {
+  color: white !important;
+  font-weight: bold;
+}
+
+.navbar-page .nav-link.active {
+  color: white !important;
+  font-weight: bold;
+}
+/* ---------------------------------------------------------------- */
+/* Navbar */
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* Busca Vehicle Component */
+/* ---------------------------------------------------------------- */
+
+
+
+
+.buscaStyle {
+  position: relative;
+  /* Image in public/assets/images */
+  background-image: url('assets/images/entrada_marco_blanco_repellado.webp'); 
+  /* background-image: url('assets/images/entrada_55v.webp'); */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center !important;
+
+  /* Adjust height for better responsiveness */
+  height: 100vh;
+  min-height: 150vh; /* If you need it for specific designs */
+  
+  /* Ensure the width does not cause overflow */
+  width: 100%;
+  
+  /* Flex properties */
+  display: flex;
+  flex-direction: column;
+}
+
+.buscaStyle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /*background: linear-gradient(
+    to bottom, 
+    rgba(0, 0, 0, 0.25) 0%, 
+    rgba(0, 0, 0, 0.2) 60%, 
+    rgba(0, 0, 0, 0) 100%
+  );*/
+  z-index: 1;
+}
+
+/* Ensure content is above the overlay */
+.buscaStyle > * {
+  position: relative;
+  z-index: 2;
+}
+
+.submit-button{
+  background-color: #B30000FA;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submit-button:hover{
+  background-color: #e50000;
+  /* transform to increase a bit the size */
+  transform: scale(1.03);
+}
+
+.wpp-contact-button {
+  background-color: #25d366;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  /* Add these properties */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adds space between icon and text */
+}
+.wpp-contact-button:hover{
+  background-color: #128c4b;
+  transform: scale(1.03);
+}
+.cancel-button{
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.cancel-button:hover{
+  background-color: #5c636a;
+  transform: scale(1.03);
+}
+
+.selected-button-form {
+  background-color: #B30000FA;
+  color: white;
+  border: 1px solid #e6e9ec;
+  padding: 10px 20px;
+  border-radius: 15px 15px 0px 0px;
+  font-size: 16px;
+  font-weight: 500;
+  
+  /* Add pressed effect */
+  transform: translateY(2px);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.selected-button-form:hover {
+  background-color: #e50000;
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.unselected-button-form {
+  background-color: white;
+  color: black;
+  border: 1px solid #e6e9ec;
+  padding: 10px 20px;
+  border-radius: 15px 15px 0px 0px;
+  font-size: 16px;
+  font-weight: 500;
+  /* Add subtle elevation */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.unselected-button-form:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+/*                       Mobile Search Styles                       */
+
+.buscaStyle-mobile {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.search-title {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding: 0 15px;
+}
+
+.search-form-mobile {
+  padding: 15px;
+}
+
+.search-form-mobile .form-label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.search-form-mobile .form-select,
+.search-form-mobile .form-control {
+  font-size: 16px;
+  height: 45px;
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.search-form-mobile .btn-primary {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Add margin to the bottom when keyboard is open */
+@media screen and (max-height: 500px) {
+  .buscaStyle-mobile {
+      min-height: 120vh;
+  }
+}
+/* Base styles */
+.selected-button-form, .unselected-button-form {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: all 0.2s ease;
+  border: 1px solid #e6e9ec;
+  padding: 10px 20px;
+  border-radius: 15px 15px 0px 0px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Selected button styles */
+.selected-button-form {
+  background-color: #B30000FA;
+  color: white !important; /* Force white text */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Unselected button styles */
+.unselected-button-form {
+  background-color: white;
+  color: black !important; /* Force black text */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects only for non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .selected-button-form:hover {
+    background-color: #e50000;
+    color: white !important;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .unselected-button-form:hover {
+    background-color: #f5f5f5;
+    color: black !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+/* Touch device active states */
+@media (hover: none) {
+  .selected-button-form:active {
+    background-color: #e50000;
+    color: white !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+  }
+
+  .unselected-button-form:active {
+    background-color: #f5f5f5;
+    color: black !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Reset any Bootstrap button styles that might interfere */
+.btn.selected-button-form,
+.btn.unselected-button-form {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Ensure transitions reset properly */
+.selected-button-form:not(:hover):not(:active),
+.unselected-button-form:not(:hover):not(:active) {
+  transform: none;
+}
+
+.buscador-form-container {
+  position: relative;
+  background-image: url('assets/images/vehiculos_aereo.webp');
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 920px; /* Minimum height instead of fixed height */
+  height: auto; /* Let content determine height */
+}
+
+.buscador-form-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.buscador-form-content {
+  position: relative;
+  z-index: 2;
+  padding: 20px; /* Add padding to ensure content has space */
+}
+
+.mobile-form-label{
+  font-size: 14px;
+  font-weight: bold;
+  color: black; /* Slightly off-white for better readability */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Add subtle shadow for contrast */
+  display: inline-block;
+  margin-bottom: 8px; /* Add space between label and input */
+  font-weight: 800;
+  /* box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
+  
+}
+.mobile-busca-form{
+  background-color: rgba(255, 255, 255, 1);
+  padding: 20px;
+  border-radius: 0px 25px 25px 25px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.web-busca-form{
+  background-color: rgba(255, 255, 255, 1);
+  padding: 20px 20px 0px 20px;
+  border-radius: 0px 25px 25px 25px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+
+}
+
+.web-form-label{
+  font-size: 1rem;
+  font-weight: light;
+  color: black; /* Slightly off-white for better readability */
+  padding: 0 10px 0 0px;
+  display: inline-block;
+  margin-bottom: 8px; /* Add space between label and input */
+  font-weight: 500;
+  /* box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); */
+   
+}
+
+
+/* ---------------------------------------------------------------- */
+/* Busca Vehicle Component */
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* Carousel Home Component */
+/* ---------------------------------------------------------------- */
+
+.car-carousel {
+  overflow: hidden;
+}
+
+.carousel-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.carousel-item {
+  flex-shrink: 0;
+  padding: 0 10px;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  font-size: 24px;
+  color: #333;
+}
+
+.carousel-control.prev {
+  left: -20px;
+}
+
+.carousel-control.next {
+  right: -20px;
+}
+
+@media (max-width: 768px) {
+  .carousel-control {
+    display: none;
+  }
+}
+
+
+.carousel-header{
+  text-align: center;
+  justify-content: center;
+  
+}
+
+
+.car-card{
+  /* Card look */
+  transition: 0.3s;
+  background-color: white;
+  border-radius: 4px;
+
+  max-height: 550px;
+}
+
+.car-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+.slick-prev:before,
+.slick-next:before {
+  color: #b0b0b0;
+}
+
+.car-price{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: black;
+}
+/* ---------------------------------------------------------------- */
+/* Carousel Home Component */
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* Custom css of file upload to hide browse file text */
+/* ---------------------------------------------------------------- */
+
+.custom-file-button input[type=file]::-webkit-file-upload-button {
+  display: none;
+}
+ 
+.custom-file-button input[type=file]::file-selector-button {
+  display: none;
+}
+
+.custom-file-button label {
+  background-color: #B30000FA;
+  color: white;
+  cursor: pointer;
+}
+.custom-file-button:hover label {
+  background-color: #000000;
+
+  color: black;
+  cursor: pointer;
+}
+
+/* .custom-file-button input{
+  display: none;
+} */
+
+/* photo position is className of label that must be left align */
+.left-photo-position{ 
+  font-size: large;
+  text-align: left;
+  float: left;
+  padding-bottom: 5px;
+}
+/* ---------------------------------------------------------------- */
+/* Custom css of file upload to hide browse file text */
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* CAPTCHA center*/
+/* ---------------------------------------------------------------- */
+#recaptcha {
+  width: 304px;
+  margin: 0 auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/* ---------------------------------------------------------------- */
+/* CAPTCHA center*/
+/* ---------------------------------------------------------------- */
+
+
+/* ---------------------------------------------------------------- */
+/* Vitrina virtual css*/
+/* ---------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------- */
+/* following code customize acordion icon in vitrinavirtual filters*/
+.accordion-button::after {
+  /*add svg icon as background-image*/
+  background-image: url('assets/icons/plus-solid.svg');
+
+}
+.accordion-button:not(.collapsed)::after {
+  /*add svg icon as background-image*/
+  background-image: url('assets/icons/minus-solid.svg');
+}
+/* .vitrina-filter{
+  border-top: solid #B30000FA;
+} */
+
+/* ---------------------------------------------------------------- */
+/* Vitrina virtual css*/
+/* ---------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------- */
+/* FOOTER*/
+/* ---------------------------------------------------------------- */
+.links{
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-title{
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-weight: 700;
+  color: white;
+
+}
+/* ---------------------------------------------------------------- */
+/* FOOTER*/
+/* ---------------------------------------------------------------- */
+
+
+/* extra small devices (vertical phones) 300 px and up*/
+@media (min-width: 300px) { 
+  .card-img-top{
+  width: 100%;
+  height: 43.7vw;
+  object-fit: cover; /*zoom instead of strech*/
+  }
+  .card-img-top-vitrina{
+    width: 100%;
+    height: 70vw;
+    object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-lateral-block{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .side-column-images{
+    width: 50%;
+    height: 6vw;
+    object-fit: cover;
+  }
+ }
+
+/* // Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+  .card-img-top{
+  width: 100%;
+  height: 35.7vw;
+  object-fit: cover; /*zoom instead of strech*/
+  }
+  .card-img-top-vitrina{
+    width: 100%;
+    height: 28vw;
+    object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-lateral-block{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .side-column-images{
+    width: 50%;
+    height: 5vw;
+    object-fit: cover;
+  }
+ }
+
+/* // Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  .card-img-top{
+  width: 100%;
+  height: 28.3vw;
+  object-fit: cover; /*zoom instead of strech*/
+  }
+  
+  .card-img-top-vitrina{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-lateral-block{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .side-column-images{
+    width: 50%;
+    height: 4vw;
+    object-fit: cover;
+  }
+ }
+
+/* // Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  .card-img-top{  
+  width: 100%;
+  height: 33.9vw;
+  object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-top-vitrina{
+    width: 100%;
+    height: 18vw;
+    object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-lateral-block{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .side-column-images{
+    width: 50%;
+    height: 5vw;
+    object-fit: cover;
+  }
+ }
+
+/* // Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .card-img-top{ 
+  width: 100%;
+  height: 32.7vw;
+  object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-top-vitrina{
+    width: 100%;
+    height: 18vw;
+    object-fit: cover; /*zoom instead of strech*/
+  }
+
+  .card-img-lateral-block{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .side-column-images{
+    width: 50%;
+    height: 5vw;
+    object-fit: cover;
+  }
+
+
+ }
+
+ /*side-column-images class is intendet to keep the size of the images unaltered when the screen get smaller
+ right know in small devices the images turn really small so them could not be seen*/
+
+
+
+
+ 
+.selected {
+  outline: 3px solid #0060df;
+}
+
+
+.left-bar-admin{
+  position:sticky;
+  left: 0;   
+}
+
+
+/* ---------------------- footer icons---------------------- */
+.icon-style {
+  font-size: 80px;
+}
+
+@media (max-width: 768px) {
+  .icon-style {
+    font-size: 55px; /* Keep the same size across all devices */
+  }
+}
+/* ---------------------- footer icons ----------------------*/
+
+
+
+/* ---------------------- fonts ---------------------- */
+@media (max-width: 768px) { /* Adjust the max-width for your desired mobile breakpoint */
+  h4.h4-subtitles {
+    font-size: 1.1rem;
+  }
+}
+
+/* ---------------------- fonts ---------------------- */
+
+
+/* ---------------------- mobile filter drawer ---------------------- */
+.mobile-filter-drawer {
+  position: fixed;
+  top: 65px; /* Match the header height */
+  left: -100%;
+  width: 80%;
+  height: calc(100vh - 65px); /* Subtract header height */
+  background-color: white;
+  z-index: 1000;
+  transition: left 0.3s ease-in-out;
+  box-shadow: 0.2px 0 0.5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.mobile-filter-drawer.open {
+  left: 0;
+}
+
+.mobile-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.close-button:hover {
+  opacity: 0.7;
+}
+
+.filter-button-container-top {
+  margin-bottom: 20px;
+}
+
+.filter-button-container-top .filter-button {
+  position: static;
+  margin-left: 0;
+  background-color: transparent;
+  }
+
+.filter-button-container-top .filter-button img {
+  filter: none;  /* Remove the white filter since background is now transparent */
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 769px) {
+  .mobile-filter-drawer,
+  .filter-button-container {
+    display: none;
+  }
+}
+/* ---------------------- mobile filter drawer ---------------------- */
+
+.card-properties-text {
+  font-size: 0.9em;
+  font-weight: 400;
+  color: black;
+  display: inline-block;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  width: 100%;
+}
+
+.rotating {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+

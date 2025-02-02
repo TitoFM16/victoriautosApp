@@ -1,0 +1,191 @@
+.hero-banner {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    height: 600px; /* Adjust height as needed */
+    padding-right: 20vw;
+    color: white;
+  }
+  
+  .hero-title {
+    text-align: left;
+    font-family: Arial, sans-serif; /* Choose a clean font */
+    font-size: 2.9rem; /* Adjust font size */
+    line-height: 1.2;
+  }
+  
+  
+  .top-text {
+    display: block;
+    color: #B30000FA;
+    -webkit-background-clip: text; /* Clip background to text */
+    background-clip: text; /* For non-webkit browsers */
+    padding: 0 10px;
+    font-weight: bold;
+  }
+  
+  .highlight-container{
+    background-color: #B30000FA; /* Dark blue background */
+  }
+
+  .highlight-text {
+    display: block;
+    color: transparent; /* Make text transparent */
+    -webkit-background-clip: text; /* Clip background to text */
+    background-clip: text; /* For non-webkit browsers */
+    padding: 0 10px;
+    font-weight: bold;
+    color: white;
+
+  }
+  
+
+/* Mobile styles (screen width 768px or smaller) */
+@media (max-width: 768px) {
+  .hero-banner {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    height: 180px; /* Adjust height as needed */
+    padding-right: 2vw;
+    color: white;
+    padding-bottom: 0px;
+  }
+  
+  .hero-title {
+    text-align: left;
+    font-family: Arial, sans-serif; /* Choose a clean font */
+    font-size: 2rem; /* Adjust font size */
+    line-height: 1.2;
+    padding-bottom: 0px;
+  }
+  
+  .top-text {
+    font-family: Arial, sans-serif;
+    /* border: 1px solid rgba(0, 0, 0, 0.2); */
+    /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); */
+    
+    display: inline-block; /* Ensure proper alignment and spacing */
+    color: #B30000FA;
+    background-color: rgba(255, 255, 255, 0.3); /* Light semi-transparent background */
+    text-shadow: 1.6px 1.6px 2px rgba(0, 0, 0, 1);
+    line-height: 1.5;
+
+
+    /* text-shadow: 0.3px 0.3px 0 #ffffff, -0.3px -0.3px 0 #ffffff, 0.3px -0.3px 0 #ffffff, -0.3px 0.3px 0 #ffffff; */
+    padding: 5px 10px; /* Add padding for spacing */
+    font-weight: bolder;
+    border-radius: 5px; /* Optional: Rounded corners */
+  }
+  
+  .highlight-container {
+    background-color: #B30000FA; /* Dark blue background */
+  }
+
+  .highlight-text {
+    display: block;
+    color: transparent; /* Make text transparent */
+    -webkit-background-clip: text; /* Clip background to text */
+    background-clip: text; /* For non-webkit browsers */
+    padding: 0 10px;
+    font-weight: bold;
+    color: white;
+  }
+}
+
+
+
+
+/* ---------------------- When Using as title ----------------------*/
+
+.hero-banner-as-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* Adjust height as needed */
+  
+  color: white;
+}
+
+.hero-title-as-title {
+  text-align: center;
+  font-family: Arial, sans-serif; /* Choose a clean font */
+  font-size: 2.9rem; /* Adjust font size */
+  line-height: 1.2;
+}
+
+
+.top-text-as-title {
+  display: block;
+  color: #B30000FA;
+  -webkit-background-clip: text; /* Clip background to text */
+  background-clip: text; /* For non-webkit browsers */
+  padding: 10px;
+  font-weight: bold;
+}
+
+.highlight-container-as-title{
+  background-color: #B30000FA; /* Dark blue background */
+}
+
+.highlight-text-as-title {
+  display: block;
+  color: transparent; /* Make text transparent */
+  -webkit-background-clip: text; /* Clip background to text */
+  background-clip: text; /* For non-webkit browsers */
+
+  font-weight: bold;
+  color: white;
+
+}
+
+
+/* Mobile styles (screen width 768px or smaller) */
+@media (max-width: 768px) {
+.hero-banner-as-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust height as needed */
+  
+  color: white;
+  padding-bottom: 0px;
+}
+
+.hero-title-as-title {
+  text-align: center;
+  font-family: Arial, sans-serif; /* Choose a clean font */
+  font-size: 2rem; /* Adjust font size */
+  line-height: 1.2;
+  padding-bottom: 0px;
+}
+
+.top-text-as-title {
+  font-family: Arial, sans-serif;  
+  display: inline-block; /* Ensure proper alignment and spacing */
+  color: #B30000FA;
+  background-color: rgba(255, 255, 255, 0.3); /* Light semi-transparent background */
+  line-height: 1.5;
+
+  font-weight: bolder;
+  border-radius: 5px; /* Optional: Rounded corners */
+}
+
+.highlight-container-as-title {
+  background-color: #B30000FA; /* Dark blue background */
+}
+
+.highlight-text-as-title {
+  display: block;
+  color: transparent; /* Make text transparent */
+  -webkit-background-clip: text; /* Clip background to text */
+  background-clip: text; /* For non-webkit browsers */
+  
+  font-weight: bold;
+  color: white;
+}
+}
+
+/* ---------------------- When Using as title ----------------------*/
+
+

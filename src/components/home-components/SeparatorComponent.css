@@ -1,0 +1,13 @@
+.separator-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+}
+
+.separator-line {
+    width: 80%;
+    max-width: 1200px;
+    height: 1px;
+    background-color: #e0e0e0;
+} 
