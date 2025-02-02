@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { formatMoney } from '../../shared/utils';
-import whatsappIcon from '../../assets/icons/whatsapp.svg';
+import whatsappIcon from '../../assets/icons/whatsapp-brands-solid.svg';
 import CompraModalContent from './compraModalContent';
 
 // Const for image paths
