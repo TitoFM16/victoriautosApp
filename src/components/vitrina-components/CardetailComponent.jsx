@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -305,14 +305,14 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
   const [car, setCar] = useState(initialCar);
   const params = useParams();
 
-  const getCar = async () => {
+  const getCar = useCallback(async () => {
     try {
       const response = await axios.get(`/api/cars/${params.carId}`);
       setCar(response.data);
     } catch (error) {
       console.error("Error fetching car:", error);
     }
-  };
+  }, [params.carId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

@@ -247,20 +247,20 @@ const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
   const [oferta, setCar] = useState(initialCar);
   const params = useParams();
 
-  const getCar = async () => {
+  const getCar = React.useCallback(async () => {
     try {
       const response = await axios.get(`/api/cars/${params.carId}`);
       setCar(response.data);
     } catch (error) {
       console.error("Error fetching oferta:", error);
     }
-  };
+  }, [params.carId]);
 
   useEffect(() => {
     if (!initialCar) {
       getCar();
     }
-  }, [initialCar]);
+  }, [initialCar, getCar]);
 
   return (
     <div className="container">

@@ -7,6 +7,7 @@ import { checkIfAuthenticated } from '../services/checkAuth';
 import { AnimatePresence, motion } from 'framer-motion';
 import ScrollToTop from './ScrollToTopComponent';
 
+
 import AdminComponent from './admin/AdminComponent';
 import AdminVitrina from './admin/vitrina-vehiculos-component/VitrinaComponent';
 import OfertasComponent from './admin/ofertas-components/OfertasComponent';
@@ -26,13 +27,9 @@ import BuscadoComponent from './admin/Buscado/buscado';
 import DashboardComponent from './admin/Dashboard/DashboardComponent';
 
 import { withRouter } from '../services/withRouter';
+import Protected from './Protected';
 
-function Protected({ isAuth, children }) {
-  if (!isAuth) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
-}
+
 
 function Main() {
   const location = useLocation();
@@ -328,4 +325,7 @@ function Main() {
   );
 }
 
-export default withRouter(Main);
+const MainWithRouter = withRouter(Main);
+MainWithRouter.displayName = 'MainWithRouter';
+
+export default MainWithRouter;
