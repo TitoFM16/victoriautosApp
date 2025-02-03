@@ -37,6 +37,13 @@ export default defineConfig({
     purgecss({
       // Specify the paths to all of your template and source files
       content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+      safelist: [
+        'hero-banner-as-title',
+        'hero-title-as-title',
+        'top-text-as-title',
+        'highlight-container-as-title',
+        'highlight-text-as-title'
+      ]
     })
   ],
   css: {
