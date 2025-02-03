@@ -32,13 +32,15 @@ function BuscadorMobile() {
 
   // Prefetch all marcas on mount
   useEffect(() => {
-    requestIdleCallback(() => {
+    // Using setTimeout to defer the API call slightly
+    const timer = setTimeout(() => {
       axios.get('/api/buscavehiculo/?tipo=all')
         .then(response => setMarcaDropdown(response.data))
         .catch(error => console.error('Error prefetching marcas:', error));
-    });
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
-    
 
   // Memoize sorted options for the "comprar" form
   const sortedMarcaOptions = useMemo(() => {
