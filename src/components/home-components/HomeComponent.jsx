@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import Buscador from './Busca_Vende_VehiculoComponent';
 import BuscadorMobile from './Busca_Vende_VehiculoMobileComponent';
 import CarCarousel from "./CarCarouselComponent";
-import InvitaVenta from "./InvitaVentaComponent";
+
+const InvitaVenta = React.lazy(() => import('./InvitaVentaComponent'));
 import Separator from "./SeparatorComponent";
 
 function BuscadorWrapper() {
@@ -26,7 +27,9 @@ function Home() {
             <BuscadorWrapper />
             <CarCarousel />
             <Separator />
-            <InvitaVenta />
+            <Suspense fallback={<div>Loading...</div>}>
+                <InvitaVenta />
+            </Suspense>
         </div>
     );
 }

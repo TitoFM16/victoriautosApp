@@ -1,6 +1,6 @@
 export async function checkIfAuthenticated() {
   try {
-    const response = await fetch('/users/check-auth-cookie', {
+    const response = await fetch('/api/users/check-auth-cookie', {
       method: 'GET',
       credentials: 'include'
     });

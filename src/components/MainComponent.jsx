@@ -39,7 +39,6 @@ function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const authenticated = useSelector((state) => {
-    console.log('Auth State:', state.auth);
     return state.auth.authenticated;
   });
   const cars = useSelector((state) => state.cars.cars);
