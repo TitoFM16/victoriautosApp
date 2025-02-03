@@ -149,11 +149,9 @@ class CarUploadComponent extends React.Component {
           } = this.state;
       
           
-      console.log("prueba type",frenteImg.type.match("(image[\/]{1})(.*)")[2])
-          
       //function to get extension of files
       function getExtension(file){
-        return file.type.match("(image[\/]{1})(.*)")[2]
+        return file.type.match("(image[/]{1})(.*)")[2]
       }
 
      

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import HeroBanner from './HeroBanner';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
 
 // Lazy load the vender tab component
@@ -22,7 +22,6 @@ function Buscador() {
   const [km, setKm] = useState("");
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const cars = useSelector(state => state.cars.cars);
 
   // Prefetch all marcas on mount

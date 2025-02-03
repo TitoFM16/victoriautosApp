@@ -2,17 +2,10 @@
 //  for layout won't be used external library, just bootstrap 
 //  for form validation, won't be used external library, just bootstrap 
 
-import React, { Component } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/actions/loginActions';
 import { useState } from 'react';
-import { Link,Navigate,useNavigate } from 'react-router-dom';
-
-
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !val || val.length <= len;
-const minLength = (len) => (val) => val && val.length >= len;
-const isNumber = (val) => !isNaN(Number(val));
+import { useNavigate } from 'react-router-dom';
 
 
 function LoginComponent() {
@@ -20,7 +13,7 @@ function LoginComponent() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [_, setError] = useState(null);
   const navigate = useNavigate();
   
   const handleSubmit = async event => {

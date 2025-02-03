@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './InvitaVentaComponent.css';
 import iphoneImage from '../../assets/images/iphone-vende-vehiculo.webp';

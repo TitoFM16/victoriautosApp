@@ -290,7 +290,7 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
     if (!initialCar) {
       getCar();
     }
-  }, [initialCar]);
+  }, [initialCar, getCar]);
 
   return (
     <div className="container">

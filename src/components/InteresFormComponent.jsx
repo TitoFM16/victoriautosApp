@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
 import LoadingModal from './shared/LoadingModal';
 
-const InteresForm = (props) => {
+const InteresForm = () => {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',

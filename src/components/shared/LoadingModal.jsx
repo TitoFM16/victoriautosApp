@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 
 const LoadingModal = ({ show, status, onClose }) => {
     if (!show) return null;
@@ -43,6 +43,12 @@ const LoadingModal = ({ show, status, onClose }) => {
             </div>
         </div>
     );
+};
+
+LoadingModal.propTypes = {
+    show: PropTypes.bool.isRequired,
+    status: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired
 };
 
 export default LoadingModal; 

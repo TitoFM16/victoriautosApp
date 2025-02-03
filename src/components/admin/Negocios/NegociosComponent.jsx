@@ -9,11 +9,10 @@
 // (nombre, apellido, celular, email)
 
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const handshakeIcon = <span className="material-symbols-outlined">handshake</span>;
 
 const NegociosComponent = (props) => {
     const [loading, setLoading] = useState(true);

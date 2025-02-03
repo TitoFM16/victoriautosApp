@@ -1,6 +1,6 @@
 //Component that renders the tramites page in a striped table. It also has a button to add a new tramite, which is a modal form.
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {Link} from 'react-router-dom'
 
 

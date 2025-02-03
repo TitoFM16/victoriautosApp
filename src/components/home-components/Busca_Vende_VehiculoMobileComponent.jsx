@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import HeroBanner from './HeroBanner';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
-import { useVehicleDropdowns } from '../../hooks/useVehicleDropdowns';
+
 
 // Lazy-load the mobile vender form
 const VenderFormMobile = React.lazy(() => import('./VenderFormMobile'));
@@ -26,11 +26,7 @@ function BuscadorMobile() {
   // (For mobile, we now delegate the vender form to its own component)
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const cars = useSelector((state) => state.cars.cars);
-
-  // Use the custom hook for vehicle dropdowns (for vender, these will be passed to the lazy vender component)
-  const { marcaDropdown: hookMarcaDropdown, lineaDropdown: hookLineaDropdown, fetchLineas } = useVehicleDropdowns();
 
   // Prefetch all marcas on mount
   useEffect(() => {

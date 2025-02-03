@@ -1,4 +1,3 @@
-import React from 'react';
 import './SeparatorComponent.css';
 
 function Separator() {

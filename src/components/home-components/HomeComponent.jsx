@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Buscador from './Busca_Vende_VehiculoComponent';
 import BuscadorMobile from './Busca_Vende_VehiculoMobileComponent';
 import CarCarousel from "./CarCarouselComponent";
@@ -20,7 +20,7 @@ function BuscadorWrapper() {
     return isMobile ? <BuscadorMobile /> : <Buscador />;
 }
 
-function Home(props) {
+function Home() {
     return(
         <div style={{ overflowX: 'hidden' }}>
             <BuscadorWrapper />

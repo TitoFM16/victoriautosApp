@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import {Breadcrumb, BreadcrumbItem,
         Card, CardBody} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOfertas } from '../../../redux/actions/ofertasActions';
+import PropTypes from 'prop-types';
 
 import CarUploadComponent from '../carUpload/CarUploadComponent';
 
@@ -37,6 +38,18 @@ function RenderVitrinaItem ({car}) {
       </Card>
   );
 }
+
+RenderVitrinaItem.propTypes = {
+  car: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    uuid: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    marca: PropTypes.string.isRequired,
+    linea: PropTypes.string.isRequired,
+    modelo: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired
+  }).isRequired
+};
 
 const OfertasComponent = () => {
   const dispatch = useDispatch();

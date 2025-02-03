@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router';
 
 import WhatsappIcon from '../assets/icons/whatsapp-brands-solid.svg';
