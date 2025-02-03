@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import LoadingModal from '../shared/LoadingModal';
+import { Modal } from 'bootstrap';
 
 const CompraModalContent = ({ car }) => {
   const [formData, setFormData] = useState({

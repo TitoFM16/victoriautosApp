@@ -21,7 +21,7 @@ const CarDetailComponent = React.lazy(() => import('./vitrina-components/Cardeta
 
 import Header from './HeaderComponent';
 import Home from './home-components/HomeComponent';
-import Footer from './FooterComponent';
+const Footer = React.lazy(() => import('./FooterComponent'));
 
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const InteresFormComponent = React.lazy(() => import('./InteresFormComponent'));
@@ -145,22 +145,20 @@ function Main() {
           />
           <Route
             path="/vitrina/:carId"
-            element={ 
-              <Suspense fallback={<div>Loading...</div>}>
-                <motion.div
-                  key="car"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{
+            element={
+              <motion.div
+                key="car"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{
                 initial: { duration: 1 },
                 animate: { duration: 2 },
                 exit: { duration: 0.5 },
-                }}
-                >
+              }}
+              >
                 <CarWithId />
-                </motion.div>
-              </Suspense>
+              </motion.div>
             }
           />
           <Route
@@ -363,7 +361,9 @@ function Main() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AnimatePresence>
-      <Footer />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }
