@@ -16,7 +16,7 @@ const HandShakeIcon = <span className="material-symbols-outlined">handshake</spa
 const AlmacenIcon = <span className="material-symbols-outlined">store</span>
 const OfertaIcon = <span className="material-symbols-outlined">sell</span>
 
-function Sidebar(props) {
+function Sidebar() {
     const navigate = useNavigate();
 
     //retrieve username from local storage creds key
@@ -25,12 +25,11 @@ function Sidebar(props) {
     const dispatch = useDispatch();
 
     const logoutUser = () => {
-
         try {
             dispatch(logout());
           // Redirect to the home page or show a success message
-        }   catch (error) {
-            
+        }   catch {
+            alert('Error al cerrar sesión');
         }
     }
     
@@ -127,7 +126,7 @@ function Sidebar(props) {
         
     );
 }
-function MainContent(props) {
+function MainContent() {
     const location = useLocation();
 
     //if location is different than /admin or /admin/ then return null

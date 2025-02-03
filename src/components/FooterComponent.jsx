@@ -6,7 +6,7 @@ import InstagramIcon from '../assets/icons/instagram-brands-solid.svg';
 import logo from '../assets/images/logo_.webp';
 
 //will render in any location except /admin
-function Footer(props) {
+function Footer() {
     // logic to render footer
     const location = useLocation();
 

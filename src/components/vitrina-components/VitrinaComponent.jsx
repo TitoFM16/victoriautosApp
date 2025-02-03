@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Breadcrumb, BreadcrumbItem, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import filterIcon from '../../assets/icons/filters.svg';
+import PropTypes from 'prop-types';
 
 function formatMoney(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -28,6 +29,18 @@ function RenderVitrinaItem({ car }) {
     </Card>
   );
 }
+
+RenderVitrinaItem.propTypes = {
+  car: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    uuid: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    marca: PropTypes.string.isRequired,
+    linea: PropTypes.string.isRequired,
+    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    price: PropTypes.number.isRequired
+  }).isRequired
+};
 
 const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleClearFilters }) => {
   return (
@@ -106,6 +119,18 @@ const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleCle
   );
 };
 
+Filters.propTypes = {
+  filter: PropTypes.shape({
+    marca: PropTypes.string,
+    linea: PropTypes.string,
+    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  }).isRequired,
+  handleFilter: PropTypes.func.isRequired,
+  distinctValues: PropTypes.func.isRequired,
+  filteredCars: PropTypes.array.isRequired,
+  handleClearFilters: PropTypes.func.isRequired
+};
+
 const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isOpen, onClose, handleClearFilters }) => {
   return (
     <div className={`mobile-filter-drawer ${isOpen ? 'open' : ''}`}>
@@ -182,6 +207,20 @@ const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isO
       </div>
     </div>
   );
+};
+
+MobileFilters.propTypes = {
+  filter: PropTypes.shape({
+    marca: PropTypes.string,
+    linea: PropTypes.string,
+    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  }).isRequired,
+  handleFilter: PropTypes.func.isRequired,
+  distinctValues: PropTypes.func.isRequired,
+  filteredCars: PropTypes.array.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  handleClearFilters: PropTypes.func.isRequired
 };
 
 const Vitrina = ({ cars }) => {
@@ -324,6 +363,20 @@ const Vitrina = ({ cars }) => {
       </div>
     </div>
   );
+};
+
+Vitrina.propTypes = {
+  cars: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      uuid: PropTypes.string.isRequired,
+      images: PropTypes.arrayOf(PropTypes.string).isRequired,
+      marca: PropTypes.string.isRequired,
+      linea: PropTypes.string.isRequired,
+      modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      price: PropTypes.number.isRequired
+    })
+  ).isRequired
 };
 
 export default Vitrina;

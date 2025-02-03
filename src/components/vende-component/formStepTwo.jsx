@@ -9,7 +9,7 @@ import {Col, Row,Container} from 'reactstrap'
 function FormStep2(props) {
     
     const [marca, setMarca] = useState(props.marca || "");
-    const [_, setLinea] = useState(props.linea || "");
+    const [, setLinea] = useState(props.linea || "");
     const [marcaDropdown, setMarcaDropdown] = useState([]);
     const [lineaDropdown, setLineaDropdown] = useState([]);
     const tipo = 'all'; // Constant tipo 'all'

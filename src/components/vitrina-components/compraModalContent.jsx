@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import PropTypes from 'prop-types';
 import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import LoadingModal from '../shared/LoadingModal';
@@ -178,6 +180,10 @@ const CompraModalContent = ({ car }) => {
       />
     </>
   );
+};
+
+CompraModalContent.propTypes = {
+  car: PropTypes.object.isRequired
 };
 
 export default CompraModalContent;

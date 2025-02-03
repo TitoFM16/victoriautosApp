@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { formatMoney } from '../../shared/utils';
 import whatsappIcon from '../../assets/icons/whatsapp-brands-solid.svg';
 import CompraModalContent from './compraModalContent';
+import PropTypes from 'prop-types';
 
 // Const for image paths
 const imgPath = "/images/vehiculos/";
@@ -272,6 +273,34 @@ function RenderCar({ car, mode, reloadCar }) {
   );
 }
 
+// Add prop types for RenderCar component
+RenderCar.propTypes = {
+  car: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    marca: PropTypes.string.isRequired,
+    linea: PropTypes.string.isRequired,
+    modelo: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    km: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    uuid: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    Tipo: PropTypes.string,
+    cilindraje: PropTypes.string,
+    transmision: PropTypes.string,
+    direccion: PropTypes.string,
+    combustible: PropTypes.string,
+    color: PropTypes.string,
+    vin: PropTypes.string,
+    chasis_no: PropTypes.string,
+    motor_no: PropTypes.string,
+    importacion_no: PropTypes.string,
+    importacion_date: PropTypes.string
+  }).isRequired,
+  mode: PropTypes.oneOf(['client', 'admin']).isRequired,
+  reloadCar: PropTypes.func.isRequired
+};
+
 const CarDetailComponents = ({ car: initialCar, mode }) => {
   const [car, setCar] = useState(initialCar);
   const params = useParams();
@@ -312,6 +341,16 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
       </div>
     </div>
   );
+};
+
+// Add prop types for CarDetailComponents component
+CarDetailComponents.propTypes = {
+  car: PropTypes.shape({
+    _id: PropTypes.string,
+    marca: PropTypes.string,
+    linea: PropTypes.string
+  }),
+  mode: PropTypes.oneOf(['client', 'admin']).isRequired
 };
 
 export default CarDetailComponents;

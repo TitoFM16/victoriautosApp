@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 
-const NegociosComponent = (props) => {
+const NegociosComponent = () => {
     const [loading, setLoading] = useState(true);
     const [negociosVitrina, setNegociosVitrina] = useState([]);
     const [negociosOferta, setNegociosOferta] = useState([]);

@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 
 import CarUploadComponent from '../carUpload/CarUploadComponent';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 function formatMoney(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -12,7 +13,7 @@ function formatMoney(x) {
 
 // const to store the images location path in the server
 const imagePath = "/images/vehiculos/";
-function RenderVitrinaItem ({car, onClick}) {
+function RenderVitrinaItem ({car}) {
   return (
       <Card className='car-card'>
           <Link to={ `/admin/vitrina/${car._id}` } style={{textDecoration:"none",color:"black"}}>
@@ -36,6 +37,17 @@ function RenderVitrinaItem ({car, onClick}) {
   );
 }
 
+RenderVitrinaItem.propTypes = {
+  car: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    uuid: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    marca: PropTypes.string.isRequired,
+    linea: PropTypes.string.isRequired,
+    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    price: PropTypes.number.isRequired
+  }).isRequired
+};
 
 
 class VitrinaComponent extends Component {

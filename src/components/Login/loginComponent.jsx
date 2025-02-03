@@ -13,7 +13,7 @@ function LoginComponent() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [_, setError] = useState(null);
+  const [, setError] = useState(null);
   const navigate = useNavigate();
   
   const handleSubmit = async event => {

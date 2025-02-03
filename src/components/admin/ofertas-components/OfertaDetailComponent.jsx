@@ -3,6 +3,7 @@ import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import { formatMoney } from '../../../shared/utils';
 
@@ -217,6 +218,31 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
   );
 }
 
+RenderOferta.propTypes = {
+  oferta: PropTypes.shape({
+    _id: PropTypes.string,
+    marca: PropTypes.string,
+    linea: PropTypes.string,
+    modelo: PropTypes.string,
+    km: PropTypes.number,
+    price: PropTypes.number,
+    images: PropTypes.arrayOf(PropTypes.string),
+    uuid: PropTypes.string,
+    name: PropTypes.string,
+    nombre: PropTypes.string,
+    apellido: PropTypes.string,
+    celular: PropTypes.string,
+    wppCheck: PropTypes.bool,
+    cilindraje: PropTypes.string,
+    transmision: PropTypes.string,
+    direccion: PropTypes.string,
+    combustible: PropTypes.string,
+    color: PropTypes.string
+  }).isRequired,
+  mode: PropTypes.oneOf(['admin', 'client']).isRequired,
+  reloadOferta: PropTypes.func.isRequired
+};
+
 const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
   const [oferta, setCar] = useState(initialCar);
   const params = useParams();
@@ -256,6 +282,15 @@ const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
       </div>
     </div>
   );
+};
+
+OfertaDetailComponent.propTypes = {
+  oferta: PropTypes.shape({
+    _id: PropTypes.string,
+    marca: PropTypes.string,
+    linea: PropTypes.string
+  }),
+  mode: PropTypes.oneOf(['admin', 'client']).isRequired
 };
 
 export default OfertaDetailComponent;

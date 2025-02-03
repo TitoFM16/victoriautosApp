@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom'
 
 import axios from 'axios';
 
-const TramitesComponent = (props) => {
+const TramitesComponent = () => {
     const [loading, setLoading] = useState(true);
     const [tramites, setTramites] = useState([]);
 

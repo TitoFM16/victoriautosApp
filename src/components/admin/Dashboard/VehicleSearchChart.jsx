@@ -1,5 +1,6 @@
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import PropTypes from 'prop-types';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -31,6 +32,15 @@ const VehicleSearchChart = ({ searchData }) => {
     };
 
     return <Bar data={data} options={options} />;
+};
+
+VehicleSearchChart.propTypes = {
+    searchData: PropTypes.arrayOf(
+        PropTypes.shape({
+            marca: PropTypes.string.isRequired,
+            count: PropTypes.number.isRequired
+        })
+    ).isRequired
 };
 
 export default VehicleSearchChart; 
