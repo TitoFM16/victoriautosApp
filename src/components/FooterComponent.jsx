@@ -31,15 +31,17 @@ function Footer() {
                
                 <div className="col-md-4 my-3 py-3" style={{textAlign:"center"}}>
     
-                
-                    <p >
+                    <span>
+
+                    
                     <img src = {logo}
                     width="120" 
                     height="120"
                     align="center"
                     alt='logo'
                     />
-                    </p>
+                    
+                    </span>
                     <p className="footer-title">síguenos en redes</p>
                     <div style={{"align":"center"}}>
                       <a className='px-2' href="https://www.facebook.com" aria-label="Facebook">

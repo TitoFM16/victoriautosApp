@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
 
+import backgroundImage from '../../assets/images/vehiculos_aereo.webp';
+
 
 // Lazy-load the mobile vender form
 const VenderFormMobile = React.lazy(() => import('./VenderFormMobile'));
@@ -30,16 +32,13 @@ function BuscadorMobile() {
 
   // Prefetch all marcas on mount
   useEffect(() => {
-    const prefetchMarcas = async () => {
-      try {
-        const response = await axios.get('/api/buscavehiculo/?tipo=all');
-        setMarcaDropdown(response.data);
-      } catch (error) {
-        console.error('Error prefetching marcas:', error);
-      }
-    };
-    prefetchMarcas();
+    requestIdleCallback(() => {
+      axios.get('/api/buscavehiculo/?tipo=all')
+        .then(response => setMarcaDropdown(response.data))
+        .catch(error => console.error('Error prefetching marcas:', error));
+    });
   }, []);
+    
 
   // Memoize sorted options for the "comprar" form
   const sortedMarcaOptions = useMemo(() => {
@@ -107,7 +106,10 @@ function BuscadorMobile() {
   }
 
   return (
-    <div className="container-fluid d-block buscaStyle buscador-form-container mt-0 pt-0">
+      <div
+        className="container-fluid d-block buscaStyle buscador-form-container mt-0 pt-0"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
       <div className="buscador-form-overlay"></div>
       <div className="buscador-form-content">
         <div className="row">

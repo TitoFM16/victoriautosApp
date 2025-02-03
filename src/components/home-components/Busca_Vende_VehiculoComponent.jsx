@@ -26,16 +26,13 @@ function Buscador() {
 
   // Prefetch all marcas on mount
   useEffect(() => {
-    const prefetchMarcas = async () => {
-      try {
-        const response = await axios.get('/api/buscavehiculo/?tipo=all');
-        setMarcaDropdown(response.data);
-      } catch (error) {
-        console.error('Error prefetching marcas:', error);
-      }
-    };
-    prefetchMarcas();
+    requestIdleCallback(() => {
+      axios.get('/api/buscavehiculo/?tipo=all')
+        .then(response => setMarcaDropdown(response.data))
+        .catch(error => console.error('Error prefetching marcas:', error));
+    });
   }, []);
+    
 
   // Memoize sorted options for "marca" and "linea" to avoid re-sorting on every render
   const sortedMarcaOptions = useMemo(() => {

@@ -28,7 +28,7 @@ class Header extends React.Component {
             <div className="container-fluid">
               <a className="navbar-brand" href="/">
                 <span>
-                  <img src={logo} height="41" width="41" alt="." />
+                  <img src={logo} height="41" width="41" alt="logo" />
                   Victoriautos Consignataria
                 </span>
               </a>
