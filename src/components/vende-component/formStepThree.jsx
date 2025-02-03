@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Row, Container } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 function FormStep3(props) {
   const [fileNames, setFileNames] = useState({
@@ -170,5 +171,15 @@ function FormStep3(props) {
     </Container>
   );
 }
+
+FormStep3.propTypes = {
+  frenteImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  traseroImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  lateralIzqImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  lateralDerImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  interiorImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  motorImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  handleChange: PropTypes.func.isRequired
+};
 
 export default FormStep3;

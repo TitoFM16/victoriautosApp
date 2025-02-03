@@ -1,11 +1,8 @@
-import React from 'react';
-
-
 const info = <span className="material-symbols-outlined icon-style" >info</span>
 const car = <span className="material-symbols-outlined icon-style" >directions_car</span>
 const camera = <span className="material-symbols-outlined icon-style" >photo_camera</span>
 
-const FormStep0 = (props) =>{
+const FormStep0 = () =>{
     return(
         <div className='container-fluid py-2 px-0 mx-0'>
             <div className='row'>

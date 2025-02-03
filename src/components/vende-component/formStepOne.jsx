@@ -1,5 +1,6 @@
 import React from 'react';
 import {Col, Row, Container} from 'reactstrap'
+import PropTypes from 'prop-types';
 // import {Link} from 'react-router-dom'
 
 function FormStep1(props) {
@@ -96,5 +97,14 @@ function FormStep1(props) {
         );        
 
 }
+
+FormStep1.propTypes = {
+  nombre: PropTypes.string.isRequired,
+  apellido: PropTypes.string.isRequired,
+  celular: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  wppcheck: PropTypes.bool.isRequired,
+  handleChange: PropTypes.func.isRequired
+};
 
 export default FormStep1;

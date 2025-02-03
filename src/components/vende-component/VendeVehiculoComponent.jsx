@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useVehicleDropdowns } from '../../hooks/useVehicleDropdowns';
 import axios from 'axios';
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import LoadingModal from '../shared/LoadingModal';
+import PropTypes from 'prop-types';
 
 import FormStep0 from './formStepZero';
 import FormStep1 from './formStepOne';
@@ -238,41 +238,6 @@ function VendeForm() {
         return frenteImg && traseroImg && lateralIzqImg && lateralDerImg && interiorImg && motorImg;
     }
 
-    const handleMarcaChange = (event) => {
-        const value = event.target.value;
-        
-        // Call the provided props.handleChange to not disrupt existing functionality
-        handleChange(event);
-        
-        // Custom logic for handling marca change
-        if (event.target.name === 'marca') {
-            setFormData(prev => ({
-                ...prev,
-                marca: value
-            }));
-            
-            // Fetch lineas based on selected marca
-            axios.get('/api/buscavehiculo/?marca=' + value)
-                .then((response) => {
-                    setFormData(prev => ({
-                        ...prev,
-                        lineaDropdown: response.data
-                    }));
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-    };
-
-    const handleLineaChange = (event) => {
-        const value = event.target.value;
-        setFormData(prev => ({
-            ...prev,
-            linea: value
-        }));
-    };
-
     const handleCaptchaChange = (value) => {
         if (!value) {
             console.log('Captcha value is empty');
@@ -372,6 +337,12 @@ function Step0(props){
         </div>
     )
 }
+
+Step0.propTypes = {
+  currentStep: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 //                                                    STEP 0<--
 //----------------------------------------------------------------------------------------------------------------------
@@ -402,6 +373,16 @@ function Step1(props) {
     );
 }
   
+Step1.propTypes = {
+  currentStep: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  nombre: PropTypes.string.isRequired,
+  apellido: PropTypes.string.isRequired,
+  celular: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  wppcheck: PropTypes.bool.isRequired
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 //                                                    STEP 1<--
 //----------------------------------------------------------------------------------------------------------------------
@@ -434,6 +415,17 @@ function Step2(props) {
     );
 }
  
+Step2.propTypes = {
+  currentStep: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  marca: PropTypes.string.isRequired,
+  linea: PropTypes.string.isRequired,
+  modelo: PropTypes.string.isRequired,
+  km: PropTypes.string.isRequired,
+  matricula: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 //                                                    STEP 2<--
 //----------------------------------------------------------------------------------------------------------------------
@@ -466,6 +458,17 @@ function Step3(props) {
         </React.Fragment>
     );
 }
+
+Step3.propTypes = {
+  currentStep: PropTypes.number.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  frenteImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  traseroImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  lateralIzqImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  lateralDerImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  interiorImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  motorImg: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 //                                                    STEP 3<--
@@ -504,6 +507,10 @@ function CircleSteps(props){
     )
 }
 
+CircleSteps.propTypes = {
+  currentStep: PropTypes.number.isRequired
+};
+
 //----------------------------------------------------------------------------------------------------------------------
 //                                                    CIRCLE STEP<--
 //----------------------------------------------------------------------------------------------------------------------
@@ -529,6 +536,11 @@ const Captcha = ({ onChange, currentStep }) => {
             </div>
         </div>
     );
+};
+
+Captcha.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  currentStep: PropTypes.number.isRequired
 };
 
 //----------------------------------------------------------------------------------------------------------------------

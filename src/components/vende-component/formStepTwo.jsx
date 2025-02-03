@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
 import axios from 'axios';
 
@@ -8,7 +9,7 @@ import {Col, Row,Container} from 'reactstrap'
 function FormStep2(props) {
     
     const [marca, setMarca] = useState(props.marca || "");
-    const [linea, setLinea] = useState(props.linea || "");
+    const [_, setLinea] = useState(props.linea || "");
     const [marcaDropdown, setMarcaDropdown] = useState([]);
     const [lineaDropdown, setLineaDropdown] = useState([]);
     const tipo = 'all'; // Constant tipo 'all'
@@ -201,5 +202,15 @@ function FormStep2(props) {
         );        
 
 }
+
+FormStep2.propTypes = {
+  marca: PropTypes.string.isRequired,
+  linea: PropTypes.string.isRequired,
+  modelo: PropTypes.string.isRequired,
+  km: PropTypes.string.isRequired,
+  matricula: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired
+};
 
 export default FormStep2;
