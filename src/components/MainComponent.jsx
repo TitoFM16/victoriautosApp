@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCars } from '../redux/actions/carsActions';
@@ -38,36 +38,30 @@ import Protected from './Protected';
 function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const authenticated = useSelector((state) => {
-    return state.auth.authenticated;
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const authenticated = useSelector((state) => state.auth.authenticated);
   const cars = useSelector((state) => state.cars.cars);
   const ofertas = useSelector((state) => state.ofertas.ofertas);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check authentication status on component mount
-    checkIfAuthenticated().then((isAuthenticated) => {
-      if (isAuthenticated) {
-        dispatch(setAuthenticated(true));
-      } else if (isAdminRoute) {
-        // If not authenticated and trying to access admin route, 
-        // the Protected component will handle the redirect
-        dispatch(setAuthenticated(false));
-      }
-    });
-  }, []); // Empty dependency array for initial load only
-
-  useEffect(() => {
-    dispatch(fetchCars());
-    
-    // Additional check when route changes to admin
-    if (isAdminRoute) {
+    Promise.all([
       checkIfAuthenticated().then((isAuthenticated) => {
-        dispatch(setAuthenticated(isAuthenticated));
-      });
-    }
-  }, [isAdminRoute, dispatch]);
+        if (isAuthenticated) {
+          dispatch(setAuthenticated(true));
+        } else if (isAdminRoute) {
+          dispatch(setAuthenticated(false));
+        }
+      }),
+      dispatch(fetchCars())
+    ]).finally(() => {
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) {
+    return <div className="loading-container">Loading...</div>;
+  }
 
   const CarWithId = () => {
     let params = useParams();

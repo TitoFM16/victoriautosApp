@@ -108,7 +108,6 @@ function BuscadorMobile() {
   return (
       <div
         className="container-fluid d-block buscaStyle buscador-form-container mt-0 pt-0"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
       >
       <div className="buscador-form-overlay"></div>
       <div className="buscador-form-content">
