@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, Outlet } from 'react-router-dom'; //Switch changed to routes Also redirect is changed to Navigate since version 6
 

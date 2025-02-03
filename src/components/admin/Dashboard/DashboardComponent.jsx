@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
+import React from 'react';
 
-import VehicleSearchChart from './VehicleSearchChart';
+const Chart = React.lazy(() => import('react-chartjs-2'));
 
-const DashboardComponent = () => {
+const DashboardComponent = (props) => {
     const [searchData, setSearchData] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,7 +32,9 @@ const DashboardComponent = () => {
                     <h3>Dashboard</h3>
                     <div className="card mt-4">
                         <div className="card-body">
-                            <VehicleSearchChart searchData={searchData} />
+                            <Suspense fallback={<div>Loading chart...</div>}>
+                                <Chart {...props} />
+                            </Suspense>
                         </div>
                     </div>
                 </div>
