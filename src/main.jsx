@@ -1,6 +1,5 @@
 // --------------------------------------------------
 //--------Bootstrap ---------------------------------
-
 import '../src/styles/custom-bootstrap.scss'; 
 import { Modal, Dropdown, Collapse } from 'bootstrap';
 //import 'bootstrap/dist/css/bootstrap.min.css';

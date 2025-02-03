@@ -19,10 +19,10 @@ const DashboardComponent = React.lazy(() => import('./admin/Dashboard/DashboardC
 
 const CarDetailComponent = React.lazy(() => import('./vitrina-components/CardetailComponent'));
 
-import Footer from './FooterComponent';
 import Header from './HeaderComponent';
+import Home from './home-components/HomeComponent';
+import Footer from './FooterComponent';
 
-const Home = React.lazy(() => import('./home-components/HomeComponent'));
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const InteresFormComponent = React.lazy(() => import('./InteresFormComponent'));
 const NegociosComponent = React.lazy(() => import('./admin/Negocios/NegociosComponent'));
@@ -126,37 +126,41 @@ function Main() {
             exact
             path="/vitrina"
             element={
-              <motion.div
-                key="vitrina"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                initial: { duration: 1 },
-                animate: { duration: 2 },
-                exit: { duration: 0.5 },
-              }}
-              >
-                <Vitrina cars={cars} />
-              </motion.div>
+              <Suspense fallback={<div>Loading...</div>}>
+                <motion.div
+                  key="vitrina"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    initial: { duration: 1 },
+                    animate: { duration: 2 },
+                    exit: { duration: 0.5 },
+                  }}
+                  >
+                  <Vitrina cars={cars} />
+                </motion.div>
+                </Suspense>
             }
           />
           <Route
             path="/vitrina/:carId"
-            element={
-              <motion.div
-                key="car"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
+            element={ 
+              <Suspense fallback={<div>Loading...</div>}>
+                <motion.div
+                  key="car"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
                 initial: { duration: 1 },
                 animate: { duration: 2 },
                 exit: { duration: 0.5 },
-              }}
-              >
+                }}
+                >
                 <CarWithId />
-              </motion.div>
+                </motion.div>
+              </Suspense>
             }
           />
           <Route
