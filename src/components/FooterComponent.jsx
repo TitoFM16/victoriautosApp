@@ -4,6 +4,7 @@ import WhatsappIcon from '../assets/icons/whatsapp-brands-solid.svg';
 import FacebookIcon from '../assets/icons/facebook-f-brands-solid.svg';
 import InstagramIcon from '../assets/icons/instagram-brands-solid.svg';
 import logo from '../assets/images/logo_.webp';
+import logoMobile from '../assets/images/logo_mobile.webp';
 
 //will render in any location except /admin
 function Footer() {
@@ -34,7 +35,7 @@ function Footer() {
                     <span>
 
                     
-                    <img src = {logo}
+                    <img src={window.innerWidth < 768 ? logoMobile : logo} 
                     width="120" 
                     height="120"
                     align="center"

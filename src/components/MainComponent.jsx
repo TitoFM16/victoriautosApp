@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCars } from '../redux/actions/carsActions';
@@ -8,23 +8,27 @@ import { AnimatePresence, motion } from 'framer-motion';
 import ScrollToTop from './ScrollToTopComponent';
 
 
-import AdminComponent from './admin/AdminComponent';
-import AdminVitrina from './admin/vitrina-vehiculos-component/VitrinaComponent';
-import OfertasComponent from './admin/ofertas-components/OfertasComponent';
-import CarDetailComponent from './vitrina-components/CardetailComponent';
+
+const AdminComponent = React.lazy(() => import('./admin/AdminComponent'));
+const AdminVitrina = React.lazy(() => import('./admin/vitrina-vehiculos-component/VitrinaComponent'));
+const OfertasComponent = React.lazy(() => import('./admin/ofertas-components/OfertasComponent'));
+const HomeAdmin = React.lazy(() => import('./admin/Home/HomeAdminComponent'));
+const TramitesComponent = React.lazy(() => import('./admin/Tramites/TramitesComponent'));
+const BuscadoComponent = React.lazy(() => import('./admin/Buscado/buscado'));
+const DashboardComponent = React.lazy(() => import('./admin/Dashboard/DashboardComponent'));
+
+const CarDetailComponent = React.lazy(() => import('./vitrina-components/CardetailComponent'));
+
 import Footer from './FooterComponent';
 import Header from './HeaderComponent';
-import Home from './home-components/HomeComponent';
-import HomeAdmin from './admin/Home/HomeAdminComponent';
-import InteresFormComponent from './InteresFormComponent';
-import LoginComponent from './Login/loginComponent';
-import NegociosComponent from './admin/Negocios/NegociosComponent';
-import OfertaDetailComponent from './admin/ofertas-components/OfertaDetailComponent';
-import TramitesComponent from './admin/Tramites/TramitesComponent';
-import VendeForm from './vende-component/VendeVehiculoComponent';
-import Vitrina from './vitrina-components/VitrinaComponent';
-import BuscadoComponent from './admin/Buscado/buscado';
-import DashboardComponent from './admin/Dashboard/DashboardComponent';
+
+const Home = React.lazy(() => import('./home-components/HomeComponent'));
+const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
+const InteresFormComponent = React.lazy(() => import('./InteresFormComponent'));
+const NegociosComponent = React.lazy(() => import('./admin/Negocios/NegociosComponent'));
+const OfertaDetailComponent = React.lazy(() => import('./admin/ofertas-components/OfertaDetailComponent'));
+const VendeForm = React.lazy(() => import('./vende-component/VendeVehiculoComponent'));
+const Vitrina = React.lazy(() => import('./vitrina-components/VitrinaComponent'));
 
 import { withRouter } from '../services/withRouter';
 import Protected from './Protected';
@@ -145,19 +149,21 @@ function Main() {
           <Route
             path="/vende"
             element={
-              <motion.div
-                key="vende"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
+              <Suspense fallback={<div>Loading...</div>}>
+                <motion.div
+                  key="vende"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
                 initial: { duration: 1 },
                 animate: { duration: 2 },
                 exit: { duration: 0.5 },
-              }}
-              >
-                <VendeForm />
-              </motion.div>
+                }}
+                >
+                  <VendeForm />
+                </motion.div>
+              </Suspense>
             }
           />
           <Route
@@ -182,42 +188,48 @@ function Main() {
             path="/admin"
             element={
               <Protected isAuth={authenticated}>
-                <motion.div
-                  key="admin"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                <Suspense fallback={<div>Loading...</div>}>
+                  <motion.div
+                    key="admin"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                 >
                   <AdminComponent />
                 </motion.div>
+                </Suspense>
               </Protected>
             }
           >
             <Route
               path="home"
               element={
-                <motion.div
-                  key="home"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                <Suspense fallback={<div>Loading...</div>}>
+                  <motion.div
+                    key="home"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                 >
                   <HomeAdmin />
-                </motion.div>
+                  </motion.div>
+                </Suspense>
               }
             />
             <Route
               path="negocios"
               element={
                 <Protected isAuth={authenticated}>
-                  <motion.div
-                    key="negocios"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <NegociosComponent />
-                  </motion.div>
+                  <Suspense fallback={<div>Loading...</div>}>                    
+                    <motion.div
+                      key="negocios"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      >
+                      <NegociosComponent />
+                    </motion.div>
+                  </Suspense>
                 </Protected>
               }
             />
@@ -225,94 +237,108 @@ function Main() {
               path="buscado"
               element={
                 <Protected isAuth={authenticated}>
-                  <motion.div
-                    key="buscado"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <motion.div
+                      key="buscado"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                   >
                     <BuscadoComponent />
                   </motion.div>
+                  </Suspense>
                 </Protected>
               }
             />
             <Route
               path="ofertas"
               element={
-                <motion.div
-                  key="ofertas"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <OfertasComponent ofertas={ofertas} />
-                </motion.div>
+                <Suspense fallback={<div>Loading...</div>}>                  
+                  <motion.div
+                    key="ofertas"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    >
+                    <OfertasComponent ofertas={ofertas} />
+                  </motion.div>
+                  </Suspense>
               }
             />
             <Route
               path="ofertas/:ofertaId"
               element={
-                <motion.div
-                  key="oferta"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <OfertaWithId />
-                </motion.div>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <motion.div
+                    key="oferta"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    >
+                    <OfertaWithId />
+                  </motion.div>
+                </Suspense>
               }
             />
             <Route
               path="tramites"
               element={
-                <motion.div
-                  key="tramites"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <TramitesComponent />
-                </motion.div>
+                <Suspense fallback={<div>Loading...</div>}>                  
+                  <motion.div
+                    key="tramites"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    >
+                    <TramitesComponent />
+                  </motion.div>
+                </Suspense>
               }
             />
             <Route
               path="vitrina"
               element={
-                <motion.div
-                  key="vitrina"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <AdminVitrina />
-                </motion.div>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <motion.div
+                    key="vitrina"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    >
+                    <AdminVitrina />
+                  </motion.div>
+                </Suspense>
               }
             />
             <Route
               path="vitrina/:carId"
               element={
-                <motion.div
-                  key="car"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <AdminCarWithId />
-                </motion.div>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <motion.div
+                    key="car"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    >
+                    <AdminCarWithId />
+                  </motion.div>
+                </Suspense>
               }
             />
             <Route
               path="dashboard"
               element={
                 <Protected isAuth={authenticated}>
-                  <motion.div
-                    key="dashboard"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <DashboardComponent />
-                  </motion.div>
+                  <Suspense>                    
+                    <motion.div
+                      key="dashboard"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      >
+                      <DashboardComponent />
+                    </motion.div>
+                  </Suspense>
                 </Protected>
               }
             />
