@@ -42,8 +42,10 @@ function CarCarousel() {
           modules={[Autoplay, Navigation]}
           spaceBetween={20}
           navigation={{
-            //enabled: window.innerWidth > 768,
             enabled: false,
+            hideOnClick: false,
+            prevEl: null,
+            nextEl: null
           }}
           autoplay={{
             delay: 3500,
