@@ -148,15 +148,6 @@ function MainContent() {
 }
 
 function AdminComponent() {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        // Redirect to dashboard if on /admin or /admin/
-        if (location.pathname === '/admin' || location.pathname === '/admin/') {
-            navigate('/admin/dashboard');
-        }
-    }, [location, navigate]);
 
     // const ofertas = useSelector(state => state.ofertas.ofertas);
 

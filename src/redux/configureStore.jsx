@@ -9,6 +9,6 @@ export const store = configureStore({
   reducer: {
     cars: carsReducer,
     ofertas: ofertasReducer,
-    authenticated: loginSlice
+    auth: loginSlice
   }
 })

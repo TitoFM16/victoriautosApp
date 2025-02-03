@@ -38,23 +38,37 @@ import Protected from './Protected';
 function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
-  const authenticated = useSelector((state) => state.authenticated);
+  const authenticated = useSelector((state) => {
+    console.log('Auth State:', state.auth);
+    return state.auth.authenticated;
+  });
   const cars = useSelector((state) => state.cars.cars);
   const ofertas = useSelector((state) => state.ofertas.ofertas);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Check authentication status on component mount
+    checkIfAuthenticated().then((isAuthenticated) => {
+      if (isAuthenticated) {
+        dispatch(setAuthenticated(true));
+      } else if (isAdminRoute) {
+        // If not authenticated and trying to access admin route, 
+        // the Protected component will handle the redirect
+        dispatch(setAuthenticated(false));
+      }
+    });
+  }, []); // Empty dependency array for initial load only
+
+  useEffect(() => {
     dispatch(fetchCars());
     
-    // Only check authentication if on admin route
+    // Additional check when route changes to admin
     if (isAdminRoute) {
       checkIfAuthenticated().then((isAuthenticated) => {
-        if (isAuthenticated) {
-          dispatch(setAuthenticated(true));
-        }
+        dispatch(setAuthenticated(isAuthenticated));
       });
     }
-  }, [isAdminRoute, dispatch]); // Add isAdminRoute to dependencies
+  }, [isAdminRoute, dispatch]);
 
   const CarWithId = () => {
     let params = useParams();
