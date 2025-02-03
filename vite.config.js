@@ -2,6 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'; // Import the plugin
 
+
+const SCSS_Logger = {
+  warn(message, options) {
+      // Mute "Mixed Declarations" warning
+      if (options.deprecation && message.includes('mixed-decls')) {
+          return
+      }
+      // List all other warnings
+      console.warn(`▲ [WARNING]: ${message}`);
+  },
+};
+
+
 // https://vite.dev/config/
 export default defineConfig({
   server: {
@@ -26,6 +39,11 @@ export default defineConfig({
       content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
     })
   ],
-})
-
-
+  css: {
+    preprocessorOptions: {
+      scss: {
+        logger: SCSS_Logger,
+      },
+    },
+  },
+});

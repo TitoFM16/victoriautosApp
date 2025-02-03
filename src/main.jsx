@@ -1,7 +1,11 @@
 // --------------------------------------------------
 //--------Bootstrap ---------------------------------
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
+
+import '../src/styles/custom-bootstrap.scss'; 
+import { Modal, Dropdown, Collapse } from 'bootstrap';
+//import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 // --------------------------------------------------
 //--------Bootstrap ---------------------------------
 

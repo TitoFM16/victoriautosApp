@@ -1,0 +1,45 @@
+// Custom.scss
+// Option B: Include parts of Bootstrap
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+$primary: #B30000FA;
+// Add any other variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets (order is important)
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// 4. Include any optional Bootstrap components you need
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";  // Required for animations
+@import "bootstrap/scss/dropdown";     // Required for dropdowns
+@import "bootstrap/scss/button-group"; // Required for dropdown buttons
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/close";        // Required for modal close button
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/utilities/api";
+
+// 5. Add additional custom code here
