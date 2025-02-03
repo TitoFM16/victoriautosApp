@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import purgecss from '@mojojoejo/vite-plugin-purgecss'; // Import the plugin
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,7 +20,12 @@ export default defineConfig({
       }
     },
   },  
-  plugins: [react()],
+  plugins: [react(),
+    purgecss({
+      // Specify the paths to all of your template and source files
+      content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+    })
+  ],
 })
 
 
