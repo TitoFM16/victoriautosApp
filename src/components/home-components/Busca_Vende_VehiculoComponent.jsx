@@ -20,6 +20,7 @@ function Buscador() {
   const [modelo, setModelo] = useState("");
   const [price, setPrice] = useState("");
   const [km, setKm] = useState("");
+  const [currentYear] = useState(new Date().getFullYear() + 1);
 
   const navigate = useNavigate();
   const cars = useSelector(state => state.cars.cars);
@@ -202,7 +203,18 @@ function Buscador() {
                         id='modeloInput'
                         name='modeloInput'
                         value={modeloInput}
-                        onChange={e => setModeloInput(e.target.value)}
+                        onChange={(e) => setModeloInput(e.target.value)}
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          if (value && (!/^\d{4}$/.test(value) || 
+                              parseInt(value) < 1920 || 
+                              parseInt(value) > currentYear)) {
+                            alert(`Por favor ingrese un año válido entre 1920 y ${currentYear}`);
+                            setModeloInput('');
+                          }
+                        }}
+                        placeholder={`Ingrese el modelo (1920-${currentYear})`}
+                        maxLength={4}
                       />
                     ) : (
                       <select
@@ -213,6 +225,9 @@ function Buscador() {
                         onChange={e => setModelo(e.target.value)}
                       >
                         <option value=''>Modelo desde</option>
+                        {Array.from({length: currentYear - 2000 + 1}, (_, i) => currentYear - i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
                         <option value='otro'>Otro</option>
                       </select>
                     )}

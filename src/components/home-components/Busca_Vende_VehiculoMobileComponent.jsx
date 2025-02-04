@@ -22,6 +22,7 @@ function BuscadorMobile() {
   const [modelo, setModelo] = useState("");
   const [price, setPrice] = useState("");
   const [km, setKm] = useState("");
+  const [currentYear] = useState(new Date().getFullYear() + 1);
 
   // States for the "vender" form (if you need to keep them here; they will not be used in the lazy-loaded vender form)
   // (For mobile, we now delegate the vender form to its own component)
@@ -231,7 +232,17 @@ function BuscadorMobile() {
                         name="modeloInput"
                         value={modeloInput}
                         onChange={(e) => setModeloInput(e.target.value)}
-                        placeholder="Ingrese el modelo"
+                        onBlur={(e) => {
+                          const value = e.target.value;
+                          if (value && (!/^\d{4}$/.test(value) || 
+                              parseInt(value) < 1920 || 
+                              parseInt(value) > currentYear)) {
+                            alert(`Por favor ingrese un año válido entre 1920 y ${currentYear}`);
+                            setModeloInput('');
+                          }
+                        }}
+                        placeholder={`Ingrese el modelo (1920-${currentYear})`}
+                        maxLength={4}
                       />
                     ) : (
                       <select
@@ -242,6 +253,9 @@ function BuscadorMobile() {
                         onChange={(e) => setModelo(e.target.value)}
                       >
                         <option value="">Modelo desde</option>
+                        {Array.from({length: currentYear - 2000 + 1}, (_, i) => currentYear - i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
                         <option value="otro">Otro</option>
                       </select>
                     )}

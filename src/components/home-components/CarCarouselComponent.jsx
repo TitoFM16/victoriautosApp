@@ -17,55 +17,8 @@ function formatMoney(x) {
 const imagePath = "/images/vehiculos/";
 
 function CarCarousel() {
-  const dispatch = useDispatch();
   const cars = useSelector(state => state.cars.cars);
-  const loading = useSelector(state => state.cars.loading);
-  const error = useSelector(state => state.cars.error);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasLoadedAllCars, setHasLoadedAllCars] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Initial load with limited cars
-  useEffect(() => {
-    const initialLoad = async () => {
-      try {
-        // Fetch initial cars with limit
-        const queryParams = new URLSearchParams();
-        queryParams.set('limit', isMobile ? '1' : '4');
-        queryParams.set('mobile', 'true');
-        await dispatch(fetchCars(queryParams.toString()));
-      } catch (error) {
-        console.error('Error during initial load:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    initialLoad();
-  }, [dispatch, isMobile]);
-
-  // Load remaining cars after initial render
-  useEffect(() => {
-    if (!isLoading && !hasLoadedAllCars) {
-      dispatch(fetchCars());
-      setHasLoadedAllCars(true);
-    }
-  }, [isLoading, hasLoadedAllCars, dispatch]);
-
-  if (loading && !cars.length) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
 
   return (
     <div className="car-carousel py-2">
