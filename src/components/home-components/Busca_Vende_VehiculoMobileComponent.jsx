@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
+import { Helmet } from 'react-helmet-async';
 
+import backGround from '../../assets/images/vehiculos_aereo.webp';
 
 
 // Lazy-load the mobile vender form
@@ -102,8 +104,19 @@ function BuscadorMobile() {
   }
 
   return (
+      <>
+      <Helmet>
+        <link 
+          rel="preload" 
+          href="assets/images/vehiculos_aereo.webp" 
+          as="image" 
+          type="image/webp"
+          fetchpriority="high"
+        />
+      </Helmet>
       <div
         className="container-fluid d-block buscaStyle buscador-form-container mt-0 pt-0"
+        style={{ backgroundImage: `url(${backGround})` }}
       >
       <div className="buscador-form-overlay"></div>
       <div className="buscador-form-content">
@@ -332,6 +345,7 @@ function BuscadorMobile() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
+import { Helmet } from 'react-helmet-async';
 
+import backGround from '../../assets/images/entrada_marco_blanco_repellado.webp';
 // Lazy load the vender tab component
 const VenderForm = React.lazy(() => import('./VenderForm'));
 
@@ -103,7 +105,19 @@ function Buscador() {
   }
 
   return (
-    <div className='container-fluid d-block buscaStyle'>
+    <>
+    <Helmet>
+      <link 
+        rel="preload" 
+        href="assets/images/entrada_marco_blanco_repellado.webp" 
+        as="image" 
+        type="image/webp"
+        fetchpriority="high"
+      />
+    </Helmet>
+    <div className='container-fluid d-block buscaStyle'
+        style={{ backgroundImage: `url(${backGround})` }}
+    >
       <div className="row">
         <HeroBanner
           topText="Encuentra tu"
@@ -315,6 +329,7 @@ function Buscador() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

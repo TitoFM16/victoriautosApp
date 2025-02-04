@@ -153,7 +153,7 @@ div.step-circle.active{
 .buscaStyle {
   position: relative;
   /* Image in public/assets/images */
-  background-image: url('assets/images/entrada_marco_blanco_repellado.webp'); 
+  /*background-image: url('assets/images/entrada_marco_blanco_repellado.webp'); */
   /* background-image: url('assets/images/entrada_55v.webp'); */
   background-repeat: no-repeat;
   background-size: cover;
@@ -423,7 +423,7 @@ div.step-circle.active{
 
 .buscador-form-container {
   position: relative;
-  background-image: url('assets/images/vehiculos_aereo.webp');
+  /*background-image: url('assets/images/vehiculos_aereo.webp');*/
   background-size: cover;
   background-position: center;
   width: 100%;
