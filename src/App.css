@@ -236,7 +236,7 @@ div.step-circle.active{
     background-position: center !important;
   
 
-    min-height: 100vh; /* If you need it for specific designs */
+    min-height: 110vh; /* If you need it for specific designs */
     
     /* Ensure the width does not cause overflow */
     width: 100%;
@@ -244,6 +244,10 @@ div.step-circle.active{
     /* Flex properties */
     display: flex;
     flex-direction: column;
+  }
+  .busca-hero-banner{
+    padding-top: 30px;
+    padding-bottom: 40px;
   }
   .compra-venta-container{
     position: absolute;
@@ -257,9 +261,9 @@ div.step-circle.active{
     background-color: #b40505;
     color: white;
     border: 1px solid #e6e9ec;
-    padding: 5px 10px;
+    padding: 7px 14px !important;
     border-radius: 15px 15px 0px 0px;
-    font-size: 16px;
+    font-size: 14px !important;
     font-weight: 500;
     
     /* Add pressed effect */
@@ -277,9 +281,9 @@ div.step-circle.active{
     background-color: white;
     color: black;
     border: 1px solid #e6e9ec;
-    padding: 5px 10px;
+    padding: 7px 14px !important;
     border-radius: 15px 15px 0px 0px;
-    font-size: 16px;
+    font-size: 14px !important;
     font-weight: 500;
     /* Add subtle elevation */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

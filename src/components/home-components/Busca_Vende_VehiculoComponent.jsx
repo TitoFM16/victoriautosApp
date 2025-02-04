@@ -117,12 +117,12 @@ function Buscador() {
         fetchpriority="high"
       />
     </Helmet>
-    
+
     <div className='container-fluid d-block buscaStyle'
         style={{backgroundImage: `url(${window.innerWidth <= 768 ? backGroundMobile : backGround})`
       }}
     >
-      <div className="row">
+      <div className="row busca-hero-banner">
         <HeroBanner
           topText="Encuentra tu"
           highlightText="Usado ideal"
