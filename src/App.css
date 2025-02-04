@@ -118,11 +118,10 @@ div.step-circle.active{
 /* ---------------------------------------------------------------- */
 .navbar-page{
   background-color: #b40505 !important; 
-}
-
-.navbar-page {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   min-height: 65px; /* Set a consistent minimum height */
 }
+
 
 .navbar-page .nav-link {
   color: white !important;
@@ -198,8 +197,9 @@ div.step-circle.active{
   background-color: #b40505;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 13px 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   font-size: 16px;
   font-weight: 500;
   display: flex;
@@ -218,24 +218,47 @@ div.step-circle.active{
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   font-size: 16px;
   font-weight: 500;
   /* Add these properties */
   display: flex;
   align-items: center;
-  gap: 8px; /* Adds space between icon and text */
+  gap: 3px; /* Adds space between icon and text */
 }
 .wpp-contact-button:hover{
   background-color: #128c4b;
   transform: scale(1.03);
 }
+
+.comprar-button{
+  background-color: #b40505;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.comprar-button:hover{
+  background-color: #e50000;
+  /* transform to increase a bit the size */
+  transform: scale(1.03);
+}
+
 .cancel-button{
   background-color: #6c757d;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 13px 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   font-size: 16px;
   font-weight: 500;
 }
@@ -630,10 +653,16 @@ div.step-circle.active{
   /*add svg icon as background-image*/
   background-image: url('assets/icons/minus-solid.svg');
 }
-/* .vitrina-filter{
-  border-top: solid #b40505;
-} */
 
+.caracteristicas-title{
+  color: black;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
 /* ---------------------------------------------------------------- */
 /* Vitrina virtual css*/
 /* ---------------------------------------------------------------- */

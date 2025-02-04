@@ -161,7 +161,7 @@ function RenderCar({ car, mode, reloadCar }) {
             {mode === "client" ? (
               <div className="row py-4">
                 <div className="col-6">
-                  <button type="button" className="btn submit-button d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#compraModal">
+                  <button type="button" className="btn comprar-button d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#compraModal">
                     <span className="material-symbols-outlined" style={{ marginRight: '2px' }}>
                       shopping_cart
                     </span>
@@ -206,8 +206,8 @@ function RenderCar({ car, mode, reloadCar }) {
 
       <div className="row">
         <div className="col-12 col-md-9">
-          <div className="card-body">
-            <h4 className="card-title">Caracteristicas Principales</h4>
+          <div className="card-body container-fluid ">
+            <h4 className="caracteristicas-title align-items-center justify-content-center my-2 py-2">Caracteristicas Principales</h4>
             <table className="table table-striped">
               <tbody>
                 <tr><th>Tipo</th><td>{car.Tipo}</td></tr>

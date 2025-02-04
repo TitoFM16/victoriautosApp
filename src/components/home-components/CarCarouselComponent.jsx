@@ -22,6 +22,7 @@ function CarCarousel() {
   const loading = useSelector(state => state.cars.loading);
   const error = useSelector(state => state.cars.error);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasLoadedAllCars, setHasLoadedAllCars] = useState(false);
 
   useEffect(() => {
@@ -32,26 +33,31 @@ function CarCarousel() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Initial load with limited cars for mobile
+  // Initial load with limited cars
   useEffect(() => {
-    const queryParams = new URLSearchParams();
-    if (isMobile) {
-      queryParams.set('limit', '2');
-      queryParams.set('mobile', 'true');
-    }
-    dispatch(fetchCars(queryParams.toString()));
-  }, [isMobile, dispatch]);
+    const initialLoad = async () => {
+      try {
+        // Fetch initial cars with limit
+        const queryParams = new URLSearchParams();
+        queryParams.set('limit', isMobile ? '1' : '4');
+        queryParams.set('mobile', 'true');
+        await dispatch(fetchCars(queryParams.toString()));
+      } catch (error) {
+        console.error('Error during initial load:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initialLoad();
+  }, [dispatch, isMobile]);
 
-  // Load remaining cars after initial render on mobile
+  // Load remaining cars after initial render
   useEffect(() => {
-    if (isMobile && !hasLoadedAllCars) {
-      const timer = setTimeout(() => {
-        dispatch(fetchCars());
-        setHasLoadedAllCars(true);
-      }, 2000);
-      return () => clearTimeout(timer);
+    if (!isLoading && !hasLoadedAllCars) {
+      dispatch(fetchCars());
+      setHasLoadedAllCars(true);
     }
-  }, [isMobile, hasLoadedAllCars, dispatch]);
+  }, [isLoading, hasLoadedAllCars, dispatch]);
 
   if (loading && !cars.length) {
     return <div>Loading...</div>;

@@ -69,7 +69,7 @@ function Main() {
 
         // Fetch initial cars with limit
         const queryParams = new URLSearchParams();
-        queryParams.set('limit', isMobile ? '2' : '4');
+        queryParams.set('limit', isMobile ? '1' : '4');
         queryParams.set('mobile', 'true');
         await dispatch(fetchCars(queryParams.toString()));
       } catch (error) {
@@ -85,14 +85,11 @@ function Main() {
   // Load remaining cars after initial render
   useEffect(() => {
     if (!isLoading && !hasLoadedAllCars) {
-      const timer = setTimeout(() => {
-        dispatch(fetchCars());
-        setHasLoadedAllCars(true);
-      }, 2000); // Delay loading remaining cars by 2 seconds
-
-      return () => clearTimeout(timer);
+      dispatch(fetchCars());
+      setHasLoadedAllCars(true);
     }
   }, [isLoading, hasLoadedAllCars, dispatch]);
+
 
   if (isLoading) {
     return <div className="loading-container">Loading...</div>;
