@@ -109,7 +109,7 @@ function Buscador() {
     <Helmet>
       <link 
         rel="preload" 
-        href="assets/images/entrada_marco_blanco_repellado.webp" 
+        href={backGround}
         as="image" 
         type="image/webp"
         fetchpriority="high"

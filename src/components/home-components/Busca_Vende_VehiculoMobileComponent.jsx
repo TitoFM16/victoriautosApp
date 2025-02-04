@@ -108,7 +108,7 @@ function BuscadorMobile() {
       <Helmet>
         <link 
           rel="preload" 
-          href="assets/images/vehiculos_aereo.webp" 
+          href={backGround}
           as="image" 
           type="image/webp"
           fetchpriority="high"
