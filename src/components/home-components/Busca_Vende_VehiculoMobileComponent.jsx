@@ -45,6 +45,7 @@ function BuscadorMobile() {
   // Handle input changes for the "comprar" form
   function handleInputChange(event) {
     const { name, value } = event.target;
+    
     if (name === 'tipo') {
       setTipo(value);
       setMarca('');

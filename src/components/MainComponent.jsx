@@ -94,7 +94,7 @@ function Main() {
 
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>;
+    return <LoadingComponent/>;
   }
 
   const CarWithId = () => {
