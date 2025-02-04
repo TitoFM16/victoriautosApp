@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import SearchIcon from '../../assets/icons/search_icon.svg';
 
-import backgroundImage from '../../assets/images/vehiculos_aereo.webp';
 
 
 // Lazy-load the mobile vender form
@@ -30,18 +29,6 @@ function BuscadorMobile() {
   const navigate = useNavigate();
   const cars = useSelector((state) => state.cars.cars);
 
-  // Prefetch all marcas on mount
-  useEffect(() => {
-    // Using setTimeout to defer the API call slightly
-    const timer = setTimeout(() => {
-      axios.get('/api/buscavehiculo/?tipo=all')
-        .then(response => setMarcaDropdown(response.data))
-        .catch(error => console.error('Error prefetching marcas:', error));
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Memoize sorted options for the "comprar" form
   const sortedMarcaOptions = useMemo(() => {
     return [...marcaDropdown].sort((a, b) => a.marca.localeCompare(b.marca));
@@ -62,10 +49,15 @@ function BuscadorMobile() {
       setTipo(value);
       setMarca('');
       setLinea('');
-      axios
-        .get(`/api/buscavehiculo/?tipo=${value}`)
-        .then((response) => setMarcaDropdown(response.data))
-        .catch((error) => console.error(error));
+      // Only fetch marcas when tipo is selected
+      if (value) {
+        axios
+          .get(`/api/buscavehiculo/?tipo=${value}`)
+          .then((response) => setMarcaDropdown(response.data))
+          .catch((error) => console.error(error));
+      } else {
+        setMarcaDropdown([]); // Clear marcas if no tipo selected
+      }
     }
     if (name === 'marca') {
       setMarca(value);

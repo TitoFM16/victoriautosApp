@@ -24,19 +24,6 @@ function Buscador() {
   const navigate = useNavigate();
   const cars = useSelector(state => state.cars.cars);
 
-  // Prefetch all marcas on mount
-  useEffect(() => {
-    // Using setTimeout to defer the API call slightly
-    const timer = setTimeout(() => {
-      axios.get('/api/buscavehiculo/?tipo=all')
-        .then(response => setMarcaDropdown(response.data))
-        .catch(error => console.error('Error prefetching marcas:', error));
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
-    
-
   // Memoize sorted options for "marca" and "linea" to avoid re-sorting on every render
   const sortedMarcaOptions = useMemo(() => {
     return [...marcaDropdown]
@@ -87,14 +74,20 @@ function Buscador() {
   // Handle input changes for the "comprar" form
   function handleInputChange(event) {
     const { name, value } = event.target;
-
+       
     if (name === 'tipo') {
       setTipo(value);
       setMarca('');
       setLinea('');
-      axios.get(`/api/buscavehiculo/?tipo=${value}`)
-        .then(response => setMarcaDropdown(response.data))
-        .catch(error => console.error(error));
+      // Only fetch marcas when tipo is selected
+      if (value) {
+        axios
+          .get(`/api/buscavehiculo/?tipo=${value}`)
+          .then((response) => setMarcaDropdown(response.data))
+          .catch((error) => console.error(error));
+      } else {
+        setMarcaDropdown([]); // Clear marcas if no tipo selected
+      }
     }
     if (name === 'marca') {
       setMarca(value);
