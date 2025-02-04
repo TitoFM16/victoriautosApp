@@ -4,6 +4,7 @@ import BuscadorMobile from './Busca_Vende_VehiculoMobileComponent';
 import CarCarousel from "./CarCarouselComponent";
 
 const InvitaVenta = React.lazy(() => import('./InvitaVentaComponent'));
+const LoadingComponent = React.lazy(() => import('../shared/loadingComponent'));
 import Separator from "./SeparatorComponent";
 
 function BuscadorWrapper() {
@@ -27,7 +28,7 @@ function Home() {
             <BuscadorWrapper />
             <CarCarousel />
             <Separator />
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<LoadingComponent/>}>
                 <InvitaVenta />
             </Suspense>
         </div>

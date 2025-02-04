@@ -1,8 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Card, Breadcrumb, BreadcrumbItem, CardBody } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import filterIcon from '../../assets/icons/filters.svg';
 import PropTypes from 'prop-types';
+import LoadingComponent from '../shared/loadingComponent';
+
+// Lazy load the filter components
+const Filters = lazy(() => import('./Filters'));
+const MobileFilters = lazy(() => import('./MobileFilters'));
 
 function formatMoney(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -40,187 +45,6 @@ RenderVitrinaItem.propTypes = {
     modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     price: PropTypes.number.isRequired
   }).isRequired
-};
-
-const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleClearFilters }) => {
-  return (
-    <div className="col-2">
-      <div className="row">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5>Filtros</h5>
-            <button 
-              className="btn btn-sm btn-outline-secondary"
-              onClick={handleClearFilters}
-            >
-              Limpiar filtros
-            </button>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <label htmlFor="marca">Marca</label>
-              <select
-                className="form-control"
-                name="marca"
-                id="marca"
-                value={filter.marca}
-                onChange={handleFilter}
-              >
-                <option value="">Todas</option>
-                {distinctValues(filteredCars, "marca")
-                  .sort()
-                  .map((marca) => (
-                    <option key={marca} value={marca}>
-                      {marca}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="linea">Linea</label>
-              <select
-                className="form-control"
-                name="linea"
-                id="linea"
-                onChange={handleFilter}
-              >
-                <option value="">Todas</option>
-                {distinctValues(filteredCars, "linea")
-                  .sort()
-                  .map((linea) => (
-                    <option key={linea} value={linea}>
-                      {linea}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="modelo">Modelo</label>
-              <select
-                className="form-control"
-                name="modelo"
-                id="modelo"
-                onChange={handleFilter}
-              >
-                <option value={0}>Todos</option>
-                {distinctValues(filteredCars, "modelo")
-                  .sort()
-                  .map((modelo) => (
-                    <option key={modelo} value={modelo}>
-                      {modelo}
-                    </option>
-                  ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-Filters.propTypes = {
-  filter: PropTypes.shape({
-    marca: PropTypes.string,
-    linea: PropTypes.string,
-    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  }).isRequired,
-  handleFilter: PropTypes.func.isRequired,
-  distinctValues: PropTypes.func.isRequired,
-  filteredCars: PropTypes.array.isRequired,
-  handleClearFilters: PropTypes.func.isRequired
-};
-
-const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isOpen, onClose, handleClearFilters }) => {
-  return (
-    <div className={`mobile-filter-drawer ${isOpen ? 'open' : ''}`}>
-      <div className="mobile-filter-header">
-        <h5>Filtros</h5>
-        <div>
-          <button 
-            className="btn btn-sm btn-outline-secondary me-2"
-            onClick={handleClearFilters}
-          >
-            Limpiar
-          </button>
-          <button className="close-button" onClick={onClose}>×</button>
-        </div>
-      </div>
-      <div className="mobile-filter-content">
-        <div className="filter-group">
-          <label htmlFor="marca">Marca</label>
-          <select
-            className="form-control"
-            name="marca"
-            id="marca"
-            value={filter.marca}
-            onChange={handleFilter}
-          >
-            <option value="">Todas</option>
-            {distinctValues(filteredCars, "marca")
-              .sort()
-              .map((marca) => (
-                <option key={marca} value={marca}>
-                  {marca}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label htmlFor="linea">Linea</label>
-          <select
-            className="form-control"
-            name="linea"
-            id="linea"
-            value={filter.linea}
-            onChange={handleFilter}
-          >
-            <option value="">Todas</option>
-            {distinctValues(filteredCars, "linea")
-              .sort()
-              .map((linea) => (
-                <option key={linea} value={linea}>
-                  {linea}
-                </option>
-              ))}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label htmlFor="modelo">Modelo</label>
-          <select
-            className="form-control"
-            name="modelo"
-            id="modelo"
-            value={filter.modelo}
-            onChange={handleFilter}
-          >
-            <option value={0}>Todos</option>
-            {distinctValues(filteredCars, "modelo")
-              .sort()
-              .map((modelo) => (
-                <option key={modelo} value={modelo}>
-                  {modelo}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-MobileFilters.propTypes = {
-  filter: PropTypes.shape({
-    marca: PropTypes.string,
-    linea: PropTypes.string,
-    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  }).isRequired,
-  handleFilter: PropTypes.func.isRequired,
-  distinctValues: PropTypes.func.isRequired,
-  filteredCars: PropTypes.array.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  handleClearFilters: PropTypes.func.isRequired
 };
 
 const Vitrina = ({ cars }) => {
@@ -336,8 +160,8 @@ const Vitrina = ({ cars }) => {
         </div>
       </div>
       <div className="row">
-        {isMobile ? (
-          <>
+        <Suspense fallback={<LoadingComponent/>}>
+          {isMobile ? (
             <MobileFilters
               filter={filter}
               handleFilter={handleFilter}
@@ -347,16 +171,16 @@ const Vitrina = ({ cars }) => {
               onClose={() => setIsFilterOpen(false)}
               handleClearFilters={handleClearFilters}
             />
-          </>
-        ) : (
-          <Filters
-            filter={filter}
-            handleFilter={handleFilter}
-            distinctValues={distinctValues}
-            filteredCars={filteredCars}
-            handleClearFilters={handleClearFilters}
-          />
-        )}
+          ) : (
+            <Filters
+              filter={filter}
+              handleFilter={handleFilter}
+              distinctValues={distinctValues}
+              filteredCars={filteredCars}
+              handleClearFilters={handleClearFilters}
+            />
+          )}
+        </Suspense>
         <div className={isMobile ? "col-12" : "col-10"}>
           <div className="row">{vitrina}</div>
         </div>

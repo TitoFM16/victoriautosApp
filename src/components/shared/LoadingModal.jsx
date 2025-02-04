@@ -11,7 +11,7 @@ const LoadingModal = ({ show, status, onClose }) => {
                         {status === 'loading' && (
                             <>
                                 <div className="spinner-border text-primary mb-3" role="status">
-                                    <span className="visually-hidden">Loading...</span>
+                                    <span className="visually-hidden"></span>
                                 </div>
                                 <p className="mb-0">Enviando información, un momento por favor...</p>
                             </>

@@ -21,7 +21,9 @@ const CarDetailComponent = React.lazy(() => import('./vitrina-components/Cardeta
 
 import Header from './HeaderComponent';
 import Home from './home-components/HomeComponent';
-import Footer from './FooterComponent';
+const Footer = React.lazy(() => import('./FooterComponent'));
+
+const LoadingComponent = React.lazy(() => import('./shared/loadingComponent'));
 
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const InteresFormComponent = React.lazy(() => import('./InteresFormComponent'));
@@ -152,7 +154,7 @@ function Main() {
             exact
             path="/vitrina"
             element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingComponent/>}>
                 <motion.div
                   key="vitrina"
                   initial={{ opacity: 0 }}
@@ -190,7 +192,7 @@ function Main() {
           <Route
             path="/vende"
             element={
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<LoadingComponent/>}>
                 <motion.div
                   key="vende"
                 initial={{ opacity: 0 }}
@@ -229,7 +231,7 @@ function Main() {
             path="/admin"
             element={
               <Protected isAuth={authenticated}>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingComponent/>}>
                   <motion.div
                     key="admin"
                     initial={{ opacity: 0 }}
@@ -245,7 +247,7 @@ function Main() {
             <Route
               path="home"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingComponent/>}>
                   <motion.div
                     key="home"
                     initial={{ opacity: 0 }}
@@ -261,7 +263,7 @@ function Main() {
               path="negocios"
               element={
                 <Protected isAuth={authenticated}>
-                  <Suspense fallback={<div>Loading...</div>}>                    
+                  <Suspense fallback={<LoadingComponent/>}>                    
                     <motion.div
                       key="negocios"
                       initial={{ opacity: 0 }}
@@ -278,7 +280,7 @@ function Main() {
               path="buscado"
               element={
                 <Protected isAuth={authenticated}>
-                  <Suspense fallback={<div>Loading...</div>}>
+                  <Suspense fallback={<LoadingComponent/>}>
                     <motion.div
                       key="buscado"
                       initial={{ opacity: 0 }}
@@ -294,7 +296,7 @@ function Main() {
             <Route
               path="ofertas"
               element={
-                <Suspense fallback={<div>Loading...</div>}>                  
+                <Suspense fallback={<LoadingComponent/>}>                  
                   <motion.div
                     key="ofertas"
                     initial={{ opacity: 0 }}
@@ -309,7 +311,7 @@ function Main() {
             <Route
               path="ofertas/:ofertaId"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingComponent/>}>
                   <motion.div
                     key="oferta"
                     initial={{ opacity: 0 }}
@@ -324,7 +326,7 @@ function Main() {
             <Route
               path="tramites"
               element={
-                <Suspense fallback={<div>Loading...</div>}>                  
+                <Suspense fallback={<LoadingComponent/>}>                  
                   <motion.div
                     key="tramites"
                     initial={{ opacity: 0 }}
@@ -339,7 +341,7 @@ function Main() {
             <Route
               path="vitrina"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingComponent/>}>
                   <motion.div
                     key="vitrina"
                     initial={{ opacity: 0 }}
@@ -354,7 +356,7 @@ function Main() {
             <Route
               path="vitrina/:carId"
               element={
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<LoadingComponent/>}>
                   <motion.div
                     key="car"
                     initial={{ opacity: 0 }}
@@ -387,7 +389,7 @@ function Main() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </AnimatePresence>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingComponent/>}>
         <Footer />
       </Suspense>
     </div>
