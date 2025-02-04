@@ -41,7 +41,7 @@ function VenderForm() {
   return (
     <form className="container web-busca-form" onSubmit={handleVenderSubmit}>
       <div className='form-group row'>
-        <div className='col-6'>
+        <div className='col-12 col-md-6'>
           <label className="web-form-label" htmlFor='venderMarca'>Marca</label>
           <select
             className='form-control'
@@ -60,7 +60,7 @@ function VenderForm() {
             ))}
           </select>
         </div>
-        <div className='col-6'>
+        <div className='col-12 col-md-6'>
           <label className="web-form-label" htmlFor='venderLinea'>Línea</label>
           <select
             className='form-control'
@@ -80,7 +80,7 @@ function VenderForm() {
             })}
           </select>
         </div>
-        <div className='col-6'>
+        <div className='col-12 col-md-6'>
           <label className="web-form-label" htmlFor='venderModelo'>Modelo</label>
           <input
             type="text"
@@ -91,7 +91,7 @@ function VenderForm() {
             placeholder="Ingrese el modelo"
           />
         </div>
-        <div className='col-6'>
+        <div className='col-12 col-md-6'>
           <label className="web-form-label" htmlFor='venderKilometraje'>Kilometraje</label>
           <input
             type="number"

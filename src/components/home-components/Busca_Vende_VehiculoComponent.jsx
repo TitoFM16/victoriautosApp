@@ -7,6 +7,8 @@ import SearchIcon from '../../assets/icons/search_icon.svg';
 import { Helmet } from 'react-helmet-async';
 
 import backGround from '../../assets/images/entrada_marco_blanco_repellado.webp';
+import backGroundMobile from '../../assets/images/vehiculos_aereo.webp';
+
 // Lazy load the vender tab component
 const VenderForm = React.lazy(() => import('./VenderForm'));
 
@@ -109,23 +111,25 @@ function Buscador() {
     <Helmet>
       <link 
         rel="preload" 
-        href={backGround}
+        href={backGroundMobile}
         as="image" 
         type="image/webp"
         fetchpriority="high"
       />
     </Helmet>
+    
     <div className='container-fluid d-block buscaStyle'
-        style={{ backgroundImage: `url(${backGround})` }}
+        style={{backgroundImage: `url(${window.innerWidth <= 768 ? backGroundMobile : backGround})`
+      }}
     >
       <div className="row">
         <HeroBanner
           topText="Encuentra tu"
           highlightText="Usado ideal"
-          isBanner={true}
+          
         />
 
-        <div style={{ position: 'absolute', top: '70%' }}>
+        <div className='compra-venta-container'>
           <div className="container">
             {/* Tab Navigation */}
             <div className="d-flex justify-content-start mb-0">
@@ -149,7 +153,7 @@ function Buscador() {
             {activeTab === 'comprar' ? (
               <form className="container web-busca-form" onSubmit={handleSubmit}>
                 <div className='form-group row'>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='tipo'>Tipo</label>
                     <select
                       className='form-control'
@@ -172,7 +176,7 @@ function Buscador() {
                       <option value='VAN'>Van</option>
                     </select>
                   </div>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='marca'>Marca</label>
                     <select
                       className='form-control'
@@ -189,7 +193,7 @@ function Buscador() {
                       ))}
                     </select>
                   </div>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='linea'>Linea</label>
                     <select
                       className='form-control'
@@ -209,7 +213,7 @@ function Buscador() {
                       })}
                     </select>
                   </div>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='modelo'>Modelo</label>
                     {modelo === 'otro' ? (
                       <input
@@ -246,7 +250,7 @@ function Buscador() {
                       </select>
                     )}
                   </div>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='precio'>Precio</label>
                     <select
                       className='form-control'
@@ -279,7 +283,7 @@ function Buscador() {
                       <option value='0'>Cualquiera</option>
                     </select>
                   </div>
-                  <div className='col-4'>
+                  <div className='col-12 col-md-4'>
                     <label className="web-form-label" htmlFor='kilometraje'>Kilometraje</label>
                     <select
                       className='form-control'

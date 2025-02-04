@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import './HeroBanner.css';
 
-const HeroBanner = ({ topText, highlightText, isBanner = false }) => {
+const HeroBanner = ({ topText, highlightText }) => {
 
   return (
     <div className="hero-banner">
