@@ -26,9 +26,6 @@ function BuscadorMobile() {
   const [km, setKm] = useState("");
   const [currentYear] = useState(new Date().getFullYear() + 1);
 
-  // States for the "vender" form (if you need to keep them here; they will not be used in the lazy-loaded vender form)
-  // (For mobile, we now delegate the vender form to its own component)
-
   const navigate = useNavigate();
   const cars = useSelector((state) => state.cars.cars);
 

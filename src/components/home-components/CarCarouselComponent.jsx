@@ -1,10 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
-import HeroBanner from "./HeroBanner";
+import TitleBanner from "./TitleBanner";
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { fetchCars } from '../../redux/actions/carsActions';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -23,7 +21,7 @@ function CarCarousel() {
   return (
     <div className="car-carousel py-2">
       <div className="carousel-header">
-        <HeroBanner 
+        <TitleBanner 
           topText="Ultimos"
           highlightText="Vehículos"
           isBanner={false}
