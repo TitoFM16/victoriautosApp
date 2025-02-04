@@ -10,10 +10,8 @@ export const fetchCars = (queryParams) => async (dispatch) => {
       credentials: 'include', // Include credentials (cookies, etc.)
     };
 
-    // Construct the URL
-    const url = queryParams 
-      ? `/api/cars?${queryParams}` 
-      : `/api/cars`;
+    // Construct the URL with query parameters
+    const url = queryParams ? `/api/cars?${queryParams}` : '/api/cars';
 
     // Make the fetch request with credentials
     const response = await fetch(url, options);

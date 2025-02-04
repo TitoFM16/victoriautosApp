@@ -1,8 +1,10 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import HeroBanner from "./HeroBanner";
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { fetchCars } from '../../redux/actions/carsActions';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -15,11 +17,43 @@ function formatMoney(x) {
 const imagePath = "/images/vehiculos/";
 
 function CarCarousel() {
+  const dispatch = useDispatch();
   const cars = useSelector(state => state.cars.cars);
   const loading = useSelector(state => state.cars.loading);
   const error = useSelector(state => state.cars.error);
-  
-  if (loading) {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [hasLoadedAllCars, setHasLoadedAllCars] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Initial load with limited cars for mobile
+  useEffect(() => {
+    const queryParams = new URLSearchParams();
+    if (isMobile) {
+      queryParams.set('limit', '2');
+      queryParams.set('mobile', 'true');
+    }
+    dispatch(fetchCars(queryParams.toString()));
+  }, [isMobile, dispatch]);
+
+  // Load remaining cars after initial render on mobile
+  useEffect(() => {
+    if (isMobile && !hasLoadedAllCars) {
+      const timer = setTimeout(() => {
+        dispatch(fetchCars());
+        setHasLoadedAllCars(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isMobile, hasLoadedAllCars, dispatch]);
+
+  if (loading && !cars.length) {
     return <div>Loading...</div>;
   }
 

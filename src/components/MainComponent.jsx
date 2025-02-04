@@ -21,7 +21,7 @@ const CarDetailComponent = React.lazy(() => import('./vitrina-components/Cardeta
 
 import Header from './HeaderComponent';
 import Home from './home-components/HomeComponent';
-const Footer = React.lazy(() => import('./FooterComponent'));
+import Footer from './FooterComponent';
 
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const InteresFormComponent = React.lazy(() => import('./InteresFormComponent'));
