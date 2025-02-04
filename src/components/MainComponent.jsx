@@ -39,25 +39,60 @@ function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [hasLoadedAllCars, setHasLoadedAllCars] = useState(false);
   const authenticated = useSelector((state) => state.auth.authenticated);
   const cars = useSelector((state) => state.cars.cars);
   const ofertas = useSelector((state) => state.ofertas.ofertas);
   const dispatch = useDispatch();
 
+  // Handle window resize
   useEffect(() => {
-    Promise.all([
-      checkIfAuthenticated().then((isAuthenticated) => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Initial load with limited cars
+  useEffect(() => {
+    const initialLoad = async () => {
+      try {
+        // Check authentication
+        const isAuthenticated = await checkIfAuthenticated();
         if (isAuthenticated) {
           dispatch(setAuthenticated(true));
         } else if (isAdminRoute) {
           dispatch(setAuthenticated(false));
         }
-      }),
-      dispatch(fetchCars())
-    ]).finally(() => {
-      setIsLoading(false);
-    });
-  }, []);
+
+        // Fetch initial cars with limit
+        const queryParams = new URLSearchParams();
+        queryParams.set('limit', isMobile ? '2' : '4');
+        queryParams.set('mobile', 'true');
+        await dispatch(fetchCars(queryParams.toString()));
+      } catch (error) {
+        console.error('Error during initial load:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initialLoad();
+  }, [dispatch, isAdminRoute, isMobile]);
+
+  // Load remaining cars after initial render
+  useEffect(() => {
+    if (!isLoading && !hasLoadedAllCars) {
+      const timer = setTimeout(() => {
+        dispatch(fetchCars());
+        setHasLoadedAllCars(true);
+      }, 2000); // Delay loading remaining cars by 2 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, hasLoadedAllCars, dispatch]);
 
   if (isLoading) {
     return <div className="loading-container">Loading...</div>;
