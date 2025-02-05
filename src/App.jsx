@@ -1,4 +1,5 @@
 import Main from './components/MainComponent';
+import ScrollToTop from './components/ScrollToTopComponent';
 import './App.css';
 import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -12,7 +13,8 @@ function App() {
       <HelmetProvider>
         <Provider store={store}>  
           <BrowserRouter>
-              <Main />
+            <ScrollToTop />
+            <Main />
           </BrowserRouter>
         </Provider>
       </HelmetProvider>
