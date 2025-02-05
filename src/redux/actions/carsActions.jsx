@@ -1,6 +1,6 @@
 import { fetchCarsStart, fetchCarsSuccess, fetchCarsFailure } from '../slices/carsSlice';
 
-export const fetchCars = (queryParams) => async (dispatch) => {
+export const fetchCars = (queryParams, limit) => async (dispatch) => {
   try {
     dispatch(fetchCarsStart());
 
@@ -10,8 +10,9 @@ export const fetchCars = (queryParams) => async (dispatch) => {
       credentials: 'include', // Include credentials (cookies, etc.)
     };
 
-    // Construct the URL with query parameters
-    const url = queryParams ? `/api/cars?${queryParams}` : '/api/cars';
+    // Construct the URL with limit parameter if provided
+    const baseUrl = queryParams ? `/api/cars?${queryParams}` : '/api/cars';
+    const url = limit ? `${baseUrl}${queryParams ? '&' : '?'}limit=${limit}` : baseUrl;
 
     // Make the fetch request with credentials
     const response = await fetch(url, options);

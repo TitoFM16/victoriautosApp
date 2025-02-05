@@ -50,11 +50,9 @@ function Main() {
   useEffect(() => {
     const initialLoad = async () => {
       try {
-        const isAuthenticated = await checkIfAuthenticated();
-        if (isAuthenticated) {
-          dispatch(setAuthenticated(true));
-        } else if (isAdminRoute) {
-          dispatch(setAuthenticated(false));
+        if (isAdminRoute) {
+          const isAuthenticated = await checkIfAuthenticated();
+          dispatch(setAuthenticated(isAuthenticated));
         }
         await dispatch(fetchCars());
       } catch (error) {
