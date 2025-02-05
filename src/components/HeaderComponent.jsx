@@ -45,7 +45,7 @@ class Header extends React.Component {
               <div className={`collapse navbar-collapse ${this.state.isOpen ? 'show' : ''}`}>
                 <ul className="navbar-nav ms-auto">
                   <li className="nav-item">
-                    <NavLink className="nav-link" to="/home" onClick={this.toggle}>
+                    <NavLink className="nav-link" to="/" onClick={this.toggle}>
                       Inicio
                     </NavLink>
                   </li>

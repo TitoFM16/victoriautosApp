@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import purgecss from '@mojojoejo/vite-plugin-purgecss'; // Import the plugin
-
+import Inspect from 'vite-plugin-inspect'
 
 const SCSS_Logger = {
   warn(message, options) {
@@ -44,7 +44,8 @@ export default defineConfig({
         'highlight-container-as-title',
         'highlight-text-as-title'
       ]
-    })
+    }),
+    Inspect() 
   ],
   css: {
     preprocessorOptions: {
@@ -59,7 +60,7 @@ export default defineConfig({
         manualChunks: {
           'vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui': ['reactstrap', 'bootstrap'],
-          'animations': ['framer-motion'],
+          'animations': ['framer-motion/dist/framer-motion'],
         }
       }
     },
