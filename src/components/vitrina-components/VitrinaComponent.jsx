@@ -61,6 +61,7 @@ const Vitrina = ({ cars }) => {
   
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const handleFilter = (event) => {
     const { name, value } = event.target;
@@ -138,6 +139,20 @@ const Vitrina = ({ cars }) => {
     window.history.pushState({}, '', window.location.pathname);
   };
 
+  // Add loading indicator at the bottom of the vitrina
+  const renderLoadingMore = () => {
+    if (isLoadingMore) {
+      return (
+        <div className="col-12 text-center py-3">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading more cars...</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="container vitrina">
       <div className="row">
@@ -183,6 +198,7 @@ const Vitrina = ({ cars }) => {
         </Suspense>
         <div className={isMobile ? "col-12" : "col-10"}>
           <div className="row">{vitrina}</div>
+          {renderLoadingMore()}
         </div>
       </div>
     </div>

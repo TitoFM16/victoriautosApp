@@ -43,27 +43,36 @@ function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const [isLoading, setIsLoading] = useState(true);
+  const [hasLoadedInitialCars, setHasLoadedInitialCars] = useState(false);
   const authenticated = useSelector((state) => state.auth.authenticated);
   const cars = useSelector((state) => state.cars.cars);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const initialLoad = async () => {
+    const loadData = async () => {
       try {
         if (isAdminRoute) {
           const isAuthenticated = await checkIfAuthenticated();
           dispatch(setAuthenticated(isAuthenticated));
         }
-        await dispatch(fetchCars());
+
+        // Load initial cars if not loaded yet
+        if (!hasLoadedInitialCars) {
+          await dispatch(fetchCars(null, 4));
+          setHasLoadedInitialCars(true);
+          
+          // Load remaining cars after initial load
+          await dispatch(fetchCars());
+        }
       } catch (error) {
-        console.error('Error during initial load:', error);
+        console.error('Error during load:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    initialLoad();
-  }, [dispatch, isAdminRoute]);
+    loadData();
+  }, [dispatch, isAdminRoute, hasLoadedInitialCars]);
 
   if (isLoading) return <LoadingComponent />;
 
