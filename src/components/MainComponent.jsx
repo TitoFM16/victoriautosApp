@@ -41,21 +41,12 @@ function Main() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
   const [isLoading, setIsLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [hasLoadedAllCars, setHasLoadedAllCars] = useState(false);
   const authenticated = useSelector((state) => state.auth.authenticated);
   const cars = useSelector((state) => state.cars.cars);
   const ofertas = useSelector((state) => state.ofertas.ofertas);
   const dispatch = useDispatch();
 
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Initial load with limited cars
   useEffect(() => {
@@ -71,8 +62,8 @@ function Main() {
 
         // Fetch initial cars with limit
         const queryParams = new URLSearchParams();
-        queryParams.set('limit', isMobile ? '1' : '4');
-        queryParams.set('mobile', 'true');
+        queryParams.set('limit',  '1' );
+        
         await dispatch(fetchCars(queryParams.toString()));
       } catch (error) {
         console.error('Error during initial load:', error);
@@ -82,7 +73,7 @@ function Main() {
     };
 
     initialLoad();
-  }, [dispatch, isAdminRoute, isMobile]);
+  }, [dispatch, isAdminRoute]);
 
   // Load remaining cars after initial render
   useEffect(() => {
