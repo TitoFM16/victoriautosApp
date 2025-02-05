@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
-import { Helmet } from 'react-helmet-async';
 
 import backGround from '../../assets/images/entrada_marco_blanco_repellado.webp';
 import backGroundMobile from '../../assets/images/vehiculos_aereo.webp';
@@ -27,6 +26,41 @@ function Buscador() {
 
   const navigate = useNavigate();
   const cars = useSelector(state => state.cars.cars);
+
+  // Add state for background image loading
+  const [isMobileImageLoaded, setIsMobileImageLoaded] = useState(true);
+  const [isDesktopImageLoaded, setIsDesktopImageLoaded] = useState(true);
+
+  useEffect(() => {
+    // Verify preloaded images are in cache
+    const checkPreloadedImages = async () => {
+      try {
+        const mobileImg = new Image();
+        const desktopImg = new Image();
+        
+        mobileImg.src = backGroundMobile;
+        desktopImg.src = backGround;
+
+        await Promise.all([
+          new Promise(resolve => {
+            mobileImg.onload = resolve;
+            if (mobileImg.complete) resolve();
+          }),
+          new Promise(resolve => {
+            desktopImg.onload = resolve;
+            if (desktopImg.complete) resolve();
+          })
+        ]);
+
+        setIsMobileImageLoaded(true);
+        setIsDesktopImageLoaded(true);
+      } catch (error) {
+        console.error('Error loading images:', error);
+      }
+    };
+
+    checkPreloadedImages();
+  }, []);
 
   // Memoize sorted options for "marca" and "linea" to avoid re-sorting on every render
   const sortedMarcaOptions = useMemo(() => {
@@ -118,56 +152,56 @@ function Buscador() {
 
   return (
     <>
-    <Helmet>
-      <link 
-        rel="preload" 
-        href={backGroundMobile}
-        as="image" 
-        type="image/webp"
-        fetchpriority="high"
-      />
-    </Helmet>
-
-    <div className='container-fluid d-block buscaStyle d-block d-md-none'
-        style={{backgroundImage: `url(${backGroundMobile})`}}
+      <div 
+        className='container-fluid d-block buscaStyle d-block d-md-none'
+        style={{
+          backgroundColor: '#f5f5f5',
+          backgroundImage: `url(${backGroundMobile})`,
+          opacity: isMobileImageLoaded ? 1 : 0,
+          transition: 'opacity 0.3s ease-in'
+        }}
       >
         <Suspense fallback={<LoadingComponent/>}>
-        <FormContainer
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          handleSubmit={handleSubmit}
-          handleInputChange={handleInputChange}
-          formData={formData}
-          setModeloInput={setModeloInput}
-          setModelo={setModelo}
-          setPrice={setPrice}
-          setKm={setKm}
-          sortedMarcaOptions={sortedMarcaOptions}
-          sortedLineaOptions={sortedLineaOptions}
-          
+          <FormContainer
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            formData={formData}
+            setModeloInput={setModeloInput}
+            setModelo={setModelo}
+            setPrice={setPrice}
+            setKm={setKm}
+            sortedMarcaOptions={sortedMarcaOptions}
+            sortedLineaOptions={sortedLineaOptions}
           />
         </Suspense>
-    </div>
-    <div className='container-fluid d-block buscaStyle d-none d-md-block'
-        style={{backgroundImage: `url(${backGround})`}}
+      </div>
+      <div 
+        className='container-fluid d-block buscaStyle d-none d-md-block'
+        style={{
+          backgroundColor: '#f5f5f5',
+          backgroundImage: `url(${backGround})`,
+          opacity: isDesktopImageLoaded ? 1 : 0,
+          transition: 'opacity 0.3s ease-in'
+        }}
       >
         <Suspense fallback={<LoadingComponent/>}>
-        <FormContainer
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          handleSubmit={handleSubmit}
-          handleInputChange={handleInputChange}
-          formData={formData}
-          setModeloInput={setModeloInput}
-          setModelo={setModelo}
-          setPrice={setPrice}
-          setKm={setKm}
-          sortedMarcaOptions={sortedMarcaOptions}
-          sortedLineaOptions={sortedLineaOptions}
-          
+          <FormContainer
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            handleSubmit={handleSubmit}
+            handleInputChange={handleInputChange}
+            formData={formData}
+            setModeloInput={setModeloInput}
+            setModelo={setModelo}
+            setPrice={setPrice}
+            setKm={setKm}
+            sortedMarcaOptions={sortedMarcaOptions}
+            sortedLineaOptions={sortedLineaOptions}
           />
         </Suspense>
-    </div>
+      </div>
     </>
   );
 }

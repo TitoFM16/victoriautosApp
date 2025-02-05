@@ -152,7 +152,9 @@ div.step-circle.active{
   position: relative;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center !important;
+  background-position: center;
+  will-change: background-image;
+  contain: layout style paint;
 
   height: 100vh;
   min-height: 150vh; /* If you need it for specific designs */
