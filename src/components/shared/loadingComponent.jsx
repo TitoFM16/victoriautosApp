@@ -1,7 +1,15 @@
 function LoadingComponent() {
     return (
-        <div className="spinner-border text-primary" role="status"  >
-            <span className="visually-hidden"></span>
+        <div style={{ 
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            width: '100%'
+        }}>
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden"></span>
+            </div>
         </div>
     );
 }

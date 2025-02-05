@@ -7,7 +7,8 @@ import { checkIfAuthenticated } from '../services/checkAuth';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoadingComponent from './shared/loadingComponent';
 
-const Header = React.lazy(() => import('./HeaderComponent'));
+import Header from './HeaderComponent';
+
 const Footer = React.lazy(() => import('./FooterComponent'));
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const AdminRoutes = React.lazy(() => import('../routes/AdminRoutes'));

@@ -60,7 +60,7 @@ export default defineConfig({
         manualChunks: {
           'vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui': ['reactstrap', 'bootstrap'],
-          'animations': ['framer-motion/dist/framer-motion'],
+          'animations': ['framer-motion'],
         }
       }
     },
