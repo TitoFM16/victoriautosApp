@@ -85,8 +85,13 @@ function CarCarousel() {
         </Swiper>
 
         <div className="container d-flex justify-content-center py-4" role="group" aria-label="Basic example">
-          <button type="button" className="btn submit-button">
-            <Link to="/vitrina" style={{textDecoration:"none",color:"white"}}>Ver Más</Link>
+          <button 
+            type="button" 
+            className="btn submit-button"
+            onClick={() => window.location.href = "/vitrina"}
+            style={{color: "white"}}
+          >
+            Ver Más
           </button>
         </div>
       </div>
