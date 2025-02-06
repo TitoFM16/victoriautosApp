@@ -122,7 +122,7 @@ const Vitrina = ({ cars }) => {
   });
 
   const vitrina = filteredCars.map((car) => (
-    <div key={car.id} id="cars" className="col-12 col-md-4 py-2">
+    <div key={car._id} id="cars" className="col-12 col-md-4 py-2">
       <RenderVitrinaItem car={car} />
     </div>
   ));
