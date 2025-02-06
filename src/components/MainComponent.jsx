@@ -9,7 +9,7 @@ import LoadingComponent from './shared/loadingComponent';
 
 import Header from './HeaderComponent';
 
-const Footer = React.lazy(() => import('./FooterComponent'));
+import Footer from './FooterComponent';
 const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
 const AdminRoutes = React.lazy(() => import('../routes/AdminRoutes'));
 const ClientRoutes = React.lazy(() => import('../routes/ClientRoutes'));

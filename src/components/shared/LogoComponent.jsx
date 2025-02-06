@@ -70,4 +70,4 @@ const LogoComponent = ({ className = '', size = 256 }) => (
   </svg>
 );
 
-export default LogoComponent;
+export default React.memo(LogoComponent);

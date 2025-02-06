@@ -122,6 +122,7 @@ div.step-circle.active{
   min-height: 65px;
   contain: layout style paint;
   will-change: transform;
+  content-visibility: auto;
 }
 
 .navbar-brand {
@@ -135,6 +136,12 @@ div.step-circle.active{
   margin-right: 8px;
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+.navbar-brand svg {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 .navbar-page .nav-link {
@@ -588,12 +595,45 @@ div.step-circle.active{
   color: inherit;
 }
 
-.footer-title{
+.footer {
+  background-color: #B30000FA;
+  color: white;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-content {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.footer-title {
   font-size: 1.5rem;
-  font-weight: bold;
   font-weight: 700;
   color: white;
+  margin: 1rem 0;
+  height: 2rem;
+  line-height: 2rem;
+}
 
+.social-icons {
+  display: grid;
+  grid-template-columns: repeat(3, 45px);
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.social-icons img {
+  width: 45px;
+  height: 45px;
+  aspect-ratio: 1;
 }
 /* ---------------------------------------------------------------- */
 /* FOOTER*/
@@ -957,4 +997,39 @@ div.step-circle.active{
 /* ---------------------------------------------------------------- */
 
 
+
+/* Add these rules to the footer section */
+.footer {
+  contain: layout style paint;
+  box-sizing: border-box;
+  position: relative;
+  margin-top: auto;
+}
+
+.footer-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.footer-title {
+  margin: 1rem 0;
+  height: 2rem;
+  line-height: 2rem;
+}
+
+.social-icons {
+  display: grid;
+  grid-template-columns: repeat(3, 45px);
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.social-icons img {
+  width: 45px;
+  height: 45px;
+  aspect-ratio: 1;
+}
 
