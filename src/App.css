@@ -604,6 +604,9 @@ div.step-circle.active{
   min-height: 300px;
   display: flex;
   flex-direction: column;
+  content-visibility: auto;
+  contain: layout style paint;
+  margin-top: auto;
 }
 
 .footer-content {
@@ -1031,5 +1034,29 @@ div.step-circle.active{
   width: 45px;
   height: 45px;
   aspect-ratio: 1;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 200vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Account for fixed header height */
+  
+  /* Minimum content height (viewport height - header - footer) */
+  min-height: calc(100vh - 65px);
+}
+
+/* Ensure LoadingComponent takes full height */
+.loading-wrapper {
+  min-height: calc(100vh - 65px - 200px); /* Adjust 200px based on your footer height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 

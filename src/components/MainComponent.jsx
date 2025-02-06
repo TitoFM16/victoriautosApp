@@ -77,27 +77,29 @@ function Main() {
   if (isLoading) return <LoadingComponent />;
 
   return (
-    <div className={isAdminRoute ? '' : 'non-admin-header-wrapper'}>
+    <div className={`main-wrapper ${isAdminRoute ? '' : 'non-admin-header-wrapper'}`}>
       <Suspense fallback={<LoadingComponent />}>
         <Header />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageVariants}
-            transition={pageTransition}
-          >
-            <Routes location={location}>
-              <Route path="/login" element={<LoginComponent />} />
-              <Route path="/admin/*" element={<AdminRoutes authenticated={authenticated} />} />
-              <Route path="/*" element={<ClientRoutes cars={cars} />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </motion.div>
-        </AnimatePresence>
-        <Footer />
+        <main className="main-content">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={pageVariants}
+              transition={pageTransition}
+            >
+              <Routes location={location}>
+                <Route path="/login" element={<LoginComponent />} />
+                <Route path="/admin/*" element={<AdminRoutes authenticated={authenticated} />} />
+                <Route path="/*" element={<ClientRoutes cars={cars} />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </motion.div>
+          </AnimatePresence>
+          <Footer />
+        </main>
       </Suspense>
     </div>
   );
