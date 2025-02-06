@@ -112,6 +112,7 @@ function FormStep3(props) {
                   id="frenteImg"
                   name="frenteImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
@@ -135,6 +136,7 @@ function FormStep3(props) {
                   id="traseroImg"
                   name="traseroImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
@@ -160,6 +162,7 @@ function FormStep3(props) {
                   id="lateralIzqImg"
                   name="lateralIzqImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
@@ -183,6 +186,7 @@ function FormStep3(props) {
                   id="lateralDerImg"
                   name="lateralDerImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
@@ -208,6 +212,7 @@ function FormStep3(props) {
                   id="interiorImg"
                   name="interiorImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
@@ -231,6 +236,7 @@ function FormStep3(props) {
                   id="motorImg"
                   name="motorImg"
                   onChange={handleFileChange}
+                  accept="image/*"
                 />
                 <input
                   type="text"
