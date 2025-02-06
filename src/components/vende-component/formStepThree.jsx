@@ -3,8 +3,8 @@ import { Col, Row, Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 // Constants for image resizing
-const MAX_WIDTH = 1920;
-const MAX_HEIGHT = 1080;
+const MAX_WIDTH = 1080;
+const MAX_HEIGHT = 1350;
 const QUALITY = 0.8; // 80% quality for JPEG compression
 
 const resizeImage = (file) => {
