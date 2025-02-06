@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import TitleBanner from "./TitleBanner";
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -16,7 +17,20 @@ const imagePath = "/images/vehiculos/";
 
 function CarCarousel() {
   const cars = useSelector(state => state.cars.cars);
+  const [activeIndex, setActiveIndex] = useState(0);
 
+  const handleSlideChange = (swiper) => {
+    setActiveIndex(swiper.activeIndex);
+  };
+
+  const shouldLoadImage = (index) => {
+    // Load visible slides and next slide
+    const slidesPerView = window.innerWidth >= 1024 ? 4 
+      : window.innerWidth >= 640 ? 2 
+      : 1;
+    
+    return index >= activeIndex && index < activeIndex + slidesPerView + 1;
+  };
 
   return (
     <div className="car-carousel py-2">
@@ -31,6 +45,7 @@ function CarCarousel() {
       <div className="container">
         <Swiper
           modules={[Autoplay, Navigation]}
+          onSlideChange={handleSlideChange}
           spaceBetween={20}
           navigation={{
             enabled: false,
@@ -62,16 +77,27 @@ function CarCarousel() {
           }}
           className="w-100"
         >
-          {cars.map((car) => (
+          {cars.map((car, index) => (
             <SwiperSlide key={car._id}>
               <div className="px-2 py-2">
                 <div className="card car-card">
                   <Link to={`/vitrina/${car._id}`} style={{textDecoration:"none", color:"black"}} aria-hidden="false">
-                    <img 
-                      className="card-img-top-vitrina"
-                      src={imagePath + car.uuid + "/" + car.images[0]}
-                      alt={'vehiculo' + car.name}
-                    />
+                    {shouldLoadImage(index) ? (
+                      <img 
+                        className="card-img-top-vitrina"
+                        src={imagePath + car.uuid + "/" + car.images[0]}
+                        alt={'vehiculo' + car.name}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div 
+                        className="card-img-top-vitrina"
+                        style={{ 
+                          backgroundColor: '#f0f0f0',
+                          aspectRatio: '16/9'
+                        }} 
+                      />
+                    )}
                     <div className="card-body">
                       <p className="car-price">${formatMoney(car.price)}</p>
                       <p className="card-properties-text">{car.marca} - {car.linea}</p>
