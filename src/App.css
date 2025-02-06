@@ -116,24 +116,34 @@ div.step-circle.active{
 /* ---------------------------------------------------------------- */
 /* Navbar */
 /* ---------------------------------------------------------------- */
-.navbar-page{
+.navbar-page {
   background-color: #b40505 !important; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  min-height: 65px; /* Set a consistent minimum height */
+  min-height: 65px;
+  contain: layout style paint;
+  will-change: transform;
 }
 
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  font-display: swap;
+  contain: layout style;
+}
+
+.navbar-brand img {
+  margin-right: 8px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 
 .navbar-page .nav-link {
   color: white !important;
   font-weight: normal;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-.navbar-page .nav-link:hover {
-  color: white !important;
-  font-weight: bold;
-}
-
+.navbar-page .nav-link:hover,
 .navbar-page .nav-link.active {
   color: white !important;
   font-weight: bold;
