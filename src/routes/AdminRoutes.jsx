@@ -11,7 +11,8 @@ const OfertasComponent = React.lazy(() => import('../components/admin/ofertas-co
 const TramitesComponent = React.lazy(() => import('../components/admin/Tramites/TramitesComponent'));
 const AdminVitrina = React.lazy(() => import('../components/admin/vitrina-vehiculos-component/VitrinaComponent'));
 const DashboardComponent = React.lazy(() => import('../components/admin/Dashboard/DashboardComponent'));
-
+const OfertaDetail = React.lazy(() => import('../components/admin/ofertas-components/OfertaDetailComponent'));
+const CarDetailComponent = React.lazy(() => import('../components/vitrina-components/CardetailComponent'));
 
 
 const AdminRoutes = ({ authenticated }) => {
@@ -24,8 +25,11 @@ const AdminRoutes = ({ authenticated }) => {
               <Route path="negocios" element={<NegociosComponent />} />
               <Route path="buscado" element={<BuscadoComponent />} />
               <Route path="ofertas" element={<OfertasComponent />} />
+              <Route path="ofertas/:ofertaId" element={<OfertaDetail />} />
               <Route path="tramites" element={<TramitesComponent />} />
               <Route path="vitrina" element={<AdminVitrina />} />
+              <Route path='vitrina/:carId' element={<CarDetailComponent mode="admin" />} />
+
               <Route path="dashboard" element={<DashboardComponent />} />
             </Route>
           </Routes>

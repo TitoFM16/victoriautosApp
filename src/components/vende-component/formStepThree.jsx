@@ -2,6 +2,62 @@ import { useState } from 'react';
 import { Col, Row, Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+// Constants for image resizing
+const MAX_WIDTH = 1920;
+const MAX_HEIGHT = 1080;
+const QUALITY = 0.8; // 80% quality for JPEG compression
+
+const resizeImage = (file) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    
+    img.onload = () => {
+      // Calculate new dimensions maintaining aspect ratio
+      let width = img.width;
+      let height = img.height;
+      
+      if (width > MAX_WIDTH) {
+        height = Math.round((height * MAX_WIDTH) / width);
+        width = MAX_WIDTH;
+      }
+      
+      if (height > MAX_HEIGHT) {
+        width = Math.round((width * MAX_HEIGHT) / height);
+        height = MAX_HEIGHT;
+      }
+      
+      // Create canvas and resize
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Check if the original file is already WebP
+      const isWebP = file.type === 'image/webp';
+      const outputType = isWebP ? 'image/webp' : 'image/webp';
+      const outputExt = isWebP ? 'webp' : 'webp';
+      
+      // Convert to WebP with quality setting
+      canvas.toBlob((blob) => {
+        // Create new filename with webp extension
+        const originalName = file.name.substring(0, file.name.lastIndexOf('.'));
+        const newFileName = `${originalName}.${outputExt}`;
+        
+        const resizedFile = new File([blob], newFileName, {
+          type: outputType,
+          lastModified: Date.now(),
+        });
+        resolve(resizedFile);
+      }, outputType, QUALITY);
+    };
+    
+    img.onerror = reject;
+  });
+};
+
 function FormStep3(props) {
   const [fileNames, setFileNames] = useState({
     frenteImg: props.frenteImg ? props.frenteImg.name : '',
@@ -12,14 +68,33 @@ function FormStep3(props) {
     motorImg: props.motorImg ? props.motorImg.name : '',
   });
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const { name, files } = e.target;
-    const fileName = files.length > 0 ? files[0].name : '';
-    setFileNames((prev) => ({
-      ...prev,
-      [name]: fileName,
-    }));
-    props.handleChange(e); // Call the parent handler if needed
+    if (files.length === 0) return;
+
+    try {
+      // Resize image before setting it
+      const resizedFile = await resizeImage(files[0]);
+      
+      // Create a new event with the resized file
+      const newEvent = {
+        target: {
+          name,
+          type: 'file',
+          files: [resizedFile]
+        }
+      };
+
+      setFileNames((prev) => ({
+        ...prev,
+        [name]: files[0].name,
+      }));
+
+      props.handleChange(newEvent);
+    } catch (error) {
+      console.error('Error resizing image:', error);
+      alert('Error al procesar la imagen. Por favor, intente con otra.');
+    }
   };
 
   return (
