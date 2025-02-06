@@ -81,23 +81,32 @@ function Main() {
       <Suspense fallback={<LoadingComponent />}>
         <Header />
         <main className="main-content">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <Routes location={location}>
-                <Route path="/login" element={<LoginComponent />} />
-                <Route path="/admin/*" element={<AdminRoutes authenticated={authenticated} />} />
-                <Route path="/*" element={<ClientRoutes cars={cars} />} />
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes>
-            </motion.div>
-          </AnimatePresence>
+          {isAdminRoute ? (
+            <Routes location={location}>
+              <Route path="/login" element={<LoginComponent />} />
+              <Route path="/admin/*" element={<AdminRoutes authenticated={authenticated} />} />
+              <Route path="/*" element={<ClientRoutes cars={cars} />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <Routes location={location}>
+                  <Route path="/login" element={<LoginComponent />} />
+                  <Route path="/admin/*" element={<AdminRoutes authenticated={authenticated} />} />
+                  <Route path="/*" element={<ClientRoutes cars={cars} />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </motion.div>
+            </AnimatePresence>
+          )}
           <Footer />
         </main>
       </Suspense>

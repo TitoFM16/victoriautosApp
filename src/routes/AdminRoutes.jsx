@@ -25,7 +25,7 @@ const AdminRoutes = ({ authenticated }) => {
               <Route path="negocios" element={<NegociosComponent />} />
               <Route path="buscado" element={<BuscadoComponent />} />
               <Route path="ofertas" element={<OfertasComponent />} />
-              <Route path="ofertas/:ofertaId" element={<OfertaDetail />} />
+              <Route path="ofertas/:carId" element={<OfertaDetail />} />
               <Route path="tramites" element={<TramitesComponent />} />
               <Route path="vitrina" element={<AdminVitrina />} />
               <Route path='vitrina/:carId' element={<CarDetailComponent mode="admin" />} />

@@ -249,7 +249,7 @@ const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
 
   const getCar = React.useCallback(async () => {
     try {
-      const response = await axios.get(`/api/cars/${params.carId}`);
+      const response = await axios.get(`/api/ofertas/${params.carId}`);
       setCar(response.data);
     } catch (error) {
       console.error("Error fetching oferta:", error);
