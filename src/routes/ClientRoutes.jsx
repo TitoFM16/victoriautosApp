@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 
 import LoadingComponent from '../components/shared/loadingComponent';
 
-const Home = React.lazy(() => import('../components/home-components/HomeComponent'));
+const Home = React.lazy(() => import('../components/home/HomeComponent'));
 const Vitrina = React.lazy(() => import('../components/vitrina-components/VitrinaComponent'));
 const CarDetailComponent = React.lazy(() => import('../components/vitrina-components/CardetailComponent'));
 const VendeForm = React.lazy(() => import('../components/vende-component/VendeVehiculoComponent'));
