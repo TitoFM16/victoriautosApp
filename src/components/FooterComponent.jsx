@@ -2,9 +2,9 @@ import React from 'react';
 
 import { useLocation } from 'react-router';
 
-const WhatsappIcon = React.lazy(() => import('../assets/icons/whatsapp-brands-solid.svg'));
-const FacebookIcon = React.lazy(() => import('../assets/icons/facebook-f-brands-solid.svg'));
-const InstagramIcon = React.lazy(() => import('../assets/icons/instagram-brands-solid.svg'));
+import WhatsappIcon from '../assets/icons/whatsapp-brands-solid.svg';
+import FacebookIcon from '../assets/icons/facebook-f-brands-solid.svg';
+import InstagramIcon from '../assets/icons/instagram-brands-solid.svg';
 const LogoComponent = React.lazy(() => import('./shared/LogoComponent'));
 
 //will render in any location except /admin
