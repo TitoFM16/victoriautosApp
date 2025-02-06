@@ -4,7 +4,7 @@ import { useLocation, useNavigate, Outlet } from 'react-router-dom'; //Switch ch
 
 import { logout } from '../../redux/actions/loginActions';
 
-import logo from '../../assets/images/logo_.webp';
+const LogoComponent = React.lazy(() => import('../shared/LogoComponent'));
 
 const HomeIcon = <span className="material-symbols-outlined">home</span>
 const DashboardIcon = <span className="material-symbols-outlined">monitoring</span>
@@ -40,8 +40,7 @@ function Sidebar() {
                     <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark left-bar-admin">
                         <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100 sticky-top" style={{textDecoration:"none",color:"white"}}>
                             <a href="/admin" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none" >
-                            <span><img src={logo} height='41' width='41'
-                            alt='.' /></span>
+                            <span><LogoComponent size={41} /></span>
                             <p className='d-none d-sm-inline'>Victoriautos</p>
                             </a>
                             <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
