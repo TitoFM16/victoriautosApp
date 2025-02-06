@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import LogoComponent from './shared/LogoComponent';
+import { NavLink } from 'react-router-dom';
+const LogoComponent = React.lazy(() => import('./shared/LogoComponent'));
 
 const Header = () => {
   const location = useLocation();
@@ -14,14 +15,48 @@ const Header = () => {
           <span>
             <LogoComponent 
               size={41}
-              aria-label="Victoriautos Consignataria logo"
+              alt="Victoriautos Consignataria logo"
             />
             <span>Victoriautos Consignataria</span>
           </span>
         </a>
+        <button 
+          className="navbar-toggler" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav" 
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/" exact>
+                Inicio
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/Vende">
+                Vende tu usado
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/vitrina">
+                Vitrina
+              </NavLink>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );
 };
 
 export default Header;
+
+
+
+          
