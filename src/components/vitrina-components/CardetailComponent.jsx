@@ -383,7 +383,11 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
       <div className="row">
         <Breadcrumb>
           <BreadcrumbItem>
-            <Link to="/admin/vitrina">vitrina</Link>
+            {mode === "admin" ? (
+              <Link to="/admin/vitrina">vitrina</Link>
+            ) : (
+              <Link to="/vitrina">vitrina</Link>
+            )}
           </BreadcrumbItem>
           <BreadcrumbItem active>{car?.marca} {car?.linea}</BreadcrumbItem>
         </Breadcrumb>
