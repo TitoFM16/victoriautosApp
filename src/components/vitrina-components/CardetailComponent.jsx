@@ -237,33 +237,60 @@ function RenderCar({ car, mode, reloadCar }) {
         </div>
       </div>
 
+      {/* Edit Modal */}
       {mode === "admin" && editModalOpen && (
-        <div className={`modal show`} tabIndex="-1" style={{ display: "block" }}>
-          <div className="modal-dialog">
+        <div className="modal show" tabIndex="-1" style={{ display: "block", backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
             <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Car Details</h5>
-                <button type="button" className="btn-close" onClick={toggleEditModal}></button>
+              <div className="modal-header bg-primary text-white">
+                <h5 className="modal-title">Editar Detalles del Vehículo</h5>
+                <button type="button" className="btn-close btn-close-white" onClick={toggleEditModal}></button>
               </div>
               <div className="modal-body">
                 <form>
-                  {Object.keys(updatedCar).map((key) => (
-                    <div className="mb-3" key={key}>
-                      <label className="form-label">{key}</label>
-                      <input
-                        type="text"
-                        name={key}
-                        value={updatedCar[key]}
-                        onChange={handleInputChange}
-                        className="form-control"
-                      />
-                    </div>
-                  ))}
+                  <div className="row">
+                    {Object.keys(updatedCar).map((key) => (
+                      <div className="col-md-6 mb-3" key={key}>
+                        <label className="form-label fw-bold">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                        {key === 'importacion_date' ? (
+                          <input
+                            type="date"
+                            name={key}
+                            value={updatedCar[key] || ''}
+                            onChange={handleInputChange}
+                            className="form-control"
+                          />
+                        ) : key === 'featured' || key === 'consignacion' ? (
+                          <select
+                            name={key}
+                            value={updatedCar[key]}
+                            onChange={handleInputChange}
+                            className="form-control"
+                          >
+                            <option value={true}>Sí</option>
+                            <option value={false}>No</option>
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            name={key}
+                            value={updatedCar[key] || ''}
+                            onChange={handleInputChange}
+                            className="form-control"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={toggleEditModal}>Cancel</button>
-                <button type="button" className="btn btn-success" onClick={saveChanges}>Save Changes</button>
+                <button type="button" className="btn btn-secondary" onClick={toggleEditModal}>
+                  Cancelar
+                </button>
+                <button type="button" className="btn btn-primary" onClick={saveChanges}>
+                  Guardar Cambios
+                </button>
               </div>
             </div>
           </div>
@@ -303,14 +330,18 @@ RenderCar.propTypes = {
 
 const CarDetailComponents = ({ car: initialCar, mode }) => {
   const [car, setCar] = useState(initialCar);
+  const [isLoading, setIsLoading] = useState(!initialCar);
   const params = useParams();
 
   const getCar = useCallback(async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get(`/api/cars/${params.carId}`);
       setCar(response.data);
     } catch (error) {
       console.error("Error fetching car:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [params.carId]);
 
@@ -321,12 +352,38 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
     }
   }, [initialCar, getCar]);
 
+  if (isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-12 text-center my-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!car) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-12 text-center my-5">
+            <h3>No se encontró el vehículo</h3>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <div className="row">
         <Breadcrumb>
           <BreadcrumbItem>
-            <Link to="/vitrina">vitrina</Link>
+            <Link to="/admin/vitrina">vitrina</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>{car?.marca} {car?.linea}</BreadcrumbItem>
         </Breadcrumb>

@@ -267,7 +267,7 @@ const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
       <div className="row">
         <Breadcrumb>
           <BreadcrumbItem>
-            <Link to="/vitrina">vitrina</Link>
+            <Link to="/admin/ofertas">Ofertas</Link>
           </BreadcrumbItem>
           <BreadcrumbItem active>{oferta?.marca} {oferta?.linea}</BreadcrumbItem>
         </Breadcrumb>
