@@ -3,6 +3,7 @@ import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import LoadingModal from '../../shared/LoadingModal';
 
 // Add these constants at the top of the file
 const MAX_WIDTH = 1080;
@@ -51,6 +52,8 @@ class CarUploadComponent extends React.Component {
           
         marcaDropdown: [],
         lineaDropdown: [],
+        showLoadingModal: false,
+        submitStatus: 'loading'
       }
     }
   
@@ -210,37 +213,6 @@ class CarUploadComponent extends React.Component {
 
       const DIR = marca+"_"+linea+"_"+modelo+"/";
       
-      alert(`
-        --SUBMITTING--
-        Tipo: ${Tipo}
-        marca: ${marca}
-        linea: ${linea}
-        modelo: ${modelo}
-        km: ${km}
-        price: ${price}
-        matricula: ${matricula}
-        color: ${color}
-        transmision: ${transmision}
-        combustible: ${combustible}
-        cilindraje: ${cilindraje}
-        traccion: ${traccion}
-        direccion: ${direccion}
-        frenos: ${frenos}
-        airbag: ${airbag}
-        placa: ${placa}
-        status: ${status}
-        featured: ${featured}
-        consignacion: ${consignacion}
-        frenteImg: ${frenteImg}
-        traseroImg: ${traseroImg}
-        lateralIzqImg: ${lateralIzqImg}
-        lateralDerImg: ${lateralDerImg}
-        interiorImg: ${interiorImg}
-        motorImg: ${motorImg}
-        DIR: ${DIR}
-        `)
-
-      
       const formValues={
         DIR:DIR,
         Tipo: Tipo,
@@ -267,8 +239,6 @@ class CarUploadComponent extends React.Component {
         status: status,
         featured: featured,
         consignacion: consignacion
-        
-
       }
 
       
@@ -288,23 +258,23 @@ class CarUploadComponent extends React.Component {
         formData.append("carImages", image, DIR+index+"."+getExtension(image));
       });
 
-      console.log("formData",...formData)
-      
-      //use axios to send the data to the server,
-      // is needed to pass credentials: 'include' to send the cookie to the server
-      axios.post('/api/admin/cars/', formData, {
+      this.setState({ showLoadingModal: true, submitStatus: 'loading' });
 
+      //use axios to send the data to the server
+      axios.post('/api/admin/cars/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Accept': 'application/json'
         },
         withCredentials: true
-      }).catch((error) => {
+      })
+      .then(() => {
+        this.setState({ submitStatus: 'success' });
+      })
+      .catch((error) => {
         console.error('Error uploading car:', error.response || error.message);
+        this.setState({ submitStatus: 'error' });
       });
-
-
-              
     }
 
     render() {    
@@ -691,6 +661,16 @@ class CarUploadComponent extends React.Component {
               </div>
             </div>
           </form>
+          <LoadingModal 
+            show={this.state.showLoadingModal}
+            status={this.state.submitStatus}
+            onClose={() => {
+              this.setState({ showLoadingModal: false });
+              if (this.state.submitStatus === 'success') {
+                window.location.reload();
+              }
+            }}
+          />
         </React.Fragment>
         );
     }
