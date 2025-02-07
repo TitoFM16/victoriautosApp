@@ -2,6 +2,12 @@ import React from 'react';
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import PropTypes from 'prop-types';
+
+// Add these constants at the top of the file
+const MAX_WIDTH = 1080;
+const MAX_HEIGHT = 1350;
+const QUALITY = 0.8;
 
 class CarUploadComponent extends React.Component {
     constructor(props) {
@@ -48,25 +54,71 @@ class CarUploadComponent extends React.Component {
       }
     }
   
-    handleChange = event => {
-      
-      const {name, type, value} = event.target
- 
-      if (type === 'checkbox') {
-        console.log("wppcheck",name, value,event.target.checked)  
+    resizeImage = (file) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        
+        img.onload = () => {
+          // Calculate new dimensions maintaining aspect ratio
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+          
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+          
+          // Create canvas and resize
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Convert to WebP
+          canvas.toBlob((blob) => {
+            const originalName = file.name.substring(0, file.name.lastIndexOf('.'));
+            const newFileName = `${originalName}.webp`;
+            
+            const resizedFile = new File([blob], newFileName, {
+              type: 'image/webp',
+              lastModified: Date.now(),
+            });
+            resolve(resizedFile);
+          }, 'image/webp', QUALITY);
+        };
+        
+        img.onerror = reject;
+      });
+    };
 
+    handleChange = async (event) => {
+      const {name, type, value} = event.target;
+
+      if (type === 'checkbox') {
         return this.setState({
           [name]: event.target.checked
-        }) 
+        });
       }
-      //if type of input is file, then we need to get the file object
+
       if (type === 'file') {
-        console.log("file",name, value,event.target.files[0])
-        return this.setState({
-          
-          [name]: event.target.files[0]
-          
-        })
+        try {
+          const resizedFile = await this.resizeImage(event.target.files[0]);
+          return this.setState({
+            [name]: resizedFile
+          });
+        } catch (error) {
+          console.error('Error resizing image:', error);
+          alert('Error al procesar la imagen. Por favor, intente con otra.');
+          return;
+        }
       }
 
       if (name === 'Tipo') {
@@ -644,9 +696,8 @@ class CarUploadComponent extends React.Component {
     }
 }
 
-
-
-
-
+CarUploadComponent.propTypes = {
+  // Add any necessary prop types here
+};
 
 export default CarUploadComponent;
