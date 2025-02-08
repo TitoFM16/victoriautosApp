@@ -2,7 +2,7 @@ import React from 'react';
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+
 import LoadingModal from '../../shared/LoadingModal';
 
 // Add these constants at the top of the file

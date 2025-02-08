@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import LoadingModal from '../shared/LoadingModal';
 import PropTypes from 'prop-types';
+import { event_gtag } from '../../utils/analytics';
 
 import FormStep0 from './formStepZero';
 import FormStep1 from './formStepOne';
@@ -65,6 +66,12 @@ function VendeForm() {
     };
 
     const handleSubmit = event => {
+        event_gtag({
+            action: "click",
+            category: "button",
+            label: "Enviar oferta",
+            value: 1,
+          });          
         event.preventDefault();
         
         if (!validateStep3()) {
