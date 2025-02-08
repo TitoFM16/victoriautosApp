@@ -56,12 +56,12 @@ function VenderForm() {
     
     // Validate before submitting
     if (venderModelo && !validateModelo(venderModelo)) {
-      alert('Por favor ingrese un año válido entre 1920 y ' + (new Date().getFullYear() + 1));
+      alert('Por favor ingrese un año valido' + (new Date().getFullYear() + 1));
       return;
     }
 
     if (venderKilometraje && !validateKilometraje(venderKilometraje)) {
-      alert('Por favor ingrese un kilometraje válido menor a 10.000.000');
+      alert('Por favor ingrese un kilometraje válido');
       return;
     }
 
