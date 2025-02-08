@@ -8,12 +8,8 @@ const Vitrina = React.lazy(() => import('../components/vitrina-components/Vitrin
 const CarDetailComponent = React.lazy(() => import('../components/vitrina-components/CardetailComponent'));
 const VendeForm = React.lazy(() => import('../components/vende-component/VendeVehiculoComponent'));
 const InteresFormComponent = React.lazy(() => import('../components/InteresFormComponent'));
+const CreditCalculatorPage = React.lazy(() => import('../components/financiacion/CreditCalculatorPage'));
 
-const pageTransition = {
-  type: "tween",
-  ease: "anticipate",
-  duration: 0.05
-};
 
 const ClientRoutes = ({ cars }) => {
   return (
@@ -25,6 +21,7 @@ const ClientRoutes = ({ cars }) => {
           <Route path="/vitrina/:carId" element={<CarDetailComponent mode="client" />} />
           <Route path="/vende" element={<VendeForm />} />
           <Route path="/interes" element={<InteresFormComponent />} />
+          {/*<Route path="/financiamiento" element={<CreditCalculatorPage />} />*/}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
