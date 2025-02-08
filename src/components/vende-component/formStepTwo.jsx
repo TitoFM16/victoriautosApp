@@ -14,6 +14,56 @@ function FormStep2(props) {
     const [lineaDropdown, setLineaDropdown] = useState([]);
     const tipo = 'all'; // Constant tipo 'all'
   
+    const validateModelo = (value) => {
+        const currentYear = new Date().getFullYear();
+        const year = parseInt(value);
+        return year >= 1920 && year <= currentYear + 1;
+    };
+
+    const validateKilometraje = (value) => {
+        const km = parseInt(value.replace(/\D/g, ''));
+        return !isNaN(km) && km >= 0 && km < 10000000;
+    };
+
+    const validatePrecio = (value) => {
+        const precio = parseInt(value.replace(/\D/g, ''));
+        return !isNaN(precio) && precio > 0 && precio < 100000000000;
+    };
+
+    const formatPrice = (value) => {
+        const number = parseInt(value.replace(/\D/g, ''));
+        if (!isNaN(number)) {
+            return `$ ${number.toLocaleString('es-CO')}`;
+        }
+        return value;
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        
+        if (name === 'modelo') {
+            // Only allow numbers and limit to 4 digits
+            const numericValue = value.replace(/\D/g, '').slice(0, 4);
+            props.handleChange({
+                target: { name, value: numericValue }
+            });
+        } else if (name === 'km') {
+            // Only allow numbers and limit to 7 digits
+            const numericValue = value.replace(/\D/g, '').slice(0, 7);
+            props.handleChange({
+                target: { name, value: numericValue }
+            });
+        } else if (name === 'price') {
+            // Remove any non-numeric characters and format
+            const numericValue = value.replace(/\D/g, '');
+            props.handleChange({
+                target: { name, value: numericValue }
+            });
+        } else {
+            props.handleChange(event);
+        }
+    };
+
     // Initial fetch for marcas
     useEffect(() => {
         axios
@@ -132,30 +182,40 @@ function FormStep2(props) {
                 <Row className='align-items-center justify-content-center'>
                     <Col md={6} sm={12} className="form-box-spacer">
                         <div className="form-group">
-                            <label className = "left-label-position" htmlFor="modelo">Modelo</label>
+                            <label className = "left-label-position" htmlFor="modelo">Modelo (Año)</label>
                             <input
-                            className="form-control"
-                            id="modelo"
-                            name="modelo"
-                            type="text"
-                            placeholder="Escribe tu modelo"
-                            value={props.modelo}
-                            onChange={props.handleChange}
+                                className={`form-control ${props.modelo && !validateModelo(props.modelo) ? 'is-invalid' : ''}`}
+                                id="modelo"
+                                name="modelo"
+                                type="text"
+                                placeholder="Ej: 2020"
+                                value={props.modelo}
+                                onChange={handleInputChange}
                             />
+                            {props.modelo && !validateModelo(props.modelo) && (
+                                <div className="invalid-feedback">
+                                    El año debe ser válido
+                                </div>
+                            )}
                         </div>
                     </Col>
                     <Col md={6} sm={12} className="form-box-spacer">
                         <div className="form-group">
                             <label className = "left-label-position" htmlFor="km">Kilometraje</label>
                             <input
-                            className="form-control"
-                            id="km"
-                            name="km"
-                            type="text"
-                            placeholder="Escribe tu km"
-                            value={props.km}
-                            onChange={props.handleChange}
+                                className={`form-control ${props.km && !validateKilometraje(props.km) ? 'is-invalid' : ''}`}
+                                id="km"
+                                name="km"
+                                type="text"
+                                placeholder="Ej: 50000"
+                                value={props.km}
+                                onChange={handleInputChange}
                             />
+                            {props.km && !validateKilometraje(props.km) && (
+                                <div className="invalid-feedback">
+                                    El kilometraje debe ser menor a 10.000.000
+                                </div>
+                            )}
                         </div>
                     </Col>
 
@@ -181,16 +241,21 @@ function FormStep2(props) {
                     </Col>
                     <Col md={6} sm={12} className="form-box-spacer">
                         <div className="form-group">
-                            <label className = "left-label-position" htmlFor="matricula">Precio del vehículo</label>
+                            <label className = "left-label-position" htmlFor="price">Precio del vehículo</label>
                             <input
-                            className="form-control"
-                            id="price"
-                            name="price"
-                            type="text"
-                            placeholder="Cual es el precio de tu vehículo"
-                            value={props.price}
-                            onChange={props.handleChange}
+                                className={`form-control ${props.price && !validatePrecio(props.price) ? 'is-invalid' : ''}`}
+                                id="price"
+                                name="price"
+                                type="text"
+                                placeholder="Ej: $ 50.000.000"
+                                value={formatPrice(props.price)}
+                                onChange={handleInputChange}
                             />
+                            {props.price && !validatePrecio(props.price) && (
+                                <div className="invalid-feedback">
+                                    Por favor ingresa un precio razonable :)
+                                </div>
+                            )}
                         </div>
                     </Col>
                 </Row>

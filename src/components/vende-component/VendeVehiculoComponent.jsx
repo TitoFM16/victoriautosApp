@@ -232,12 +232,42 @@ function VendeForm() {
 
     const validateStep1 = () => {
         const { nombre, apellido, celular, email } = formData;
-        return nombre && apellido && celular && email;
+        const celularRegex = /^3\d{9}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        return nombre && 
+               apellido && 
+               celular && 
+               celularRegex.test(celular) && 
+               email && 
+               emailRegex.test(email);
     }
 
     const validateStep2 = () => {
         const { marca, linea, modelo, km, matricula, price } = formData;
-        return marca && linea && modelo && km && matricula && price;
+        
+        const validateModelo = (value) => {
+            const currentYear = new Date().getFullYear();
+            const year = parseInt(value);
+            return year >= 1920 && year <= currentYear + 1;
+        };
+
+        const validateKilometraje = (value) => {
+            const kmValue = parseInt(value.replace(/\D/g, ''));
+            return !isNaN(kmValue) && kmValue >= 0 && kmValue < 10000000;
+        };
+
+        const validatePrecio = (value) => {
+            const precio = parseInt(value.replace(/\D/g, ''));
+            return !isNaN(precio) && precio > 0 && precio < 100000000000;
+        };
+
+        return marca && 
+               linea && 
+               modelo && validateModelo(modelo) && 
+               km && validateKilometraje(km) && 
+               matricula && 
+               price && validatePrecio(price);
     }
 
     const validateStep3 = () => {

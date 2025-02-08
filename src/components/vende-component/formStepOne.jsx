@@ -3,8 +3,33 @@ import PropTypes from 'prop-types';
 // import {Link} from 'react-router-dom'
 
 function FormStep1(props) {
+    const validateCelular = (value) => {
+        const celularRegex = /^3\d{9}$/;
+        return celularRegex.test(value);
+    };
 
-  return(
+    const validateEmail = (value) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value);
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        
+        if (name === 'celular') {
+            // Only allow numbers
+            const numericValue = value.replace(/\D/g, '');
+            if (numericValue.length <= 10) {
+                props.handleChange({
+                    target: { name, value: numericValue }
+                });
+            }
+        } else {
+            props.handleChange(event);
+        }
+    };
+
+    return(
         
 
             <Container className="vende-form-container py-2 mb-2 border-in-container shadow">
@@ -43,28 +68,38 @@ function FormStep1(props) {
                         <div className="form-group">
                             <label className="left-label-position" htmlFor="celular">Celular</label>
                             <input
-                            className="form-control"
+                            className={`form-control ${props.celular && !validateCelular(props.celular) ? 'is-invalid' : ''}`}
                             id="celular"
                             name="celular"
                             type="text"
-                            placeholder="Escribe tu celular"
+                            placeholder="Ej: 3001234567"
                             value={props.celular}
-                            onChange={props.handleChange}
+                            onChange={handleInputChange}
                             />
+                            {props.celular && !validateCelular(props.celular) && (
+                                <div className="invalid-feedback">
+                                    Por favor ingrese un número de celular válido
+                                </div>
+                            )}
                         </div>
                     </Col>
                     <Col md={6} sm={12} className="form-box-spacer">
                         <div className="form-group">
                             <label className="left-label-position" htmlFor="email">Email</label>
                             <input
-                            className="form-control"
+                            className={`form-control ${props.email && !validateEmail(props.email) ? 'is-invalid' : ''}`}
                             id="email"
                             name="email"
-                            type="text"
+                            type="email"
                             placeholder="Escribe tu email"
                             value={props.email}
-                            onChange={props.handleChange}
+                            onChange={handleInputChange}
                             />
+                            {props.email && !validateEmail(props.email) && (
+                                <div className="invalid-feedback">
+                                    Por favor ingrese un email válido
+                                </div>
+                            )}
                         </div>
                     </Col>
 
