@@ -11,7 +11,6 @@ const InteresForm = () => {
     nombre: '',
     apellido: '',
     celular: '',
-    email: '',
     wppcheck: false,
     marca: '',
     linea: '',
@@ -74,6 +73,11 @@ const InteresForm = () => {
     return !isNaN(precio) && precio > 0 && precio < 100000000000;
   };
 
+  const validateCelular = (value) => {
+    const celularRegex = /^3\d{9}$/;
+    return celularRegex.test(value);
+  };
+
   const formatPrice = (value) => {
     const number = parseInt(value.replace(/\D/g, ''));
     if (!isNaN(number)) {
@@ -93,6 +97,9 @@ const InteresForm = () => {
     let processedValue = value;
 
     switch (name) {
+      case 'celular':
+        processedValue = value.replace(/\D/g, '').slice(0, 10);
+        break;
       case 'modelo':
         processedValue = value.replace(/\D/g, '').slice(0, 4);
         break;
@@ -148,7 +155,6 @@ const InteresForm = () => {
         nombre: formData.nombre,
         apellido: formData.apellido,
         celular: formData.celular,
-        email: formData.email,
         wppcheck: formData.wppcheck,
         marca: formData.marca,
         linea: formData.linea,
@@ -251,8 +257,7 @@ const InteresForm = () => {
               </div>
               <div className="modal-body">
                 <p>
-                  En el momento no tenemos el vehículo {formData.marca} {formData.linea} {formData.modelo}  
-                  en nuestro stock actual. Diligencia tus datos y en breve te contactaremos con una oferta 
+                  En el momento no tenemos el vehículo {formData.marca} {formData.linea} {formData.modelo} deseado en nuestro stock actual. Diligencia tus datos y en breve te contactaremos con una oferta 
                   de tu vehículo deseado
                 </p>
               </div>
@@ -322,29 +327,19 @@ const InteresForm = () => {
               <div className="form-group">
                 <label htmlFor="celular">Celular</label>
                 <input
-                  className="form-control"
+                  className={`form-control ${formData.celular && !validateCelular(formData.celular) ? 'is-invalid' : ''}`}
                   id="celular"
                   name="celular"
                   type="text"
-                  placeholder="Escribe tu celular"
+                  placeholder="Ej: 3001234567"
                   value={formData.celular}
                   onChange={handleChange}
                 />
-              </div>
-            </div>
-
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  type="text"
-                  placeholder="Escribe tu email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
+                {formData.celular && !validateCelular(formData.celular) && (
+                  <div className="invalid-feedback">
+                    Por favor ingrese un número de celular válido
+                  </div>
+                )}
               </div>
             </div>
 
