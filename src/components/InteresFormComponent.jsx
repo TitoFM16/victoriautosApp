@@ -4,6 +4,7 @@ import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
 import LoadingModal from './shared/LoadingModal';
+import { useVehicleDropdowns } from '../hooks/useVehicleDropdowns';
 
 const InteresForm = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +25,24 @@ const InteresForm = () => {
   });
 
   const location = useLocation();
+
+  const { 
+    marcaDropdown: hookMarcaDropdown, 
+    lineaDropdown: hookLineaDropdown, 
+    fetchLineas 
+  } = useVehicleDropdowns();
+
+  const sortedMarcaOptions = hookMarcaDropdown && Array.isArray(hookMarcaDropdown)
+    ? [...hookMarcaDropdown].sort((a, b) => a.marca.localeCompare(b.marca))
+    : [];
+
+  const sortedLineaOptions = hookLineaDropdown && Array.isArray(hookLineaDropdown)
+    ? [...hookLineaDropdown].sort((a, b) => {
+        const aText = a.linea + ' ' + (a.version || '');
+        const bText = b.linea + ' ' + (b.version || '');
+        return aText.localeCompare(bText);
+      })
+    : [];
 
   useEffect(() => {
     if (location.state) {
@@ -84,6 +103,77 @@ const InteresForm = () => {
 
   const handleModalClose = () => {
     setFormData(prev => ({ ...prev, showModal: false }));
+  };
+
+  const renderMarcaField = () => {
+    if (location.state?.marca) {
+      return (
+        <input
+          className="form-control"
+          id="marca"
+          name="marca"
+          type="text"
+          value={formData.marca}
+          onChange={handleChange}
+          readOnly
+        />
+      );
+    }
+    return (
+      <select
+        className="form-control"
+        id="marca"
+        name="marca"
+        value={formData.marca}
+        onChange={(e) => {
+          handleChange(e);
+          fetchLineas(e.target.value);
+        }}
+      >
+        <option value="">Seleccione una marca</option>
+        {sortedMarcaOptions.map(marca => (
+          <option key={marca.id} value={marca.marca}>
+            {marca.marca}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
+  const renderLineaField = () => {
+    if (location.state?.linea) {
+      return (
+        <input
+          className="form-control"
+          id="linea"
+          name="linea"
+          type="text"
+          value={formData.linea}
+          onChange={handleChange}
+          readOnly
+        />
+      );
+    }
+    return (
+      <select
+        className="form-control"
+        id="linea"
+        name="linea"
+        value={formData.linea}
+        onChange={handleChange}
+        disabled={!formData.marca}
+      >
+        <option value="">Seleccione una línea</option>
+        {sortedLineaOptions.map(linea => {
+          const text = linea.linea + ' ' + (linea.version || '');
+          return (
+            <option key={linea.id} value={text}>
+              {text}
+            </option>
+          );
+        })}
+      </select>
+    );
   };
 
   return (
@@ -198,30 +288,14 @@ const InteresForm = () => {
             <div className="col-12 col-md-6 py-2">
               <div className="form-group">
                 <label htmlFor="marca">Marca</label>
-                <input
-                  className="form-control"
-                  id="marca"
-                  name="marca"
-                  type="text"
-                  placeholder="Escribe tu marca"
-                  value={formData.marca}
-                  onChange={handleChange}
-                />
+                {renderMarcaField()}
               </div>
             </div>
 
             <div className="col-12 col-md-6 py-2">
               <div className="form-group">
-                <label htmlFor="linea">Linea</label>
-                <input
-                  className="form-control"
-                  id="linea"
-                  name="linea"
-                  type="text"
-                  placeholder="Escribe tu linea"
-                  value={formData.linea}
-                  onChange={handleChange}
-                />
+                <label htmlFor="linea">Línea</label>
+                {renderLineaField()}
               </div>
             </div>
 
