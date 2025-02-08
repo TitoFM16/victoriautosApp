@@ -58,11 +58,57 @@ const InteresForm = () => {
     }
   }, [location.state]);
 
+  const validateModelo = (value) => {
+    const currentYear = new Date().getFullYear();
+    const year = parseInt(value);
+    return year >= 1920 && year <= currentYear + 1;
+  };
+
+  const validateKilometraje = (value) => {
+    const km = parseInt(value.replace(/\D/g, ''));
+    return !isNaN(km) && km >= 0 && km < 10000000;
+  };
+
+  const validatePrecio = (value) => {
+    const precio = parseInt(value.replace(/\D/g, ''));
+    return !isNaN(precio) && precio > 0 && precio < 100000000000;
+  };
+
+  const formatPrice = (value) => {
+    const number = parseInt(value.replace(/\D/g, ''));
+    if (!isNaN(number)) {
+      return `$ ${number.toLocaleString('es-CO')}`;
+    }
+    return value;
+  };
+
   const handleChange = event => {
     const { name, value, type, checked } = event.target;
+    
+    if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: checked }));
+      return;
+    }
+
+    let processedValue = value;
+
+    switch (name) {
+      case 'modelo':
+        processedValue = value.replace(/\D/g, '').slice(0, 4);
+        break;
+      case 'km':
+        processedValue = value.replace(/\D/g, '').slice(0, 7);
+        break;
+      case 'price':
+        processedValue = value.replace(/\D/g, '');
+        break;
+      default:
+        processedValue = value;
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: processedValue
     }));
   };
 
@@ -78,9 +124,26 @@ const InteresForm = () => {
       return;
     }
 
+    if (formData.modelo && !validateModelo(formData.modelo)) {
+      alert('Por favor ingrese un año válido entre 1920 y ' + (new Date().getFullYear() + 1));
+      return;
+    }
+
+    if (formData.km && !validateKilometraje(formData.km)) {
+      alert('Por favor ingrese un kilometraje válido');
+      return;
+    }
+
+    if (formData.price && !validatePrecio(formData.price)) {
+      alert('Por favor ingrese un precio razonable');
+      return;
+    }
+
     setFormData(prev => ({ ...prev, showLoadingModal: true, submitStatus: 'loading' }));
 
     try {
+      const numericPrice = formData.price ? parseInt(formData.price.replace(/\D/g, '')) : '';
+
       await axios.post('/api/interescompra', {
         nombre: formData.nombre,
         apellido: formData.apellido,
@@ -91,7 +154,7 @@ const InteresForm = () => {
         linea: formData.linea,
         modelo: formData.modelo,
         km: formData.km,
-        price: formData.price,
+        price: numericPrice,
         'g-recaptcha-response': formData.captcha
       });
       setFormData(prev => ({ ...prev, submitStatus: 'success' }));
@@ -301,31 +364,41 @@ const InteresForm = () => {
 
             <div className="col-12 col-md-6 py-2">
               <div className="form-group">
-                <label htmlFor="modelo">modelo</label>
+                <label htmlFor="modelo">Modelo</label>
                 <input
-                  className="form-control"
+                  className={`form-control ${formData.modelo && !validateModelo(formData.modelo) ? 'is-invalid' : ''}`}
                   id="modelo"
                   name="modelo"
                   type="text"
-                  placeholder="Escribe tu modelo"
+                  placeholder="Ej: 2020"
                   value={formData.modelo}
                   onChange={handleChange}
                 />
+                {formData.modelo && !validateModelo(formData.modelo) && (
+                  <div className="invalid-feedback">
+                    Por favor ingrese un año válido
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="col-12 col-md-6 py-2">
               <div className="form-group">
-                <label htmlFor="km">km</label>
+                <label htmlFor="km">Kilometraje</label>
                 <input
-                  className="form-control"
+                  className={`form-control ${formData.km && !validateKilometraje(formData.km) ? 'is-invalid' : ''}`}
                   id="km"
                   name="km"
                   type="text"
-                  placeholder="Escribe tu km"
+                  placeholder="Ej: 50000"
                   value={formData.km}
                   onChange={handleChange}
                 />
+                {formData.km && !validateKilometraje(formData.km) && (
+                  <div className="invalid-feedback">
+                    El kilometraje debe ser menor a 10.000.000
+                  </div>
+                )}
               </div>
             </div>
 
@@ -333,14 +406,19 @@ const InteresForm = () => {
               <div className="form-group">
                 <label htmlFor="price">Precio</label>
                 <input
-                  className="form-control"
+                  className={`form-control ${formData.price && !validatePrecio(formData.price) ? 'is-invalid' : ''}`}
                   id="price"
                   name="price"
                   type="text"
-                  placeholder="Escribe tu Precio"
-                  value={formData.price}
+                  placeholder="Ej: $ 50.000.000"
+                  value={formatPrice(formData.price)}
                   onChange={handleChange}
                 />
+                {formData.price && !validatePrecio(formData.price) && (
+                  <div className="invalid-feedback">
+                    Por favor ingresa un precio razonable :)
+                  </div>
+                )}
               </div>
             </div>
 
