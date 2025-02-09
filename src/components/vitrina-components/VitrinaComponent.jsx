@@ -110,7 +110,21 @@ const Vitrina = ({ cars }) => {
     return [...new Set(values)];
   };
 
-  const filteredCars = cars.filter((car) => {
+  // Function to sort cars based on featured status and update date
+  const sortCars = (cars) => {
+    return [...cars].sort((a, b) => {
+      if (a.featured && !b.featured) {
+        return -1; // 'a' comes first
+      } else if (!a.featured && b.featured) {
+        return 1; // 'b' comes first
+      } else {
+        // Both are either featured or not featured, so sort by update date
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }
+    });
+  };
+
+  const filteredCars = sortCars(cars).filter((car) => {
     if (filter.marca === "" && filter.linea === "" && parseInt(filter.modelo) === 0) {
       return true;
     }

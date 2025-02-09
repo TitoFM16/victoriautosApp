@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import LogoComponent from './shared/LogoComponent';
+import logo from '../assets/icons/logo.svg';
 
 const Header = () => {
   const location = useLocation();
@@ -17,13 +17,14 @@ const Header = () => {
     <nav className="navbar navbar-expand-md navbar-dark navbar-page fixed-top bg-light">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
-          <span>
-            <LogoComponent 
-              size={41}
-              alt="Victoriautos Consignataria logo"
-            />
-            <span>Victoriautos Consignataria</span>
-          </span>
+          <img 
+            src={logo} 
+            style={{width: '40px', height: '40px'}} 
+            alt="Victoriautos Consignataria logo" 
+            loading="eager" 
+            fetchpriority="high"
+          />
+          Victoriautos Consignataria
         </a>
         <button 
           className="navbar-toggler" 

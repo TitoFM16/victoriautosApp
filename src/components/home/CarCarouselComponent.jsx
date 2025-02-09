@@ -19,6 +19,23 @@ function CarCarousel() {
   const cars = useSelector(state => state.cars.cars);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Function to sort cars based on featured status and update date
+  const sortCars = (cars) => {
+    return [...cars].sort((a, b) => {
+      if (a.featured && !b.featured) {
+        return -1; // 'a' comes first
+      } else if (!a.featured && b.featured) {
+        return 1; // 'b' comes first
+      } else {
+        // Both are either featured or not featured, so sort by update date
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }
+    });
+  };
+
+  // Sort the cars array
+  const sortedCars = sortCars(cars);
+
   const handleSlideChange = (swiper) => {
     setActiveIndex(swiper.activeIndex);
   };
@@ -77,7 +94,7 @@ function CarCarousel() {
           }}
           className="w-100"
         >
-          {cars.map((car, index) => (
+          {sortedCars.map((car, index) => (
             <SwiperSlide key={car._id}>
               <div className="px-2 py-2">
                 <div className="card car-card">
