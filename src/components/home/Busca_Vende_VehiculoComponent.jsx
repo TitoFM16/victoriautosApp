@@ -177,7 +177,7 @@ function Buscador() {
       <div 
         className='container-fluid d-block buscaStyle d-block d-md-none'
         style={{
-          backgroundColor: '#f5f5f5',
+          background: 'linear-gradient(to bottom, #f5f5f5 90%, #ffffff)',
           position: 'relative',
           opacity: isMobileImageLoaded ? 1 : 0,
           transition: 'opacity 0.3s ease-in'
