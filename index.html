@@ -33,7 +33,10 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-TEYM3EQFGE');
+      gtag('config', 'G-TEYM3EQFGE', {
+        'page_path': window.location.pathname,
+        'restrict_page_path': /^\/admin/  // Exclude admin paths
+      });
     </script>
 
   </head>

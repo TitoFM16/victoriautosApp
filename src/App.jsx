@@ -14,7 +14,10 @@ function AnalyticsWrapper() {
   const location = useLocation();
 
   useEffect(() => {
-    pageView(location.pathname);
+    // Skip tracking if path starts with /admin
+    if (!location.pathname.startsWith('/admin')) {
+      pageView(location.pathname);
+    }
   }, [location]);
 
   return null;
