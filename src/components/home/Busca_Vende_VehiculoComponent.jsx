@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 
 import backGround from '../../assets/images/entrada_marco_blanco_repellado.webp';
-import backGroundMobile from '../../assets/images/vehiculos_aereo.webp';
 import LoadingComponent from '../shared/loadingComponent';
 
 import audiLogo from '../../assets/icons/brands/audi-svgrepo-com.svg';
@@ -64,24 +63,18 @@ function Buscador() {
     // Verify preloaded images are in cache
     const checkPreloadedImages = async () => {
       try {
-        const mobileImg = new Image();
         const desktopImg = new Image();
         
-        mobileImg.src = backGroundMobile;
+
         desktopImg.src = backGround;
 
         await Promise.all([
-          new Promise(resolve => {
-            mobileImg.onload = resolve;
-            if (mobileImg.complete) resolve();
-          }),
           new Promise(resolve => {
             desktopImg.onload = resolve;
             if (desktopImg.complete) resolve();
           })
         ]);
 
-        setIsMobileImageLoaded(true);
         setIsDesktopImageLoaded(true);
       } catch (error) {
         console.error('Error loading images:', error);
@@ -198,6 +191,8 @@ function Buscador() {
                 src={logo} 
                 alt="brand logo" 
                 loading="lazy"
+                width="100px"
+                height="100px"
               />
             ))
           ))}
