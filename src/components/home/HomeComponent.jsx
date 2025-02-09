@@ -1,10 +1,10 @@
-import React, { useEffect, useState, Suspense } from "react";
+import {  Suspense, lazy } from "react";
 import Buscador from './Busca_Vende_VehiculoComponent';
 
 import CarCarousel from "./CarCarouselComponent";
 
-const InvitaVenta = React.lazy(() => import('./InvitaVentaComponent'));
-const LoadingComponent = React.lazy(() => import('../shared/loadingComponent'));
+const InvitaVenta = lazy(() => import('./InvitaVentaComponent'));
+const LoadingComponent = lazy(() => import('../shared/loadingComponent'));
 import Separator from "./SeparatorComponent";
 
 

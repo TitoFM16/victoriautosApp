@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCars } from '../redux/actions/carsActions';
@@ -10,9 +10,9 @@ import LoadingComponent from './shared/loadingComponent';
 import Header from './HeaderComponent';
 
 import Footer from './FooterComponent';
-const LoginComponent = React.lazy(() => import('./Login/loginComponent'));
-const AdminRoutes = React.lazy(() => import('../routes/AdminRoutes'));
-const ClientRoutes = React.lazy(() => import('../routes/ClientRoutes'));
+const LoginComponent = lazy(() => import('./Login/loginComponent'));
+const AdminRoutes = lazy(() => import('../routes/AdminRoutes'));
+const ClientRoutes = lazy(() => import('../routes/ClientRoutes'));
 
 // Animation variants
 const pageVariants = {

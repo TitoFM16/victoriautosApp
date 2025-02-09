@@ -7,8 +7,30 @@ import backGround from '../../assets/images/entrada_marco_blanco_repellado.webp'
 import backGroundMobile from '../../assets/images/vehiculos_aereo.webp';
 import LoadingComponent from '../shared/loadingComponent';
 
+import audiLogo from '../../assets/icons/brands/audi-svgrepo-com.svg';
+import bmwLogo from '../../assets/icons/brands/bmw-svgrepo-com.svg';
+import chevroletLogo from '../../assets/icons/brands/chevrolet-svgrepo-com.svg';
+import dodgeLogo from '../../assets/icons/brands/dodge-ram-logo-svgrepo-com.svg';
+import fordLogo from '../../assets/icons/brands/ford-svgrepo-com.svg';
+import hondaLogo from '../../assets/icons/brands/honda-svgrepo-com.svg';
+import hyundaiLogo from '../../assets/icons/brands/hyundai-svgrepo-com.svg';
+import jeepLogo from '../../assets/icons/brands/jeep-alt-svgrepo-com.svg';
+import kiaLogo from '../../assets/icons/brands/kia-svgrepo-com.svg';
+import landroverLogo from '../../assets/icons/brands/landrover-svgrepo-com.svg';
+import lexusLogo from '../../assets/icons/brands/lexus-svgrepo-com.svg';
+import mazdaLogo from '../../assets/icons/brands/mazda-svgrepo-com.svg';
+import mercedesLogo from '../../assets/icons/brands/mercedes-benz-logo-svgrepo-com.svg';
+import mitsubishiLogo from '../../assets/icons/brands/mitsubishi-svgrepo-com.svg';
+import nissanLogo from '../../assets/icons/brands/nissan-svgrepo-com.svg';
+import renaultLogo from '../../assets/icons/brands/renault-svgrepo-com.svg';
+import subaruLogo from '../../assets/icons/brands/subaru-alt-svgrepo-com.svg';
+import suzukiLogo from '../../assets/icons/brands/suzuki-svgrepo-com.svg';
+import toyotaLogo from '../../assets/icons/brands/toyota-svgrepo-com.svg';
+import volkswagenLogo from '../../assets/icons/brands/volkswagen-svgrepo-com.svg';
+import volvoLogo from '../../assets/icons/brands/volvo-svgrepo-com.svg';
+
 // Lazy load components
-const FormContainer = React.lazy(() => import('./FormContainer'));
+import FormContainer from './FormContainer';
 
 function Buscador() {
   // States for the "comprar" (buy) form
@@ -30,6 +52,13 @@ function Buscador() {
   // Add state for background image loading
   const [isMobileImageLoaded, setIsMobileImageLoaded] = useState(true);
   const [isDesktopImageLoaded, setIsDesktopImageLoaded] = useState(true);
+
+  const brandLogos = [
+    audiLogo, bmwLogo, chevroletLogo, dodgeLogo, fordLogo, hondaLogo,
+    hyundaiLogo, jeepLogo, kiaLogo, landroverLogo, lexusLogo, mazdaLogo,
+    mercedesLogo, mitsubishiLogo, nissanLogo, renaultLogo, subaruLogo,
+    suzukiLogo, toyotaLogo, volkswagenLogo, volvoLogo
+  ];
 
   useEffect(() => {
     // Verify preloaded images are in cache
@@ -156,26 +185,40 @@ function Buscador() {
         className='container-fluid d-block buscaStyle d-block d-md-none'
         style={{
           backgroundColor: '#f5f5f5',
-          backgroundImage: `url(${backGroundMobile})`,
+          position: 'relative',
           opacity: isMobileImageLoaded ? 1 : 0,
           transition: 'opacity 0.3s ease-in'
         }}
       >
-        <Suspense fallback={<LoadingComponent/>}>
-          <FormContainer
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            handleSubmit={handleSubmit}
-            handleInputChange={handleInputChange}
-            formData={formData}
-            setModeloInput={setModeloInput}
-            setModelo={setModelo}
-            setPrice={setPrice}
-            setKm={setKm}
-            sortedMarcaOptions={sortedMarcaOptions}
-            sortedLineaOptions={sortedLineaOptions}
-          />
-        </Suspense>
+        <div className="brand-logo-background">
+          {[...Array(4)].map((_, i) => (
+            brandLogos.map((logo, index) => (
+              <img 
+                key={`${i}-${index}`} 
+                src={logo} 
+                alt="brand logo" 
+                loading="lazy"
+              />
+            ))
+          ))}
+        </div>
+        <div className="form-container">
+          <Suspense fallback={<LoadingComponent/>}>
+            <FormContainer
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              handleSubmit={handleSubmit}
+              handleInputChange={handleInputChange}
+              formData={formData}
+              setModeloInput={setModeloInput}
+              setModelo={setModelo}
+              setPrice={setPrice}
+              setKm={setKm}
+              sortedMarcaOptions={sortedMarcaOptions}
+              sortedLineaOptions={sortedLineaOptions}
+            />
+          </Suspense>
+        </div>
       </div>
       <div 
         className='container-fluid d-block buscaStyle d-none d-md-block'

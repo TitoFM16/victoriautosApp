@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, lazy } from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { formatMoney } from '../../shared/utils';
 import whatsappIcon from '../../assets/icons/whatsapp-brands-solid.svg';
 import CompraModalContent from './compraModalContent';
 import PropTypes from 'prop-types';
+const LoadingComponent = lazy(() => import('../shared/loadingComponent'));
 
 // Const for image paths
 const imgPath = "/images/vehiculos/";
@@ -354,15 +355,7 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
 
   if (isLoading) {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-12 text-center my-5">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <LoadingComponent />
     );
   }
 
