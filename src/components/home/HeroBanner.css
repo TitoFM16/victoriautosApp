@@ -16,7 +16,8 @@
   
   
   .top-text {
-    display: block;
+    font-family: Arial, sans-serif;
+    display: inline-block;
     color: #B30000FA;
     -webkit-background-clip: text; /* Clip background to text */
     background-clip: text; /* For non-webkit browsers */
@@ -24,22 +25,21 @@
     font-weight: bold;
   }
   
-  .highlight-container{
-    background-color: #B30000FA; /* Dark blue background */
-  }
-
-  .highlight-text {
-    display: block;
-    color: transparent; /* Make text transparent */
-    -webkit-background-clip: text; /* Clip background to text */
-    background-clip: text; /* For non-webkit browsers */
-    padding: 0 10px;
-    font-weight: bold;
-    color: white;
-
+  .highlight-container {
+    background-color: #B30000FA;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
-
+  .highlight-text {
+    display: block;
+    color: white;
+    padding: 0 10px;
+    font-weight: bold;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
 /* Mobile styles (screen width 768px or smaller) */
 @media (max-width: 768px) {
   .hero-banner {
