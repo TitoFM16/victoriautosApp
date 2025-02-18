@@ -1048,7 +1048,7 @@ div.step-circle.active{
   grid-template-columns: repeat(5, 1fr); /* Changed from 3 to 4 columns */
   gap: 10px; /* Reduced gap from 20px */
   padding: 10px; /* Reduced padding from 20px */
-  opacity: 0.1;
+  opacity: 0.3;
   z-index: 0;
   pointer-events: none;
   /* Add repeating pattern */
