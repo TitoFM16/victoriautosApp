@@ -250,7 +250,9 @@ const CompraModalContent = ({ car }) => {
 };
 
 CompraModalContent.propTypes = {
-  car: PropTypes.object.isRequired
+  car: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ]).isRequired
 };
-
 export default CompraModalContent;

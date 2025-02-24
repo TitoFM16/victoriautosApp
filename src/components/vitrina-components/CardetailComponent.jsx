@@ -14,9 +14,10 @@ const imgPath = "/images/vehiculos/";
 
 function RenderCar({ car, mode, reloadCar }) {
   const [currentImage, setCurrentImage] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [updatedCar, setUpdatedCar] = useState({ ...car });
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const toggleEditModal = () => setEditModalOpen(!editModalOpen);
 
@@ -68,29 +69,47 @@ function RenderCar({ car, mode, reloadCar }) {
 
   // Add touch handling for image swapping
   const handleTouchStart = (e) => {
+    // If there's more than one touch point, let the browser handle zooming
+    if (e.touches.length > 1) {
+      return;
+    }
+    
     const touch = e.touches[0];
-    const startX = touch.clientX;
-    
-    const handleTouchMove = (e) => {
-      const touch = e.touches[0];
-      const diff = startX - touch.clientX;
-      
-      if (Math.abs(diff) > 50) { // threshold of 50px
-        if (diff > 0 && currentImage < car.images.length - 1) {
-          // Swipe left - next image
-          setCurrentImage(currentImage + 1);
-        } else if (diff < 0 && currentImage > 0) {
-          // Swipe right - previous image
-          setCurrentImage(currentImage - 1);
-        }
-        document.removeEventListener('touchmove', handleTouchMove);
+    setTouchStart({
+      x: touch.clientX,
+      time: Date.now()
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    // Ignore multi-touch events (zooming)
+    if (e.touches.length > 1 || !touchStart) {
+      return;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return;
+
+    const touch = e.changedTouches[0];
+    const diff = touchStart.x - touch.clientX;
+    const timeDiff = Date.now() - touchStart.time;
+
+    // Only process as swipe if:
+    // 1. Movement is significant (> 50px)
+    // 2. Gesture was quick (< 300ms)
+    // 3. It's a horizontal swipe (check vertical movement is minimal)
+    if (Math.abs(diff) > 50 && timeDiff < 300) {
+      if (diff > 0 && currentImage < car.images.length - 1) {
+        // Swipe left - next image
+        setCurrentImage(currentImage + 1);
+      } else if (diff < 0 && currentImage > 0) {
+        // Swipe right - previous image
+        setCurrentImage(currentImage - 1);
       }
-    };
-    
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-    }, { once: true });
+    }
+
+    setTouchStart(null);
   };
 
   if (!car) {
@@ -123,11 +142,14 @@ function RenderCar({ car, mode, reloadCar }) {
                   src={`${imgPath}${car.uuid}/${car.images[currentImage]}`}
                   alt={car.name}
                   onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                   style={{ 
                     width: '100%',
                     height: 'auto',
                     objectFit: 'contain',
-                    maxHeight: '600px' // Adjust this value as needed
+                    maxHeight: '600px',
+                    touchAction: 'pinch-zoom' // Enable pinch-zoom
                   }}
                 />
                 {/* Navigation dots - visible only on mobile */}
@@ -148,6 +170,7 @@ function RenderCar({ car, mode, reloadCar }) {
                     />
                   ))}
                 </div>
+              
               </div>
             </div>
           </div>
@@ -307,7 +330,10 @@ RenderCar.propTypes = {
     _id: PropTypes.string.isRequired,
     marca: PropTypes.string.isRequired,
     linea: PropTypes.string.isRequired,
-    modelo: PropTypes.string.isRequired,
+    modelo: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
     price: PropTypes.number.isRequired,
     km: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string).isRequired,

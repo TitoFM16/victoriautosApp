@@ -58,14 +58,16 @@ function Main() {
 
         // Load initial cars if not loaded yet
         if (!hasLoadedInitialCars) {
+          console.log('🚗 Fetching initial cars...');
           await dispatch(fetchCars(null, 4));
           setHasLoadedInitialCars(true);
           
           // Load remaining cars after initial load
+          console.log('🚗 Fetching remaining cars...');
           await dispatch(fetchCars());
         }
       } catch (error) {
-        console.error('Error during load:', error);
+        console.error('❌ Error during car fetch:', error);
       } finally {
         setIsLoading(false);
       }

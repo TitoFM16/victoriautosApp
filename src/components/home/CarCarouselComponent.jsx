@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import TitleBanner from "./TitleBanner";
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -18,6 +18,11 @@ const imagePath = "/images/vehiculos/";
 function CarCarousel() {
   const cars = useSelector(state => state.cars.cars);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    console.log('🚗 Cars loaded in carousel:', cars.length);
+    console.log('Cars data:', cars);
+  }, [cars]);
 
   // Function to sort cars based on featured status and update date
   const sortCars = (cars) => {
