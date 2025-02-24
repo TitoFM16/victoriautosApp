@@ -7,6 +7,7 @@ import { formatMoney } from '../../shared/utils';
 import whatsappIcon from '../../assets/icons/whatsapp-brands-solid.svg';
 import CompraModalContent from './compraModalContent';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet-async';
 const LoadingComponent = lazy(() => import('../shared/loadingComponent'));
 
 // Const for image paths
@@ -116,8 +117,30 @@ function RenderCar({ car, mode, reloadCar }) {
     return <h3>Loading...</h3>;
   }
 
+  const metaTitle = `${car.marca} ${car.linea} ${car.modelo} - Victoriautos`;
+  const metaDescription = `${car.marca} ${car.linea} ${car.modelo}, ${car.km}km, ${car.combustible}, ${car.transmision}. Precio: $${formatMoney(car.price)}`;
+  const metaImage = `${window.location.origin}${imgPath}${car.uuid}/${car.images[0]}`;
+
   return (
     <div className="container">
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        
+        {/* OpenGraph tags for social media */}
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={metaImage} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={metaImage} />
+      </Helmet>
+
       <div className="row mb-2">
         <div className="col-12 col-md-9">
           <div className="container-fluid">
@@ -397,8 +420,30 @@ const CarDetailComponents = ({ car: initialCar, mode }) => {
     );
   }
 
+  const metaTitle = `${car.marca} ${car.linea} ${car.modelo} - Victoriautos`;
+  const metaDescription = `${car.marca} ${car.linea} ${car.modelo}, ${car.km}km, ${car.combustible}, ${car.transmision}. Precio: $${formatMoney(car.price)}`;
+  const metaImage = `${window.location.origin}${imgPath}${car.uuid}/${car.images[0]}`;
+
   return (
     <div className="container">
+      <Helmet>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        
+        {/* OpenGraph tags for social media */}
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:image" content={metaImage} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+        
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={metaImage} />
+      </Helmet>
+
       <div className="row">
         <Breadcrumb>
           <BreadcrumbItem>
