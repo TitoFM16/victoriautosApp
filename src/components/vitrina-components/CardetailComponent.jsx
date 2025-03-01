@@ -18,6 +18,8 @@ function RenderCar({ car, mode, reloadCar }) {
   const [touchStart, setTouchStart] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [updatedCar, setUpdatedCar] = useState({ ...car });
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
+  const [thumbnailsLoaded, setThumbnailsLoaded] = useState({});
   const navigate = useNavigate();
 
   const toggleEditModal = () => setEditModalOpen(!editModalOpen);
@@ -149,32 +151,48 @@ function RenderCar({ car, mode, reloadCar }) {
               <div className="col-2 d-none d-md-block">
                 {car.images.map((image, index) => (
                   <div key={index} className="row vertical-center">
-                    <img
-                      src={`${imgPath}${car.uuid}/${image}`}
-                      alt={`${car.marca}_${car.linea}_${car.modelo}_${index}`}
-                      className={`card side-column-images px-0 mb-2 ${currentImage === index ? "selected" : ""}`}
-                      onMouseEnter={() => setCurrentImage(index)}
-                    />
+                    <div className="position-relative">
+                      {!thumbnailsLoaded[index] && (
+                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                          <LoadingComponent />
+                        </div>
+                      )}
+                      <img
+                        src={`${imgPath}${car.uuid}/${image}`}
+                        alt={`${car.marca}_${car.linea}_${car.modelo}_${index}`}
+                        className={`card side-column-images px-0 mb-2 ${currentImage === index ? "selected" : ""} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
+                        onMouseEnter={() => setCurrentImage(index)}
+                        onLoad={() => setThumbnailsLoaded(prev => ({...prev, [index]: true}))}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
               {/* Main image - full width on mobile */}
               <div className="col-12 col-md-10">
-                <img
-                  className="card-img-top principal-image-vitrina mx-2"
-                  src={`${imgPath}${car.uuid}/${car.images[currentImage]}`}
-                  alt={car.name}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                  style={{ 
-                    width: '100%',
-                    height: 'auto',
-                    objectFit: 'contain',
-                    maxHeight: '600px',
-                    touchAction: 'pinch-zoom' // Enable pinch-zoom
-                  }}
-                />
+                <div className="position-relative" style={{ minHeight: '300px' }}>
+                  {!mainImageLoaded && (
+                    <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                      <LoadingComponent />
+                    </div>
+                  )}
+                  <img
+                    className={`card-img-top principal-image-vitrina mx-2 ${mainImageLoaded ? 'visible' : 'invisible'}`}
+                    src={`${imgPath}${car.uuid}/${car.images[currentImage]}`}
+                    alt={car.name}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    onLoad={() => setMainImageLoaded(true)}
+                    style={{ 
+                      width: '100%',
+                      height: 'auto',
+                      objectFit: 'contain',
+                      maxHeight: '600px',
+                      touchAction: 'pinch-zoom' // Enable pinch-zoom
+                    }}
+                  />
+                </div>
                 {/* Navigation dots - visible only on mobile */}
                 <div className="d-flex d-md-none justify-content-center my-2">
                   {car.images.map((_, index) => (
@@ -193,7 +211,6 @@ function RenderCar({ car, mode, reloadCar }) {
                     />
                   ))}
                 </div>
-              
               </div>
             </div>
           </div>

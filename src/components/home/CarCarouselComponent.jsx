@@ -4,6 +4,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import TitleBanner from "./TitleBanner";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import LoadingComponent from '../shared/loadingComponent';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -18,6 +19,7 @@ const imagePath = "/images/vehiculos/";
 function CarCarousel() {
   const cars = useSelector(state => state.cars.cars);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState({});
 
   useEffect(() => {
     console.log('🚗 Cars loaded in carousel:', cars.length);
@@ -52,6 +54,10 @@ function CarCarousel() {
       : 1;
     
     return index >= activeIndex && index < activeIndex + slidesPerView + 1;
+  };
+
+  const handleImageLoad = (carId) => {
+    setImagesLoaded(prev => ({...prev, [carId]: true}));
   };
 
   return (
@@ -104,22 +110,30 @@ function CarCarousel() {
               <div className="px-2 py-2">
                 <div className="card car-card">
                   <Link to={`/vitrina/${car._id}`} style={{textDecoration:"none", color:"black"}} aria-hidden="false">
-                    {shouldLoadImage(index) ? (
-                      <img 
-                        className="card-img-top-vitrina"
-                        src={imagePath + car.uuid + "/" + car.images[0]}
-                        alt={'vehiculo' + car.name}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div 
-                        className="card-img-top-vitrina"
-                        style={{ 
-                          backgroundColor: '#f0f0f0',
-                          aspectRatio: '16/9'
-                        }} 
-                      />
-                    )}
+                    <div className="position-relative" style={{ minHeight: '150px' }}>
+                      {shouldLoadImage(index) && !imagesLoaded[car._id] && (
+                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                          <LoadingComponent />
+                        </div>
+                      )}
+                      {shouldLoadImage(index) ? (
+                        <img 
+                          className="card-img-top-vitrina"
+                          src={imagePath + car.uuid + "/" + car.images[0]}
+                          alt={'vehiculo' + car.name}
+                          loading="lazy"
+                          onLoad={() => handleImageLoad(car._id)}
+                        />
+                      ) : (
+                        <div 
+                          className="card-img-top-vitrina"
+                          style={{ 
+                            backgroundColor: '#f0f0f0',
+                            aspectRatio: '16/9'
+                          }} 
+                        />
+                      )}
+                    </div>
                     <div className="card-body">
                       <p className="car-price">${formatMoney(car.price)}</p>
                       <p className="card-properties-text">{car.marca} - {car.linea}</p>

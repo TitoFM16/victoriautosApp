@@ -15,14 +15,24 @@ function formatMoney(x) {
 
 function RenderVitrinaItem({ car }) {
   const imagePath = "/images/vehiculos/";
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
     <Card className="car-card">
       <Link to={`/vitrina/${car._id}`} style={{ textDecoration: "none", color: "black" }}>
-        <img
-          className="card-img-top-vitrina"
-          src={imagePath + car.uuid + "/" + car.images[0]}
-          alt={car.marca}
-        />
+        <div className="image-container position-relative">
+          {!imageLoaded && (
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+              <LoadingComponent />
+            </div>
+          )}
+          <img
+            className={`card-img-top-vitrina ${imageLoaded ? 'visible' : 'invisible'}`}
+            src={imagePath + car.uuid + "/" + car.images[0]}
+            alt={car.marca}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
         <CardBody>
           <h3>${formatMoney(car.price)}</h3>
           <div>

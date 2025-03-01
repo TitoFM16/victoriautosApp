@@ -55,7 +55,9 @@ class VitrinaComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ofertas: []
+      ofertas: [],
+      loading: false,
+      error: null
     }
   }
 
