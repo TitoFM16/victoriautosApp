@@ -1071,3 +1071,22 @@ div.step-circle.active{
   z-index: 1;
 }
 
+
+.brand-logo-background-desktop {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr); /* Changed from 3 to 4 columns */
+  gap: 10px; /* Reduced gap from 20px */
+  padding: 10px; /* Reduced padding from 20px */
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+  /* Add repeating pattern */
+  background-repeat: repeat;
+  /* Make it scroll slower than the content for a parallax effect */
+  background-attachment: fixed;
+}

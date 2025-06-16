@@ -216,30 +216,48 @@ function Buscador() {
         </div>
       </div>
       <div 
-        className='container-fluid d-block buscaStyle d-none d-md-block'
-        style={{
-          backgroundColor: '#f5f5f5',
-          backgroundImage: `url(${backGround})`,
-          opacity: isDesktopImageLoaded ? 1 : 0,
-          transition: 'opacity 0.3s ease-in'
-        }}
-      >
-        <Suspense fallback={<LoadingComponent/>}>
-          <FormContainer
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            handleSubmit={handleSubmit}
-            handleInputChange={handleInputChange}
-            formData={formData}
-            setModeloInput={setModeloInput}
-            setModelo={setModelo}
-            setPrice={setPrice}
-            setKm={setKm}
-            sortedMarcaOptions={sortedMarcaOptions}
-            sortedLineaOptions={sortedLineaOptions}
-          />
-        </Suspense>
-      </div>
+  className='container-fluid d-block buscaStyle d-none d-md-block'
+  style={{
+    background: 'linear-gradient(to bottom, #f5f5f5 90%, #ffffff)',
+    position: 'relative',
+    opacity: isDesktopImageLoaded ? 1 : 0,
+    transition: 'opacity 0.3s ease-in'
+  }}
+>
+  <div className="brand-logo-background-desktop">
+    {[...Array(4)].map((_, i) => (
+      brandLogos.map((logo, index) => (
+        <img 
+          key={`desktop-${i}-${index}`} 
+          src={logo} 
+          alt="brand logo" 
+          loading="lazy"
+          width="100px"
+          height="100px"
+        />
+      ))
+    ))}
+  </div>
+
+  <div className="form-container">
+    <Suspense fallback={<LoadingComponent/>}>
+      <FormContainer
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+        formData={formData}
+        setModeloInput={setModeloInput}
+        setModelo={setModelo}
+        setPrice={setPrice}
+        setKm={setKm}
+        sortedMarcaOptions={sortedMarcaOptions}
+        sortedLineaOptions={sortedLineaOptions}
+      />
+    </Suspense>
+  </div>
+</div>
+
     </>
   );
 }
