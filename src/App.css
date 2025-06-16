@@ -764,11 +764,6 @@ div.step-circle.active{
 }
 
 
-.left-bar-admin{
-  position:sticky;
-  left: 0;   
-}
-
 
 /* ---------------------- footer icons---------------------- */
 .icon-style {
@@ -1090,3 +1085,12 @@ div.step-circle.active{
   /* Make it scroll slower than the content for a parallax effect */
   background-attachment: fixed;
 }
+
+/* Admin */
+
+.compra-venta-buttons-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+

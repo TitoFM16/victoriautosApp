@@ -77,32 +77,87 @@ const NegociosComponent = () => {
         setNegociosVitrina(negociosVitrina.filter(el => el._id !== id));
     }
 
-    if (loading) {
-        return <div className="container">
-            <div className="row">
-                <div className="col-12">
-                    <h3>Loading...</h3>
+    const renderVitrinaCard = (negocio, index) => (
+        <div key={index} className="card mb-3">
+            <div className="card-body">
+                <h6 className="card-subtitle mb-2 text-muted">Información del Vehículo</h6>
+                <p className="mb-1"><strong>Marca:</strong> {negocio.car.marca}</p>
+                <p className="mb-1"><strong>Linea:</strong> {negocio.car.linea}</p>
+                <p className="mb-2"><strong>Modelo:</strong> {negocio.car.modelo}</p>
+                
+                <h6 className="card-subtitle mb-2 text-muted">Información del Comprador</h6>
+                <p className="mb-1"><strong>Nombre:</strong> {negocio.interes.nombre} {negocio.interes.apellido}</p>
+                <p className="mb-1"><strong>Celular:</strong> {negocio.interes.celular}</p>
+                <p className="mb-2"><strong>Email:</strong> {negocio.interes.email}</p>
+                
+                <div className="d-flex gap-2">
+                    <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
+                    <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
                 </div>
             </div>
-        </div>;
+        </div>
+    );
+
+    const renderOfertaCard = (negocio, index) => (
+        <div key={index} className="card mb-3">
+            <div className="card-body">
+                <h6 className="card-subtitle mb-2 text-muted">Información del Vehículo</h6>
+                <p className="mb-1"><strong>Marca:</strong> {negocio.oferta.marca}</p>
+                <p className="mb-1"><strong>Linea:</strong> {negocio.oferta.linea}</p>
+                <p className="mb-2"><strong>Modelo:</strong> {negocio.oferta.modelo}</p>
+                
+                <h6 className="card-subtitle mb-2 text-muted">Información del Vendedor</h6>
+                <p className="mb-1"><strong>Nombre:</strong> {negocio.oferta.nombre} {negocio.oferta.apellido}</p>
+                <p className="mb-1"><strong>Celular:</strong> {negocio.oferta.celular}</p>
+                <p className="mb-2"><strong>Email:</strong> {negocio.oferta.email}</p>
+                
+                <h6 className="card-subtitle mb-2 text-muted">Información del Comprador</h6>
+                <p className="mb-1"><strong>Nombre:</strong> {negocio.interes.nombre} {negocio.interes.apellido}</p>
+                <p className="mb-1"><strong>Celular:</strong> {negocio.interes.celular}</p>
+                <p className="mb-2"><strong>Email:</strong> {negocio.interes.email}</p>
+                
+                <div className="d-flex gap-2">
+                    <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
+                    <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                </div>
+            </div>
+        </div>
+    );
+
+    if (loading) {
+        return (
+            <div className="container-fluid px-3 py-4">
+                <div className="row">
+                    <div className="col-12">
+                        <div className="d-flex justify-content-center">
+                            <div className="spinner-border" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="container">
+        <div className="container-fluid px-3 py-4">
             <div className="row">
                 <div className="col-12">
-                    <h3>Negocios</h3>
-                    <div className="d-flex justify-content-start mb-3">
-                        <div className="compra-venta-buttons-group" role="group">
+                    <h3 className="mb-4">Negocios</h3>
+                    
+                    {/* Tabs */}
+                    <div className="d-flex justify-content-start mb-4">
+                        <div className="compra-venta-buttons-group w-100" role="group">
                             <button
-                                className={`btn ${activeTab === 'vitrina' ? 'selected-button-form' : 'unselected-button-form'} m-0 p-1`}
+                                className={`btn ${activeTab === 'vitrina' ? 'selected-button-form' : 'unselected-button-form'} m-0 p-2 flex-grow-1`}
                                 onClick={() => setActiveTab('vitrina')}
                             >
                                 <span className="material-symbols-outlined">store</span>
                                 <span className="ms-1">En Vitrina</span>
                             </button>
                             <button
-                                className={`btn ${activeTab === 'ofertas' ? 'selected-button-form' : 'unselected-button-form'} m-0 p-1`}
+                                className={`btn ${activeTab === 'ofertas' ? 'selected-button-form' : 'unselected-button-form'} m-0 p-2 flex-grow-1`}
                                 onClick={() => setActiveTab('ofertas')}
                             >
                                 <span className="material-symbols-outlined">sell</span>
@@ -111,8 +166,9 @@ const NegociosComponent = () => {
                         </div>
                     </div>
 
-                    <div className="row mb-3">
-                        <div className="col-md-4">
+                    {/* Filters */}
+                    <div className="row g-3 mb-4">
+                        <div className="col-12 col-sm-6 col-md-4">
                             <input
                                 type="text"
                                 className="form-control"
@@ -122,7 +178,7 @@ const NegociosComponent = () => {
                                 onChange={handleFilterChange}
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-12 col-sm-6 col-md-4">
                             <input
                                 type="text"
                                 className="form-control"
@@ -132,7 +188,7 @@ const NegociosComponent = () => {
                                 onChange={handleFilterChange}
                             />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-12 col-sm-6 col-md-4">
                             <input
                                 type="text"
                                 className="form-control"
@@ -144,83 +200,104 @@ const NegociosComponent = () => {
                         </div>
                     </div>
 
-                    {activeTab === 'vitrina' ? (
+                    {/* Content */}
+                    <div className="row">
                         <div className="col-12">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Marca</th>
-                                        <th>Linea</th>
-                                        <th>Modelo</th>
-                                        <th>Nombre Comprador</th>
-                                        <th>Apellido</th>
-                                        <th>Celular</th>
-                                        <th>Email</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredVitrina.map((negocio, i) => (
-                                        <tr key={i}>
-                                            <td>{negocio.car.marca}</td>
-                                            <td>{negocio.car.linea}</td>
-                                            <td>{negocio.car.modelo}</td>
-                                            <td>{negocio.interes.nombre}</td>
-                                            <td>{negocio.interes.apellido}</td>
-                                            <td>{negocio.interes.celular}</td>
-                                            <td>{negocio.interes.email}</td>
-                                            <td>
-                                                <Link to={"/admin/negocios/edit/" + negocio._id}>Editar</Link> | 
-                                                <button className="btn btn-link p-0" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            {/* Desktop View */}
+                            <div className="d-none d-lg-block">
+                                {activeTab === 'vitrina' ? (
+                                    <div className="table-responsive">
+                                        <table className="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Marca</th>
+                                                    <th>Linea</th>
+                                                    <th>Modelo</th>
+                                                    <th>Nombre Comprador</th>
+                                                    <th>Apellido</th>
+                                                    <th>Celular</th>
+                                                    <th>Email</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {filteredVitrina.map((negocio, i) => (
+                                                    <tr key={i}>
+                                                        <td>{negocio.car.marca}</td>
+                                                        <td>{negocio.car.linea}</td>
+                                                        <td>{negocio.car.modelo}</td>
+                                                        <td>{negocio.interes.nombre}</td>
+                                                        <td>{negocio.interes.apellido}</td>
+                                                        <td>{negocio.interes.celular}</td>
+                                                        <td>{negocio.interes.email}</td>
+                                                        <td>
+                                                            <div className="d-flex gap-2">
+                                                                <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
+                                                                <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <div className="table-responsive">
+                                        <table className="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Marca</th>
+                                                    <th>Linea</th>
+                                                    <th>Modelo</th>
+                                                    <th>Nombre Vendedor</th>
+                                                    <th>Apellido</th>
+                                                    <th>Celular</th>
+                                                    <th>Email</th>
+                                                    <th>Nombre Comprador</th>
+                                                    <th>Apellido</th>
+                                                    <th>Celular</th>
+                                                    <th>Email</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {filteredOferta.map((negocio, i) => (
+                                                    <tr key={i}>
+                                                        <td>{negocio.oferta.marca}</td>
+                                                        <td>{negocio.oferta.linea}</td>
+                                                        <td>{negocio.oferta.modelo}</td>
+                                                        <td>{negocio.oferta.nombre}</td>
+                                                        <td>{negocio.oferta.apellido}</td>
+                                                        <td>{negocio.oferta.celular}</td>
+                                                        <td>{negocio.oferta.email}</td>
+                                                        <td>{negocio.interes.nombre}</td>
+                                                        <td>{negocio.interes.apellido}</td>
+                                                        <td>{negocio.interes.celular}</td>
+                                                        <td>{negocio.interes.email}</td>
+                                                        <td>
+                                                            <div className="d-flex gap-2">
+                                                                <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
+                                                                <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Mobile View */}
+                            <div className="d-block d-lg-none">
+                                {activeTab === 'vitrina' ? (
+                                    filteredVitrina.map((negocio, i) => renderVitrinaCard(negocio, i))
+                                ) : (
+                                    filteredOferta.map((negocio, i) => renderOfertaCard(negocio, i))
+                                )}
+                            </div>
                         </div>
-                    ) : (
-                        <div className="col-12">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Marca</th>
-                                        <th>Linea</th>
-                                        <th>Modelo</th>
-                                        <th>Nombre Vendedor</th>
-                                        <th>Apellido</th>
-                                        <th>Celular</th>
-                                        <th>Email</th>
-                                        <th>Nombre Comprador</th>
-                                        <th>Apellido</th>
-                                        <th>Celular</th>
-                                        <th>Email</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredOferta.map((negocio, i) => (
-                                        <tr key={i}>
-                                            <td>{negocio.oferta.marca}</td>
-                                            <td>{negocio.oferta.linea}</td>
-                                            <td>{negocio.oferta.modelo}</td>
-                                            <td>{negocio.oferta.nombre}</td>
-                                            <td>{negocio.oferta.apellido}</td>
-                                            <td>{negocio.oferta.celular}</td>
-                                            <td>{negocio.oferta.email}</td>
-                                            <td>{negocio.interes.nombre}</td>
-                                            <td>{negocio.interes.apellido}</td>
-                                            <td>{negocio.interes.celular}</td>
-                                            <td>{negocio.interes.email}</td>
-                                            <td>
-                                                <Link to={"/admin/negocios/edit/" + negocio._id}>Editar</Link> | 
-                                                <button className="btn btn-link p-0" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                    </div>
                 </div>
             </div>
         </div>
