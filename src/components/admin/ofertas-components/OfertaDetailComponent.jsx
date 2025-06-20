@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import VehicleDetailComponent from '../../shared/VehicleDetailComponent';
 
 import { formatMoney } from '../../../shared/utils';
 
@@ -243,53 +243,41 @@ RenderOferta.propTypes = {
   reloadOferta: PropTypes.func.isRequired
 };
 
-const OfertaDetailComponent = ({ oferta: initialCar, mode }) => {
-  const [oferta, setCar] = useState(initialCar);
-  const params = useParams();
+const OfertaDetailComponent = ({ mode }) => {
+  const [oferta, setOferta] = useState(null);
+  const { carId } = useParams();
 
-  const getCar = React.useCallback(async () => {
+  const reloadOferta = async () => {
     try {
-      const response = await axios.get(`/api/ofertas/${params.carId}`);
-      setCar(response.data);
+      const response = await axios.get(`/api/ofertas/${carId}`);
+      setOferta(response.data);
     } catch (error) {
-      console.error("Error fetching oferta:", error);
+      console.error("Error loading oferta:", error);
     }
-  }, [params.carId]);
+  };
 
   useEffect(() => {
-    if (!initialCar) {
-      getCar();
-    }
-  }, [initialCar, getCar]);
+    reloadOferta();
+  }, [carId]);
+
+  if (!oferta) {
+    return <h3>Loading...</h3>;
+  }
 
   return (
-    <div className="container">
-      <div className="row">
-        <Breadcrumb>
-          <BreadcrumbItem>
-            <Link to="/admin/ofertas">Ofertas</Link>
-          </BreadcrumbItem>
-          <BreadcrumbItem active>{oferta?.marca} {oferta?.linea}</BreadcrumbItem>
-        </Breadcrumb>
-        <div className="col-12">
-          <h3>{oferta?.marca} {oferta?.linea}</h3>
-          <hr />
-        </div>
-      </div>
-
-      <div className="row">
-        <RenderOferta oferta={oferta} mode={mode} reloadOferta={getCar} />
-      </div>
-    </div>
+    <VehicleDetailComponent
+      vehicle={oferta}
+      mode={mode}
+      reloadVehicle={reloadOferta}
+      imagePath={imgPath}
+      apiEndpoint="/api/ofertas"
+      redirectPath="/admin/ofertas/"
+      showClientInfo={true}
+    />
   );
 };
 
 OfertaDetailComponent.propTypes = {
-  oferta: PropTypes.shape({
-    _id: PropTypes.string,
-    marca: PropTypes.string,
-    linea: PropTypes.string
-  }),
   mode: PropTypes.oneOf(['admin', 'client']).isRequired
 };
 
