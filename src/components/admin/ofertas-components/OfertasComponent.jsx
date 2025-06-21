@@ -64,10 +64,10 @@ const OfertasComponent = () => {
       <div className="container d-flex flex-column py-2">
         <Breadcrumb>
           <BreadcrumbItem><Link to="/home">Inicio</Link></BreadcrumbItem>
-          <BreadcrumbItem active>Vitrina</BreadcrumbItem>
+          <BreadcrumbItem active>Ofertados</BreadcrumbItem>
         </Breadcrumb> 
         <div className="col-12">
-          <h3>Vitrina</h3>
+          <h3>Ofertados</h3>
           <hr />
 
           {/* Modal */}
