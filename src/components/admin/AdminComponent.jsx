@@ -195,6 +195,16 @@ function Sidebar() {
                                 <span className="ms-2">Intereses</span>
                             </NavLink>
                         </li>
+                        <li className="nav-item w-100">
+                            <NavLink 
+                                to="compra" 
+                                className={({ isActive }) => `nav-link align-middle px-0 ${isActive ? 'active' : ''}`}
+                                onClick={closeSidebarOnMobile}
+                            >
+                                <span className="material-symbols-outlined">shopping_cart</span>
+                                <span className="ms-2">Compras</span>
+                            </NavLink>
+                        </li>
                         <li className="w-100">
                             <a href="#" onClick={handleUserSubmenuClick} className="nav-link px-0 align-middle">
                                 {UsuariosIcon} <span className="ms-1">Usuarios</span>
