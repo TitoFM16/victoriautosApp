@@ -3,7 +3,8 @@ import { Container, Row, Col, Card, Form, Button, Table, Alert, Spinner } from '
 
 const ConsultaComponent = () => {
   const [placa, setPlaca] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [simitLoading, setSimitLoading] = useState(false);
+  const [fasecoldaLoading, setFasecoldaLoading] = useState(false);
   const [simitData, setSimitData] = useState(null);
   const [fasecoldaData, setFasecoldaData] = useState(null);
   const [error, setError] = useState('');
@@ -18,6 +19,50 @@ const ConsultaComponent = () => {
     }
   };
   
+  // Individual API call for SIMIT
+  const fetchSimitData = async (plateNumber) => {
+    setSimitLoading(true);
+    try {
+      const response = await fetch('https://simit-api.onrender.com/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ document_number: plateNumber }),
+      });
+      
+      const result = await response.json();
+      setSimitData(result);
+    } catch (err) {
+      console.error('SIMIT API Error:', err);
+      setSimitData({ error: 'Error al consultar SIMIT' });
+    } finally {
+      setSimitLoading(false);
+    }
+  };
+
+  // Individual API call for FASECOLDA
+  const fetchFasecoldaData = async (plateNumber) => {
+    setFasecoldaLoading(true);
+    try {
+      const response = await fetch('https://fasecolda-api.onrender.com/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ placa: plateNumber }),
+      });
+      
+      const result = await response.json();
+      setFasecoldaData(result);
+    } catch (err) {
+      console.error('FASECOLDA API Error:', err);
+      setFasecoldaData({ error: 'Error al consultar FASECOLDA' });
+    } finally {
+      setFasecoldaLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!placa.trim()) {
@@ -25,45 +70,45 @@ const ConsultaComponent = () => {
       return;
     }
 
-    setLoading(true);
+    const plateNumber = placa.trim().toUpperCase();
+    
+    // Reset state
     setError('');
     setSimitData(null);
     setFasecoldaData(null);
 
-    try {
-      // Call both APIs in parallel
-      const [simitResponse, fasecoldaResponse] = await Promise.all([
-        fetch('https://simit-api.onrender.com/search', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ document_number: placa.trim().toUpperCase() }),
-        }),
-        fetch('https://fasecolda-api.onrender.com/search', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ placa: placa.trim().toUpperCase() }),
-        })
-      ]);
-
-      const simitResult = await simitResponse.json();
-      const fasecoldaResult = await fasecoldaResponse.json();
-
-      setSimitData(simitResult);
-      setFasecoldaData(fasecoldaResult);
-    } catch (err) {
-      setError('Error al consultar los servicios. Por favor intente nuevamente.');
-      console.error('API Error:', err);
-    } finally {
-      setLoading(false);
-    }
+    // Start both API calls independently - they will render as they complete
+    fetchSimitData(plateNumber);
+    fetchFasecoldaData(plateNumber);
   };
 
   const renderSimitResults = () => {
+    // Show loading state
+    if (simitLoading) {
+      return (
+        <Card className="mb-4">
+          <Card.Header>
+            <h5 className="mb-0">Consulta SIMIT - Multas de Tránsito</h5>
+          </Card.Header>
+          <Card.Body className="text-center">
+            <Spinner animation="border" role="status" className="me-2" />
+            <span>Consultando SIMIT...</span>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    // Don't render anything if no data yet
     if (!simitData) return null;
+
+    // Handle API error
+    if (simitData.error) {
+      return (
+        <Alert variant="danger">
+          <strong>SIMIT:</strong> {simitData.error}
+        </Alert>
+      );
+    }
 
     // Check for service unavailable
     if (!simitData.has_tickets && simitData.message && 
@@ -126,7 +171,32 @@ const ConsultaComponent = () => {
   };
 
   const renderFasecoldaResults = () => {
+    // Show loading state
+    if (fasecoldaLoading) {
+      return (
+        <Card className="mb-4">
+          <Card.Header>
+            <h5 className="mb-0">Consulta FASECOLDA - Historial de Siniestros</h5>
+          </Card.Header>
+          <Card.Body className="text-center">
+            <Spinner animation="border" role="status" className="me-2" />
+            <span>Consultando FASECOLDA...</span>
+          </Card.Body>
+        </Card>
+      );
+    }
+
+    // Don't render anything if no data yet
     if (!fasecoldaData) return null;
+
+    // Handle API error
+    if (fasecoldaData.error) {
+      return (
+        <Alert variant="danger">
+          <strong>FASECOLDA:</strong> {fasecoldaData.error}
+        </Alert>
+      );
+    }
 
     // No records found
     if (fasecoldaData.result_type !== 'HAS_RESULTS' || !fasecoldaData.records || fasecoldaData.records.length === 0) {
@@ -170,6 +240,12 @@ const ConsultaComponent = () => {
     );
   };
 
+  // Check if any API is currently loading
+  const isAnyLoading = simitLoading || fasecoldaLoading;
+  
+  // Check if we should show results section
+  const shouldShowResults = simitData || fasecoldaData || isAnyLoading;
+
   return (
     <Container fluid className="py-4">
       <Row>
@@ -188,7 +264,7 @@ const ConsultaComponent = () => {
                         placeholder="Ingrese el número de placa (ej: ABC123)"
                         value={placa}
                         onChange={(e) => setPlaca(e.target.value)}
-                        disabled={loading}
+                        disabled={isAnyLoading}
                         style={{ textTransform: 'uppercase' }}
                       />
                     </Form.Group>
@@ -197,10 +273,10 @@ const ConsultaComponent = () => {
                     <Button 
                       type="submit" 
                       variant="primary" 
-                      disabled={loading}
+                      disabled={isAnyLoading}
                       className="mb-3 w-100"
                     >
-                      {loading ? (
+                      {isAnyLoading ? (
                         <>
                           <Spinner
                             as="span"
@@ -228,7 +304,7 @@ const ConsultaComponent = () => {
             </Alert>
           )}
 
-          {(simitData || fasecoldaData) && (
+          {shouldShowResults && (
             <Row>
               <Col>
                 <h4 className="mb-3">Resultados para la placa: {placa.toUpperCase()}</h4>
@@ -243,4 +319,4 @@ const ConsultaComponent = () => {
   );
 };
 
-export default ConsultaComponent; 
+export default ConsultaComponent;
