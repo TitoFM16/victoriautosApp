@@ -14,6 +14,7 @@ const UsuariosIcon = <span className="material-symbols-outlined">group</span>
 const HandShakeIcon = <span className="material-symbols-outlined">handshake</span>
 const AlmacenIcon = <span className="material-symbols-outlined">store</span>
 const OfertaIcon = <span className="material-symbols-outlined">sell</span>
+const ConsultaIcon = <span className="material-symbols-outlined">search</span>
 const MenuIcon = <span className="material-symbols-outlined">menu</span>
 
 function Sidebar() {
@@ -142,6 +143,15 @@ function Sidebar() {
                                 onClick={closeSidebarOnMobile}
                             >
                                 {FolderOpenIcon} <span className="ms-1">Tramites</span>
+                            </NavLink>
+                        </li>
+                        <li className="w-100">
+                            <NavLink 
+                                to="consulta" 
+                                className={({ isActive }) => `nav-link align-middle px-0 ${isActive ? 'active' : ''}`}
+                                onClick={closeSidebarOnMobile}
+                            >
+                                {ConsultaIcon} <span className="ms-1">Consulta</span>
                             </NavLink>
                         </li>
                         <li className="w-100">

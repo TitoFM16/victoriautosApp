@@ -13,6 +13,7 @@ const AdminVitrina = React.lazy(() => import('../components/admin/vitrina-vehicu
 const DashboardComponent = React.lazy(() => import('../components/admin/Dashboard/DashboardComponent'));
 const OfertaDetail = React.lazy(() => import('../components/admin/ofertas-components/OfertaDetailComponent'));
 const CarDetailComponent = React.lazy(() => import('../components/vitrina-components/CardetailComponent'));
+const ConsultaComponent = React.lazy(() => import('../components/admin/Consulta/ConsultaComponent'));
 
 
 const AdminRoutes = ({ authenticated }) => {
@@ -29,7 +30,7 @@ const AdminRoutes = ({ authenticated }) => {
               <Route path="tramites" element={<TramitesComponent />} />
               <Route path="vitrina" element={<AdminVitrina />} />
               <Route path='vitrina/:carId' element={<CarDetailComponent mode="admin" />} />
-
+              <Route path="consulta" element={<ConsultaComponent />} />
               <Route path="dashboard" element={<DashboardComponent />} />
             </Route>
           </Routes>
