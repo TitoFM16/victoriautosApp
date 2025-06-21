@@ -31,7 +31,7 @@ const CompraComponent = () => {
     const generateContract = async (compraFormId) => {
         try {
             setGeneratingPdf(prev => ({ ...prev, [compraFormId]: true }));
-            
+
             const response = await axios.get(`/api/compra/generate-pdf/${compraFormId}`, {
                 responseType: 'blob',
                 withCredentials: true
@@ -41,11 +41,11 @@ const CompraComponent = () => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            
+
             // Get compra form details for filename
             const compraForm = compraForms.find(form => form._id === compraFormId);
             const filename = `Contrato_${compraForm?.nombre}_${compraForm?.apellido}_${compraForm?.car?.marca}_${compraForm?.car?.linea}.pdf`;
-            
+
             link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
@@ -57,6 +57,19 @@ const CompraComponent = () => {
             alert('Error al generar el contrato. Por favor intente nuevamente.');
         } finally {
             setGeneratingPdf(prev => ({ ...prev, [compraFormId]: false }));
+        }
+    };
+    const deleteCompraForm = async (compraFormId) => {
+        if (!window.confirm("¿Estás seguro de eliminar esta solicitud de compra?")) return;
+
+        try {
+            await axios.delete(`/api/compra/${compraFormId}`, {
+                withCredentials: true
+            });
+            setCompraForms(prev => prev.filter(form => form._id !== compraFormId));
+        } catch (error) {
+            console.error('Error deleting compra form:', error);
+            alert('Error al eliminar la solicitud.');
         }
     };
 
@@ -108,10 +121,10 @@ const CompraComponent = () => {
                 <div className="col-12">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h2 className="mb-0">
-                            <span className="material-symbols-outlined me-2" style={{verticalAlign: 'middle'}}>shopping_cart</span>
+                            <span className="material-symbols-outlined me-2" style={{ verticalAlign: 'middle' }}>shopping_cart</span>
                             Solicitudes de Compra
                         </h2>
-                        <button 
+                        <button
                             className="btn btn-outline-primary"
                             onClick={fetchCompraForms}
                         >
@@ -128,7 +141,7 @@ const CompraComponent = () => {
                         <CardBody>
                             {compraForms.length === 0 ? (
                                 <div className="text-center py-4">
-                                    <span className="material-symbols-outlined" style={{fontSize: '4rem', color: '#6c757d'}}>inbox</span>
+                                    <span className="material-symbols-outlined" style={{ fontSize: '4rem', color: '#6c757d' }}>inbox</span>
                                     <p className="text-muted mt-2">No hay solicitudes de compra pendientes</p>
                                 </div>
                             ) : (
@@ -138,7 +151,7 @@ const CompraComponent = () => {
                                             Total de solicitudes: <span className="badge bg-primary">{compraForms.length}</span>
                                         </h5>
                                     </div>
-                                    
+
                                     <div className="table-responsive">
                                         <table className="table table-hover">
                                             <thead className="table-light">
@@ -194,14 +207,13 @@ const CompraComponent = () => {
                                                             <small>{formatDate(form.createdAt)}</small>
                                                         </td>
                                                         <td>
-                                                            <span className={`badge ${
-                                                                form.status === 'PENDING' ? 'bg-warning' :
-                                                                form.status === 'APPROVED' ? 'bg-success' :
-                                                                form.status === 'REJECTED' ? 'bg-danger' : 'bg-secondary'
-                                                            }`}>
+                                                            <span className={`badge ${form.status === 'PENDING' ? 'bg-warning' :
+                                                                    form.status === 'APPROVED' ? 'bg-success' :
+                                                                        form.status === 'REJECTED' ? 'bg-danger' : 'bg-secondary'
+                                                                }`}>
                                                                 {form.status === 'PENDING' ? 'Pendiente' :
-                                                                 form.status === 'APPROVED' ? 'Aprobado' :
-                                                                 form.status === 'REJECTED' ? 'Rechazado' : form.status}
+                                                                    form.status === 'APPROVED' ? 'Aprobado' :
+                                                                        form.status === 'REJECTED' ? 'Rechazado' : form.status}
                                                             </span>
                                                         </td>
                                                         <td>
@@ -218,7 +230,7 @@ const CompraComponent = () => {
                                                                         </>
                                                                     ) : (
                                                                         <>
-                                                                            <span className="material-symbols-outlined me-1" style={{fontSize: '16px'}}>description</span>
+                                                                            <span className="material-symbols-outlined me-1" style={{ fontSize: '16px' }}>description</span>
                                                                             Generar Contrato
                                                                         </>
                                                                     )}
@@ -227,10 +239,17 @@ const CompraComponent = () => {
                                                                     className="btn btn-success btn-sm"
                                                                     onClick={() => window.open(`https://api.whatsapp.com/send?phone=57${form.celular}&text=Hola ${form.nombre}, hemos recibido tu solicitud de compra para el vehículo ${form.car?.marca} ${form.car?.linea}. Te contactaremos pronto.`, "_blank")}
                                                                 >
-                                                                    <span className="material-symbols-outlined" style={{fontSize: '16px'}}>chat</span>
+                                                                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chat</span>
+                                                                </button>
+                                                                <button
+                                                                    className="btn btn-danger btn-sm"
+                                                                    onClick={() => deleteCompraForm(form._id)}
+                                                                >
+                                                                    <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>delete</span>
                                                                 </button>
                                                             </div>
                                                         </td>
+
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -249,7 +268,7 @@ const CompraComponent = () => {
                         <Card>
                             <CardBody>
                                 <h5 className="card-title mb-3">
-                                    <span className="material-symbols-outlined me-2" style={{verticalAlign: 'middle'}}>analytics</span>
+                                    <span className="material-symbols-outlined me-2" style={{ verticalAlign: 'middle' }}>analytics</span>
                                     Resumen de Solicitudes
                                 </h5>
                                 <div className="row">
