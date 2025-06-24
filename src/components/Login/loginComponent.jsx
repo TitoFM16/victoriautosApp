@@ -22,7 +22,7 @@ function LoginComponent() {
     try {
       await dispatch(login(username, password));
       // Redirect to the home page or show a success message
-      navigate("/admin")
+      navigate("/admin/home")
     //   return <Navigate to="/admin" replace />
     } catch (error) {
       setError(error.message);
