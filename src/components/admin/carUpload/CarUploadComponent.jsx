@@ -52,6 +52,8 @@ class CarUploadComponent extends React.Component {
           
         marcaDropdown: [],
         lineaDropdown: [],
+        customMarca: '',
+        customLinea: '',
         showLoadingModal: false,
         submitStatus: 'loading'
       }
@@ -102,6 +104,56 @@ class CarUploadComponent extends React.Component {
       });
     };
 
+    ensureVehicleDataExists = async (tipo, marca, linea) => {
+      try {
+        // Determine the actual marca and linea values to use
+        const actualMarca = marca === '__ADD_NEW__' ? this.state.customMarca : marca;
+        const actualLinea = linea === '__ADD_NEW__' ? this.state.customLinea : linea;
+
+        // Validate that we have actual values
+        if (!actualMarca || !actualLinea) {
+          throw new Error('Por favor complete la marca y linea');
+        }
+
+        // Check if marca exists for this tipo, if not create it
+        const marcaExists = this.state.marcaDropdown.some(m => m.marca === actualMarca);
+        if (!marcaExists && actualMarca) {
+          await axios.post('/api/buscavehiculo/marca', {
+            tipo: tipo,
+            marca: actualMarca
+          }, {
+            withCredentials: true
+          });
+        }
+
+        // Check if linea exists for this marca and tipo, if not create it
+        const lineaExists = this.state.lineaDropdown.some(l => 
+          (l.linea + (l.version ? ' ' + l.version : '')) === actualLinea
+        );
+        if (!lineaExists && actualLinea && actualMarca) {
+          // Split linea into linea and version if it contains spaces
+          const lineaParts = actualLinea.trim().split(' ');
+          const lineaName = lineaParts[0];
+          const version = lineaParts.length > 1 ? lineaParts.slice(1).join(' ') : '';
+
+          await axios.post('/api/buscavehiculo/linea', {
+            tipo: tipo,
+            marca: actualMarca,
+            linea: lineaName,
+            version: version
+          }, {
+            withCredentials: true
+          });
+        }
+
+        // Return the actual values to be used in form submission
+        return { actualMarca, actualLinea };
+      } catch (error) {
+        console.error('Error ensuring vehicle data exists:', error);
+        throw error;
+      }
+    };
+
     handleChange = async (event) => {
       const {name, type, value} = event.target;
 
@@ -129,30 +181,49 @@ class CarUploadComponent extends React.Component {
           [name]: value,
           marca: '', // Reset marca when Tipo changes
           linea: '', // Reset linea when Tipo changes
+          customMarca: '',
+          customLinea: '',
         });
 
         // Fetch marca options based on selected Tipo
-        axios.get('/api/buscavehiculo/?tipo=' + value)
-          .then((response) => {
-            this.setState({ marcaDropdown: response.data });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if (value) {
+          axios.get('/api/buscavehiculo/?tipo=' + value)
+            .then((response) => {
+              this.setState({ marcaDropdown: response.data });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
       } else if (name === 'marca') {
         this.setState({
           [name]: value,
           linea: '', // Reset linea when marca changes
+          customLinea: '',
         });
 
         // Fetch linea options based on selected Tipo and marca
-        axios.get('/api/buscavehiculo/?tipo=' + this.state.Tipo + '&marca=' + value)
-          .then((response) => {
-            this.setState({ lineaDropdown: response.data });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if (value && value !== '__ADD_NEW__' && this.state.Tipo) {
+          axios.get('/api/buscavehiculo/?tipo=' + this.state.Tipo + '&marca=' + value)
+            .then((response) => {
+              this.setState({ lineaDropdown: response.data });
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      } else if (name === 'linea') {
+        this.setState({
+          [name]: value,
+        });
+      } else if (name === 'customMarca') {
+        this.setState({
+          [name]: value,
+        });
+      } else if (name === 'customLinea') {
+        this.setState({
+          [name]: value,
+        });
       } else {
         // Handle all other inputs normally
         this.setState({
@@ -209,12 +280,13 @@ class CarUploadComponent extends React.Component {
         return file.type.match("(image[/]{1})(.*)")[2]
       }
 
-     
+      // create images array to upload to the server in the mongoose model carImages array value
+      const images = [frenteImg,traseroImg,lateralIzqImg,lateralDerImg,interiorImg,motorImg]
 
-      const DIR = marca+"_"+linea+"_"+modelo+"/";
+      // We'll update DIR after getting actual marca and linea values
       
       const formValues={
-        DIR:DIR,
+        DIR: "", // Will be updated later
         Tipo: Tipo,
         marca: marca,
         linea: linea,
@@ -250,31 +322,43 @@ class CarUploadComponent extends React.Component {
         formData.append(key, value);
       });
 
-      // create images array to upload to the server in the mongoose model carImages array value
-      const images = [frenteImg,traseroImg,lateralIzqImg,lateralDerImg,interiorImg,motorImg]
-
-      //Entry images in FormData that will be uploaded to the server in mongoose model carImages array value
-      images.forEach((image,index) => {
-        formData.append("carImages", image, DIR+index+"."+getExtension(image));
-      });
+      // Images will be processed after ensuring vehicle data exists
 
       this.setState({ showLoadingModal: true, submitStatus: 'loading' });
 
-      //use axios to send the data to the server
-      axios.post('/api/admin/cars/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json'
-        },
-        withCredentials: true
-      })
-      .then(() => {
-        this.setState({ submitStatus: 'success' });
-      })
-      .catch((error) => {
-        console.error('Error uploading car:', error.response || error.message);
-        this.setState({ submitStatus: 'error' });
-      });
+      // First, ensure marca and linea exist in the database
+      this.ensureVehicleDataExists(Tipo, marca, linea)
+        .then((result) => {
+          // Calculate DIR with actual values
+          const actualDIR = result.actualMarca + "_" + result.actualLinea + "_" + modelo + "/";
+          
+          // Update formData with actual marca, linea, and DIR values
+          formData.set('marca', result.actualMarca);
+          formData.set('linea', result.actualLinea);
+          formData.set('DIR', actualDIR);
+          
+          // Create images array and add to formData with updated DIR
+          const images = [frenteImg, traseroImg, lateralIzqImg, lateralDerImg, interiorImg, motorImg];
+          images.forEach((image, index) => {
+            formData.append("carImages", image, actualDIR + index + "." + getExtension(image));
+          });
+          
+          // Then create the car
+          return axios.post('/api/admin/cars/', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Accept': 'application/json'
+            },
+            withCredentials: true
+          });
+        })
+        .then(() => {
+          this.setState({ submitStatus: 'success' });
+        })
+        .catch((error) => {
+          console.error('Error uploading car:', error.response || error.message);
+          this.setState({ submitStatus: 'error' });
+        });
     }
 
     render() {    
@@ -319,10 +403,25 @@ class CarUploadComponent extends React.Component {
                       {this.state.Tipo !== '' && this.state.marcaDropdown
                         .sort((a, b) => a.marca.localeCompare(b.marca))
                         .map((marca) => (
-                          <option key={marca.id} value={marca.marca}>{marca.marca}</option>
+                          <option key={marca.id || marca.marca} value={marca.marca}>{marca.marca}</option>
                         ))
                       }
+                      {this.state.Tipo !== '' && (
+                        <option value="__ADD_NEW__">+ Agregar nueva marca...</option>
+                      )}
                     </select>
+                    {this.state.marca === '__ADD_NEW__' && (
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Escriba la nueva marca"
+                          name="customMarca"
+                          value={this.state.customMarca || ''}
+                          onChange={this.handleChange}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="form-group">
                     <label htmlFor="linea">Linea</label>
@@ -334,7 +433,7 @@ class CarUploadComponent extends React.Component {
                         onChange={this.handleChange}
                     >
                         <option value="">Seleccione linea</option>
-                        {this.state.marca !== '' &&
+                        {this.state.marca !== '' && this.state.marca !== '__ADD_NEW__' &&
                             this.state.lineaDropdown
                                 .sort((a, b) =>
                                     (a.linea + ' ' + (a.version || '')).localeCompare(
@@ -343,13 +442,28 @@ class CarUploadComponent extends React.Component {
                                 )
                                 .map((linea) => (
                                     <option
-                                        key={linea.linea + linea.version}
-                                        value={linea.linea + ' ' + linea.version}
+                                        key={linea.linea + (linea.version || '')}
+                                        value={linea.linea + (linea.version ? ' ' + linea.version : '')}
                                     >
                                         {linea.linea + (linea.version ? ' ' + linea.version : '')}
                                     </option>
                                 ))}
+                        {this.state.marca !== '' && this.state.marca !== '__ADD_NEW__' && (
+                          <option value="__ADD_NEW__">+ Agregar nueva linea...</option>
+                        )}
                     </select>
+                    {this.state.linea === '__ADD_NEW__' && (
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Escriba la nueva linea"
+                          name="customLinea"
+                          value={this.state.customLinea || ''}
+                          onChange={this.handleChange}
+                        />
+                      </div>
+                    )}
                 </div>
 
                   <div className="form-group">
