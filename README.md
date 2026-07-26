@@ -40,6 +40,8 @@ victoriautosBackend/
 ├── templates/                # PDF contract template
 ├── tests/                    # pytest suite (real Postgres test DB, no mocked ORM)
 ├── data/images/               # uploaded vehicle/offer photos (gitignored, like the original)
+├── docker/                   # docker-compose init scripts (test DB creation)
+├── docker-compose.yml        # local Postgres for development/testing
 ├── pyproject.toml
 ├── alembic.ini
 └── .pre-commit-config.yaml
@@ -47,12 +49,31 @@ victoriautosBackend/
 
 ## Setup
 
-Requires [uv](https://docs.astral.sh/uv/) and a local PostgreSQL instance.
+Requires [uv](https://docs.astral.sh/uv/) and a PostgreSQL instance - either the
+bundled `docker-compose.yml` (no local Postgres install needed) or your own.
+
+### Option A: Docker Compose (recommended for local testing)
 
 ```bash
-uv sync                      # creates .venv, installs all dependencies
+docker compose up -d          # starts Postgres on localhost:5433, creates
+                               # both the `victoriautos` and `victoriautos_test` databases
+uv sync                       # creates .venv, installs all dependencies
+cp .env.example .env          # DATABASE_URL default already matches the compose service
+uv run alembic upgrade head   # create all tables
+uv run pre-commit install     # enable the git hooks (ruff check + format on commit)
+```
+
+Port 5433 (not 5432) is used so this doesn't clash with a Postgres already
+running natively on your machine. `docker compose down` stops it;
+`docker compose down -v` also wipes the data volume.
+
+### Option B: your own PostgreSQL instance
+
+```bash
+uv sync
 cp .env.example .env         # fill in DATABASE_URL, SECRET_KEY, RECAPTCHA_SECRET_KEY
 createdb victoriautos        # or whatever database name you put in DATABASE_URL
+createdb victoriautos_test   # used by the test suite
 uv run alembic upgrade head  # create all tables
 uv run pre-commit install    # enable the git hooks (ruff check + format on commit)
 ```
@@ -79,14 +100,14 @@ is created and dropped once per test session, and tables are truncated between
 tests.
 
 ```bash
-createdb victoriautos_test
 uv run pytest
 ```
 
 By default the test DB URL is derived from `DATABASE_URL` in `.env` (same host/user,
-database name `victoriautos_test`). Override with the `TEST_DATABASE_URL` env var if
-needed. External calls (reCAPTCHA, SIMIT/Fasecolda) are mocked in tests - never hit
-real network.
+database name `victoriautos_test`) - already created for you if you used the Docker
+Compose setup above. Override with the `TEST_DATABASE_URL` env var if needed.
+External calls (reCAPTCHA, SIMIT/Fasecolda) are mocked in tests - never hit real
+network.
 
 ## Migrating catalog data from the old Postgres table
 

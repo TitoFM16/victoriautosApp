@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: victoriautos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: victoriautos
+      POSTGRES_PASSWORD: victoriautos
+      POSTGRES_DB: victoriautos
+    ports:
+      # Mapped to 5433 on the host to avoid clashing with a locally installed
+      # Postgres on the default 5432.
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U victoriautos -d victoriautos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
