@@ -39,7 +39,7 @@ const BuscadoComponent = () => {
         if (window.confirm('¿Está seguro que desea eliminar este registro?')) {
             try {
                 await axios.delete(`/api/interescompra/${id}`);
-                setInteresForms(prevForms => prevForms.filter(form => form._id !== id));
+                setInteresForms(prevForms => prevForms.filter(form => form.id !== id));
             } catch (error) {
                 console.error('Error deleting record:', error);
             }
@@ -60,10 +60,10 @@ const BuscadoComponent = () => {
 
     const handleSaveEdit = async () => {
         try {
-            const response = await axios.put(`/api/interescompra/${editingForm._id}`, editingForm);
+            const response = await axios.put(`/api/interescompra/${editingForm.id}`, editingForm);
             setInteresForms(prevForms => 
                 prevForms.map(form => 
-                    form._id === editingForm._id ? response.data : form
+                    form.id === editingForm.id ? response.data : form
                 )
             );
             setEditingForm(null);
@@ -143,7 +143,7 @@ const BuscadoComponent = () => {
                         <tbody>
                             {filteredForms.map((form, index) => (
                                 <tr key={index}>
-                                    {editingForm && editingForm._id === form._id ? (
+                                    {editingForm && editingForm.id === form.id ? (
                                         <>
                                             <td><input type="text" className="form-control form-control-sm" name="nombre" value={editingForm.nombre} onChange={handleEditChange} /></td>
                                             <td><input type="text" className="form-control form-control-sm" name="apellido" value={editingForm.apellido} onChange={handleEditChange} /></td>
@@ -186,7 +186,7 @@ const BuscadoComponent = () => {
                                                     </button>
                                                     <button 
                                                         className="btn btn-danger btn-sm"
-                                                        onClick={() => handleDelete(form._id)}
+                                                        onClick={() => handleDelete(form.id)}
                                                     >
                                                         Eliminar
                                                     </button>

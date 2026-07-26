@@ -89,16 +89,16 @@ function VendeForm() {
         const submitFormData = new FormData();
         
         // Add the reCAPTCHA response token with the exact key expected by the server
-        submitFormData.append('g-recaptcha-response', formData.captcha);
-        
+        submitFormData.append('recaptcha_token', formData.captcha);
+
         // Add other form data
         const formValues = {
             DIR: DIR,
             nombre: formData.nombre,
-            apellido: formData.apellido,        
+            apellido: formData.apellido,
             celular: formData.celular,
             email: formData.email,
-            wppcheck: formData.wppcheck,
+            wpp_check: formData.wppcheck,
             marca: formData.marca,
             linea: formData.linea,
             modelo: formData.modelo,
@@ -122,7 +122,7 @@ function VendeForm() {
         ];
 
         images.forEach(image => {
-            submitFormData.append('images', image);
+            submitFormData.append('car_images', image);
         });
 
         setShowLoadingModal(true);

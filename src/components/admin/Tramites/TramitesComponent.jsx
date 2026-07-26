@@ -39,7 +39,7 @@ const TramitesComponent = () => {
             .catch(error => {
                 console.log(error);
             })
-        setTramites(tramites.filter(el => el._id !== id));
+        setTramites(tramites.filter(el => el.id !== id));
     }
 
     // if loading is true, show loading message
@@ -82,7 +82,7 @@ const TramitesComponent = () => {
 
                         {tramites.map((tramite) => {
                             return(
-                                <tr key={tramite._id}>  
+                                <tr key={tramite.id}>  
                                     <td>{tramite.car.marca}</td>
                                     <td>{tramite.car.linea}</td>
                                     <td>{tramite.car.placa}</td>
@@ -90,10 +90,10 @@ const TramitesComponent = () => {
                                     <td>{tramite.estado}</td>
                                     {/* Buttons for edit and delete, without bootstrap basic style */}
                                     <td>
-                                        <Link to={"/admin/tramites/edit/" + tramite._id} className="btn btn-outline-primary">Editar</Link>
+                                        <Link to={"/admin/tramites/edit/" + tramite.id} className="btn btn-outline-primary">Editar</Link>
                                     </td>
                                     <td>
-                                        <button className="btn btn-outline-danger" onClick={() => {eliminarTramite(tramite._id)}}>Eliminar</button>
+                                        <button className="btn btn-outline-danger" onClick={() => {eliminarTramite(tramite.id)}}>Eliminar</button>
                                     </td>
                                 </tr>
                             );

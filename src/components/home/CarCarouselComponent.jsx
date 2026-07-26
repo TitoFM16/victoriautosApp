@@ -35,7 +35,7 @@ function CarCarousel() {
         return 1; // 'b' comes first
       } else {
         // Both are either featured or not featured, so sort by update date
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
+        return new Date(b.updated_at) - new Date(a.updated_at);
       }
     });
   };
@@ -106,23 +106,23 @@ function CarCarousel() {
           className="w-100"
         >
           {sortedCars.map((car, index) => (
-            <SwiperSlide key={car._id}>
+            <SwiperSlide key={car.id}>
               <div className="px-2 py-2">
                 <div className="card car-card">
-                  <Link to={`/vitrina/${car._id}`} style={{textDecoration:"none", color:"black"}} aria-hidden="false">
+                  <Link to={`/vitrina/${car.id}`} style={{textDecoration:"none", color:"black"}} aria-hidden="false">
                     <div className="position-relative" style={{ minHeight: '150px' }}>
-                      {shouldLoadImage(index) && !imagesLoaded[car._id] && (
+                      {shouldLoadImage(index) && !imagesLoaded[car.id] && (
                         <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
                           <LoadingComponent />
                         </div>
                       )}
                       {shouldLoadImage(index) ? (
-                        <img 
+                        <img
                           className="card-img-top-vitrina"
-                          src={imagePath + car.uuid + "/" + car.images[0]}
+                          src={imagePath + car.id + "/" + car.images[0]}
                           alt={'vehiculo' + car.name}
                           loading="lazy"
-                          onLoad={() => handleImageLoad(car._id)}
+                          onLoad={() => handleImageLoad(car.id)}
                         />
                       ) : (
                         <div 

@@ -32,8 +32,8 @@ const NegociosComponent = () => {
                 const response = await axios.get('/api/admin/match', {
                     withCredentials: true
                 });
-                setNegociosVitrina(response.data.carsMatch);
-                setNegociosOferta(response.data.carsMatchOferta);
+                setNegociosVitrina(response.data.cars_match);
+                setNegociosOferta(response.data.cars_match_oferta);
             } catch (error) {
                 console.error(error.message);
             }

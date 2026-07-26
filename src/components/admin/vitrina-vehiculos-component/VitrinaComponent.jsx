@@ -16,12 +16,12 @@ const imagePath = "/images/vehiculos/";
 function RenderVitrinaItem ({car}) {
   return (
       <Card className='car-card'>
-          <Link to={ `/admin/vitrina/${car._id}` } style={{textDecoration:"none",color:"black"}}>
+          <Link to={ `/admin/vitrina/${car.id}` } style={{textDecoration:"none",color:"black"}}>
 
-          
+
               <img
-                className='card-img-top-vitrina' 
-                src={imagePath + car.uuid + "/" + car.images[0] } 
+                className='card-img-top-vitrina'
+                src={imagePath + car.id + "/" + car.images[0] }
                 alt={car.marca} />
               
               <CardBody>
@@ -39,8 +39,7 @@ function RenderVitrinaItem ({car}) {
 
 RenderVitrinaItem.propTypes = {
   car: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    uuid: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
     marca: PropTypes.string.isRequired,
     linea: PropTypes.string.isRequired,
@@ -110,7 +109,7 @@ class VitrinaComponent extends Component {
           <div className="row">
             {
             this.state.ofertas.map(car => (
-              <div className="col-12 col-md-6 col-lg-4 my-2" key={car._id}>
+              <div className="col-12 col-md-6 col-lg-4 my-2" key={car.id}>
                 <RenderVitrinaItem car={car} />
               </div> 
               ))

@@ -82,9 +82,9 @@ const CompraModalContent = ({ car }) => {
         celular: formData.celular,
         email: formData.email,
         cedula: formData.cedula,
-        wppcheck: formData.wppcheck,
-        car: car,
-        'g-recaptcha-response': formData.captcha
+        wpp_check: formData.wppcheck,
+        car_id: car,
+        recaptcha_token: formData.captcha
       });
       setFormData(prev => ({ ...prev, submitStatus: 'success' }));
     } catch (error) {

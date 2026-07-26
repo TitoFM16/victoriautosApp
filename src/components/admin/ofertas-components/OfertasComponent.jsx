@@ -18,12 +18,12 @@ const imagePath = "/images/ofertas/";
 function RenderVitrinaItem ({car}) {
   return (
       <Card className='car-card'>
-          <Link to={ `/admin/ofertas/${car._id}` } style={{textDecoration:"none",color:"black"}}>
+          <Link to={ `/admin/ofertas/${car.id}` } style={{textDecoration:"none",color:"black"}}>
 
-          
+
               <img
-                className='card-img-top-vitrina' 
-                src={imagePath + car.uuid +  "/" + car.images[0] } 
+                className='card-img-top-vitrina'
+                src={imagePath + car.id +  "/" + car.images[0] }
                 alt={car.marca} />
               
               <CardBody>
@@ -41,8 +41,7 @@ function RenderVitrinaItem ({car}) {
 
 RenderVitrinaItem.propTypes = {
   car: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    uuid: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
     marca: PropTypes.string.isRequired,
     linea: PropTypes.string.isRequired,
@@ -92,7 +91,7 @@ const OfertasComponent = () => {
                           
         <div className="row">
           {ofertas.map(car => (
-            <div className="col-12 col-md-6 col-lg-4 my-2" key={car._id}>
+            <div className="col-12 col-md-6 col-lg-4 my-2" key={car.id}>
               <RenderVitrinaItem car={car} />
             </div> 
           ))}

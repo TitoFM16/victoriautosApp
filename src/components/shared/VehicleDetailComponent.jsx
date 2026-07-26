@@ -34,7 +34,7 @@ function VehicleDetailComponent({
 
   const saveChanges = () => {
     const allowedFields = [
-      "price", "consignacion", "Tipo", "marca", "linea", "modelo", "combustible", 
+      "price", "consignacion", "tipo", "marca", "linea", "modelo", "combustible", 
       "cilindraje", "traccion", "direccion", "frenos", "airbag", "placa", "vin", 
       "chasis_no", "motor_no", "importacion_no", "importacion_date", "status", "featured"
     ];
@@ -47,7 +47,7 @@ function VehicleDetailComponent({
     });
 
     axios
-      .put(`${apiEndpoint}/${vehicle._id}`, updatableFields)
+      .put(`${apiEndpoint}/${vehicle.id}`, updatableFields)
       .then(() => {
         setEditModalOpen(false);
         reloadVehicle();
@@ -58,7 +58,7 @@ function VehicleDetailComponent({
   const deleteVehicle = async () => {
     if (window.confirm(`Are you sure you want to delete ${vehicle.marca} ${vehicle.linea}?`)) {
       try {
-        await axios.delete(`${apiEndpoint}/${vehicle._id}`, { withCredentials: true });
+        await axios.delete(`${apiEndpoint}/${vehicle.id}`, { withCredentials: true });
         alert("Vehicle deleted successfully");
         navigate(redirectPath);
       } catch (error) {
@@ -106,7 +106,7 @@ function VehicleDetailComponent({
 
   const metaTitle = `${vehicle.marca} ${vehicle.linea} ${vehicle.modelo} - Victoriautos`;
   const metaDescription = `${vehicle.marca} ${vehicle.linea} ${vehicle.modelo}, ${vehicle.km}km, ${vehicle.combustible}, ${vehicle.transmision}. Precio: $${formatMoney(vehicle.price)}`;
-  const metaImage = `${window.location.origin}${imagePath}${vehicle.uuid}/${vehicle.images[0]}`;
+  const metaImage = `${window.location.origin}${imagePath}${vehicle.id}/${vehicle.images[0]}`;
 
   return (
     <div className="container">
@@ -138,7 +138,7 @@ function VehicleDetailComponent({
                         </div>
                       )}
                       <img
-                        src={`${imagePath}${vehicle.uuid}/${image}`}
+                        src={`${imagePath}${vehicle.id}/${image}`}
                         alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
                         className={`card side-column-images px-0 mb-2 ${currentImage === index ? "selected" : ""} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
                         onMouseEnter={() => setCurrentImage(index)}
@@ -157,7 +157,7 @@ function VehicleDetailComponent({
                   )}
                   <img
                     className={`card-img-top principal-image-vitrina mx-2 ${mainImageLoaded ? 'visible' : 'invisible'}`}
-                    src={`${imagePath}${vehicle.uuid}/${vehicle.images[currentImage]}`}
+                    src={`${imagePath}${vehicle.id}/${vehicle.images[currentImage]}`}
                     alt={vehicle.name}
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
@@ -226,7 +226,7 @@ function VehicleDetailComponent({
                       </tr>
                       <tr>
                         <th scope="row">Comunicación whatsapp?</th>
-                        <td>{vehicle.wppCheck ? 'Si' : 'No'}</td>
+                        <td>{vehicle.wpp_check ? 'Si' : 'No'}</td>
                       </tr>
                     </tbody>
                   </table>

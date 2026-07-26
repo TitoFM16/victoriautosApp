@@ -155,13 +155,13 @@ const InteresForm = () => {
         nombre: formData.nombre,
         apellido: formData.apellido,
         celular: formData.celular,
-        wppcheck: formData.wppcheck,
+        wpp_check: formData.wppcheck,
         marca: formData.marca,
         linea: formData.linea,
         modelo: formData.modelo,
         km: formData.km,
-        price: numericPrice,
-        'g-recaptcha-response': formData.captcha
+        price: String(numericPrice),
+        recaptcha_token: formData.captcha
       });
       setFormData(prev => ({ ...prev, submitStatus: 'success' }));
     } catch (error) {

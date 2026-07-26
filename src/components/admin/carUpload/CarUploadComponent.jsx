@@ -18,7 +18,7 @@ class CarUploadComponent extends React.Component {
       this.handleSubmit = this.handleSubmit.bind(this);
 
       this.state = {
-        Tipo: '',
+        tipo: '',
         marca: '',
         linea: '',
         modelo: 0,
@@ -176,16 +176,16 @@ class CarUploadComponent extends React.Component {
         }
       }
 
-      if (name === 'Tipo') {
+      if (name === 'tipo') {
         this.setState({
           [name]: value,
-          marca: '', // Reset marca when Tipo changes
-          linea: '', // Reset linea when Tipo changes
+          marca: '', // Reset marca when tipo changes
+          linea: '', // Reset linea when tipo changes
           customMarca: '',
           customLinea: '',
         });
 
-        // Fetch marca options based on selected Tipo
+        // Fetch marca options based on selected tipo
         if (value) {
           axios.get('/api/buscavehiculo/?tipo=' + value)
             .then((response) => {
@@ -202,9 +202,9 @@ class CarUploadComponent extends React.Component {
           customLinea: '',
         });
 
-        // Fetch linea options based on selected Tipo and marca
-        if (value && value !== '__ADD_NEW__' && this.state.Tipo) {
-          axios.get('/api/buscavehiculo/?tipo=' + this.state.Tipo + '&marca=' + value)
+        // Fetch linea options based on selected tipo and marca
+        if (value && value !== '__ADD_NEW__' && this.state.tipo) {
+          axios.get('/api/buscavehiculo/?tipo=' + this.state.tipo + '&marca=' + value)
             .then((response) => {
               this.setState({ lineaDropdown: response.data });
             })
@@ -240,7 +240,7 @@ class CarUploadComponent extends React.Component {
   
       // Get state data
       const {
-        Tipo,
+        tipo,
         marca,
         linea,
         modelo,
@@ -280,14 +280,14 @@ class CarUploadComponent extends React.Component {
         return file.type.match("(image[/]{1})(.*)")[2]
       }
 
-      // create images array to upload to the server in the mongoose model carImages array value
+      // create images array to upload to the server as the car_images form field
       const images = [frenteImg,traseroImg,lateralIzqImg,lateralDerImg,interiorImg,motorImg]
 
       // We'll update DIR after getting actual marca and linea values
       
       const formValues={
         DIR: "", // Will be updated later
-        Tipo: Tipo,
+        tipo: tipo,
         marca: marca,
         linea: linea,
         modelo: modelo,
@@ -327,7 +327,7 @@ class CarUploadComponent extends React.Component {
       this.setState({ showLoadingModal: true, submitStatus: 'loading' });
 
       // First, ensure marca and linea exist in the database
-      this.ensureVehicleDataExists(Tipo, marca, linea)
+      this.ensureVehicleDataExists(tipo, marca, linea)
         .then((result) => {
           // Calculate DIR with actual values
           const actualDIR = result.actualMarca + "_" + result.actualLinea + "_" + modelo + "/";
@@ -340,7 +340,7 @@ class CarUploadComponent extends React.Component {
           // Create images array and add to formData with updated DIR
           const images = [frenteImg, traseroImg, lateralIzqImg, lateralDerImg, interiorImg, motorImg];
           images.forEach((image, index) => {
-            formData.append("carImages", image, actualDIR + index + "." + getExtension(image));
+            formData.append("car_images", image, actualDIR + index + "." + getExtension(image));
           });
           
           // Then create the car
@@ -376,9 +376,9 @@ class CarUploadComponent extends React.Component {
                 <div className="col-6">
                   <h3>Información General</h3>
                   <div className="form-group">
-                    <label htmlFor="Tipo">Tipo</label>
-                    <select className="form-control" id="Tipo" name="Tipo"                             
-                            value={this.state.Tipo}
+                    <label htmlFor="tipo">Tipo</label>
+                    <select className="form-control" id="tipo" name="tipo"
+                            value={this.state.tipo}
                             onChange={this.handleChange}>
                       <option value="">Tipo de vehiculo</option>
                       <option value="AUT">Automovil</option>
@@ -400,13 +400,13 @@ class CarUploadComponent extends React.Component {
                             value={this.state.marca}
                             onChange={this.handleChange}>
                       <option value="">Seleccione marca</option>
-                      {this.state.Tipo !== '' && this.state.marcaDropdown
+                      {this.state.tipo !== '' && this.state.marcaDropdown
                         .sort((a, b) => a.marca.localeCompare(b.marca))
                         .map((marca) => (
                           <option key={marca.id || marca.marca} value={marca.marca}>{marca.marca}</option>
                         ))
                       }
-                      {this.state.Tipo !== '' && (
+                      {this.state.tipo !== '' && (
                         <option value="__ADD_NEW__">+ Agregar nueva marca...</option>
                       )}
                     </select>

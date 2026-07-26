@@ -45,7 +45,7 @@ const CarDetailComponent = ({ mode }) => {
           Contactar
         </button>
       </div>
-      <CompraModalContent car={car._id} />
+      <CompraModalContent car={car.id} />
     </div>
   );
 

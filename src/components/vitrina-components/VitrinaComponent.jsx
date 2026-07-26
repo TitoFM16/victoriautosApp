@@ -19,7 +19,7 @@ function RenderVitrinaItem({ car }) {
 
   return (
     <Card className="car-card">
-      <Link to={`/vitrina/${car._id}`} style={{ textDecoration: "none", color: "black" }}>
+      <Link to={`/vitrina/${car.id}`} style={{ textDecoration: "none", color: "black" }}>
         <div className="image-container position-relative">
           {!imageLoaded && (
             <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
@@ -28,7 +28,7 @@ function RenderVitrinaItem({ car }) {
           )}
           <img
             className={`card-img-top-vitrina ${imageLoaded ? 'visible' : 'invisible'}`}
-            src={imagePath + car.uuid + "/" + car.images[0]}
+            src={imagePath + car.id + "/" + car.images[0]}
             alt={car.marca}
             onLoad={() => setImageLoaded(true)}
           />
@@ -47,8 +47,7 @@ function RenderVitrinaItem({ car }) {
 
 RenderVitrinaItem.propTypes = {
   car: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    uuid: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     images: PropTypes.arrayOf(PropTypes.string).isRequired,
     marca: PropTypes.string.isRequired,
     linea: PropTypes.string.isRequired,
@@ -129,7 +128,7 @@ const Vitrina = ({ cars }) => {
         return 1; // 'b' comes first
       } else {
         // Both are either featured or not featured, so sort by update date
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
+        return new Date(b.updated_at) - new Date(a.updated_at);
       }
     });
   };
@@ -146,7 +145,7 @@ const Vitrina = ({ cars }) => {
   });
 
   const vitrina = filteredCars.map((car) => (
-    <div key={car._id} id="cars" className="col-12 col-md-4 py-2">
+    <div key={car.id} id="cars" className="col-12 col-md-4 py-2">
       <RenderVitrinaItem car={car} />
     </div>
   ));
@@ -232,8 +231,7 @@ const Vitrina = ({ cars }) => {
 Vitrina.propTypes = {
   cars: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      uuid: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
       images: PropTypes.arrayOf(PropTypes.string).isRequired,
       marca: PropTypes.string.isRequired,
       linea: PropTypes.string.isRequired,

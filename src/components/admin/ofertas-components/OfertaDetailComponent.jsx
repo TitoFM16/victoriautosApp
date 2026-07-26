@@ -27,7 +27,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
 
   const saveChanges = () => {
     const allowedFields = [
-      "price", "consignacion", "Tipo", "marca", "linea", "modelo", "combustible", 
+      "price", "consignacion", "tipo", "marca", "linea", "modelo", "combustible", 
       "cilindraje", "traccion", "direccion", "frenos", "airbag", "placa", 
       "status", "featured"
     ];
@@ -40,7 +40,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
     });
 
     axios
-      .put(`/api/cars/${oferta._id}`, updatableFields)
+      .put(`/api/cars/${oferta.id}`, updatableFields)
       .then(() => {
         setEditModalOpen(false);
         reloadOferta();
@@ -51,7 +51,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
   const deleteOferta = async () => {
     if (window.confirm(`Are you sure you want to delete ${oferta.marca} ${oferta.linea}?`)) {
       try {
-        await axios.delete(`/api/ofertas/${oferta._id}`, { withCredentials: true });
+        await axios.delete(`/api/ofertas/${oferta.id}`, { withCredentials: true });
         alert("Oferta deleted successfully");
         navigate('/admin/ofertas/'); // Redirect to /admin/vitrina/ after deletion
       } catch (error) {
@@ -75,7 +75,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
                 {oferta.images.map((image, index) => (
                   <div key={index} className="row vertical-center">
                     <img
-                      src={`${imgPath}${oferta.uuid}/${image}`}
+                      src={`${imgPath}${oferta.id}/${image}`}
                       alt={`${oferta.marca}_${oferta.linea}_${oferta.modelo}_${index}`}
                       className={`card side-column-images px-0 mb-2 ${currentImage === index ? "selected" : ""}`}
                       onMouseEnter={() => setCurrentImage(index)}
@@ -86,7 +86,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
               <div className="col-10">
                 <img
                   className="card-img-top principal-image-vitrina mx-2"
-                  src={`${imgPath}${oferta.uuid}/${oferta.images[currentImage]}`}
+                  src={`${imgPath}${oferta.id}/${oferta.images[currentImage]}`}
                   alt={oferta.name}
                 />
               </div>
@@ -117,7 +117,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
                     Contactar
                   </button>
                 </div>
-                {/* <CompraModalContent oferta={oferta._id} /> */}
+                {/* <CompraModalContent oferta={oferta.id} /> */}
               </div>
             ) : (
             <React.Fragment>
@@ -148,7 +148,7 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
                     </tr>
                     <tr>
                       <th scope="row">Comunicación whatsapp?</th>
-                      <td>{oferta.wppCheck ? 'Si' : 'No'}</td>
+                      <td>{oferta.wpp_check ? 'Si' : 'No'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -220,19 +220,18 @@ function RenderOferta({ oferta, mode, reloadOferta }) {
 
 RenderOferta.propTypes = {
   oferta: PropTypes.shape({
-    _id: PropTypes.string,
+    id: PropTypes.string,
     marca: PropTypes.string,
     linea: PropTypes.string,
     modelo: PropTypes.string,
     km: PropTypes.number,
     price: PropTypes.number,
     images: PropTypes.arrayOf(PropTypes.string),
-    uuid: PropTypes.string,
     name: PropTypes.string,
     nombre: PropTypes.string,
     apellido: PropTypes.string,
     celular: PropTypes.string,
-    wppCheck: PropTypes.bool,
+    wpp_check: PropTypes.bool,
     cilindraje: PropTypes.string,
     transmision: PropTypes.string,
     direccion: PropTypes.string,

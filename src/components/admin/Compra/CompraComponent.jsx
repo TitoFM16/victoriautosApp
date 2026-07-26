@@ -43,7 +43,7 @@ const CompraComponent = () => {
             link.href = url;
 
             // Get compra form details for filename
-            const compraForm = compraForms.find(form => form._id === compraFormId);
+            const compraForm = compraForms.find(form => form.id === compraFormId);
             const filename = `Contrato_${compraForm?.nombre}_${compraForm?.apellido}_${compraForm?.car?.marca}_${compraForm?.car?.linea}.pdf`;
 
             link.setAttribute('download', filename);
@@ -66,7 +66,7 @@ const CompraComponent = () => {
             await axios.delete(`/api/compra/${compraFormId}`, {
                 withCredentials: true
             });
-            setCompraForms(prev => prev.filter(form => form._id !== compraFormId));
+            setCompraForms(prev => prev.filter(form => form.id !== compraFormId));
         } catch (error) {
             console.error('Error deleting compra form:', error);
             alert('Error al eliminar la solicitud.');
@@ -167,7 +167,7 @@ const CompraComponent = () => {
                                             </thead>
                                             <tbody>
                                                 {compraForms.map((form) => (
-                                                    <tr key={form._id}>
+                                                    <tr key={form.id}>
                                                         <td>
                                                             <div>
                                                                 <strong>{form.nombre} {form.apellido}</strong>
@@ -180,7 +180,7 @@ const CompraComponent = () => {
                                                                 <span className="text-primary">{form.celular}</span>
                                                                 <br />
                                                                 <small className="text-muted">{form.email}</small>
-                                                                {form.wppCheck && (
+                                                                {form.wpp_check && (
                                                                     <span className="badge bg-success ms-1">WhatsApp</span>
                                                                 )}
                                                             </div>
@@ -204,7 +204,7 @@ const CompraComponent = () => {
                                                             </strong>
                                                         </td>
                                                         <td>
-                                                            <small>{formatDate(form.createdAt)}</small>
+                                                            <small>{formatDate(form.created_at)}</small>
                                                         </td>
                                                         <td>
                                                             <span className={`badge ${form.status === 'PENDING' ? 'bg-warning' :
@@ -220,10 +220,10 @@ const CompraComponent = () => {
                                                             <div className="btn-group">
                                                                 <button
                                                                     className="btn btn-primary btn-sm"
-                                                                    onClick={() => generateContract(form._id)}
-                                                                    disabled={generatingPdf[form._id] || !form.car}
+                                                                    onClick={() => generateContract(form.id)}
+                                                                    disabled={generatingPdf[form.id] || !form.car}
                                                                 >
-                                                                    {generatingPdf[form._id] ? (
+                                                                    {generatingPdf[form.id] ? (
                                                                         <>
                                                                             <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
                                                                             Generando...
@@ -243,7 +243,7 @@ const CompraComponent = () => {
                                                                 </button>
                                                                 <button
                                                                     className="btn btn-danger btn-sm"
-                                                                    onClick={() => deleteCompraForm(form._id)}
+                                                                    onClick={() => deleteCompraForm(form.id)}
                                                                 >
                                                                     <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>delete</span>
                                                                 </button>
@@ -290,7 +290,7 @@ const CompraComponent = () => {
                                     </div>
                                     <div className="col-md-3 text-center">
                                         <h3 className="text-success">
-                                            {compraForms.filter(form => form.wppCheck).length}
+                                            {compraForms.filter(form => form.wpp_check).length}
                                         </h3>
                                         <small className="text-muted">Con WhatsApp</small>
                                     </div>
