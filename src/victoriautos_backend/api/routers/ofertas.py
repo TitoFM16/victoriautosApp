@@ -6,6 +6,7 @@ from sqlalchemy import select
 
 from victoriautos_backend.api.deps import AdminUser, DbSession
 from victoriautos_backend.core.config import settings
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.models.oferta_form import OfertaForm
 from victoriautos_backend.schemas.oferta_form import (
     OfertaFormCreate,
@@ -58,6 +59,7 @@ async def _oferta_form_create_form(
 
 
 @router.post("/", response_model=OfertaFormPublic, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 async def create_oferta(
     request: Request,
     db: DbSession,

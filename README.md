@@ -20,6 +20,8 @@ React frontend is deployed separately (see [Breaking changes](#breaking-changes-
 - **Package/venv management:** [uv](https://docs.astral.sh/uv/)
 - **Linting/formatting:** [ruff](https://docs.astral.sh/ruff/), enforced via pre-commit
 - **Tests:** pytest + pytest-asyncio + httpx's ASGI transport, run against a real Postgres test DB
+- **Rate limiting:** slowapi, on login/signup and every public lead-capture endpoint
+- **Containerization:** multi-stage Dockerfile (built on uv) + docker-compose for local Postgres/full-stack testing
 
 ## Project Structure
 
@@ -36,12 +38,14 @@ victoriautosBackend/
 │       ├── deps.py           # get_db, get_current_user, require_admin
 │       └── routers/          # one module per resource
 ├── migrations/               # Alembic (async) migration environment + versions
-├── scripts/                  # one-off admin/data scripts
+├── scripts/                  # one-off admin/data scripts (create_admin.py, catalog migration)
 ├── templates/                # PDF contract template
 ├── tests/                    # pytest suite (real Postgres test DB, no mocked ORM)
 ├── data/images/               # uploaded vehicle/offer photos (gitignored, like the original)
 ├── docker/                   # docker-compose init scripts (test DB creation)
-├── docker-compose.yml        # local Postgres for development/testing
+├── docker-compose.yml        # local Postgres + optional containerized app
+├── Dockerfile                # multi-stage build for the app itself
+├── docker-entrypoint.sh      # runs alembic upgrade head, then starts uvicorn
 ├── pyproject.toml
 ├── alembic.ini
 └── .pre-commit-config.yaml
@@ -92,6 +96,54 @@ uv run victoriautos-backend                            # runs on port 3005 (matc
 ```
 
 Interactive API docs are served at `/docs` (Swagger UI) and `/redoc`.
+
+### Running the containerized app
+
+`docker-compose.yml` also has an `app` service that builds and runs the API itself
+from the `Dockerfile`, on top of the `postgres` service - useful for testing the
+actual container image, as opposed to day-to-day development (where
+`fastapi dev` with hot reload is faster):
+
+```bash
+docker compose up -d --build
+```
+
+This runs `alembic upgrade head` automatically on container start (see
+`docker-entrypoint.sh`), then serves on `http://localhost:3005`. Change the `3005`
+in `docker-compose.yml`'s `app.ports` if that's already taken locally. Uploaded
+images persist in the `app_images` named volume across restarts.
+
+Building the standalone image without compose:
+```bash
+docker build -t victoriautos-backend .
+docker run -p 3005:8000 --env-file .env victoriautos-backend
+```
+
+## Rate limiting
+
+Login, signup, and every public lead-capture endpoint (`/api/compra`,
+`/api/interescompra`, `/api/ofertas`, `/api/vende`, plus `/api/buscaplaca` since it
+proxies a paid external API) are rate-limited per client IP via
+[slowapi](https://github.com/laurentS/slowapi) - 5/minute for login and signup,
+10/minute for the rest. Exceeding the limit returns `429` with a JSON body like
+`{"error": "Rate limit exceeded: 5 per 1 minute"}`.
+
+This uses slowapi's default in-memory storage, so counters are per-process - fine
+for a single worker/instance, but if this ever runs behind multiple uvicorn workers
+or replicas, each one tracks its own count (the effective limit multiplies by
+worker count). Switch to a Redis-backed store (`Limiter(..., storage_uri="redis://...")`
+in `core/rate_limit.py`) if that becomes a real concern.
+
+## Creating an admin user
+
+There's no signup flow that grants admin - `POST /api/users/signup` always creates
+a regular user - so bootstrap (or fix) an admin account with:
+
+```bash
+uv run python scripts/create_admin.py --username admin
+# prompts for a password (hidden) if the user doesn't exist yet;
+# if the user already exists, it's just promoted to admin.
+```
 
 ## Testing
 

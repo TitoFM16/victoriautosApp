@@ -3,11 +3,12 @@ from datetime import UTC, datetime
 from typing import Any
 
 import httpx
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from sqlalchemy import select
 
 from victoriautos_backend.api.deps import CurrentUser, DbSession
 from victoriautos_backend.core.config import settings
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.models.plate_search import PlateSearch
 from victoriautos_backend.schemas.plate_search import (
     PlateSearchHistoryEntry,
@@ -37,8 +38,9 @@ async def _fetch_with_retry(
 
 
 @router.post("/", response_model=PlateSearchResult)
+@limiter.limit("10/minute")
 async def search_plate(
-    payload: PlateSearchRequest, current_user: CurrentUser, db: DbSession
+    request: Request, payload: PlateSearchRequest, current_user: CurrentUser, db: DbSession
 ) -> PlateSearchResult:
     plate = payload.plate.upper()
 

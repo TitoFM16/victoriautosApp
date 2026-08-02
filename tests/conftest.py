@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from victoriautos_backend import models  # noqa: F401 - registers models on Base.metadata
 from victoriautos_backend.core.config import settings
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.core.security import hash_password
 from victoriautos_backend.db.base import Base
 from victoriautos_backend.db.session import get_db
@@ -46,6 +47,15 @@ async def _clean_tables():
     async with test_engine.begin() as conn:
         for table in reversed(Base.metadata.sorted_tables):
             await conn.execute(table.delete())
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limiter():
+    """httpx's ASGI transport gives every request the same fake client IP, so
+    without this, rate-limited endpoints (login/signup/lead forms) would trip
+    across unrelated tests that happen to share a minute window."""
+    limiter.reset()
+    yield
 
 
 @pytest.fixture

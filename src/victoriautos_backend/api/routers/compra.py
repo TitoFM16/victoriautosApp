@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Request, Response, status
 from sqlalchemy import select
 
 from victoriautos_backend.api.deps import AdminUser, DbSession
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.models.compra_form import CompraForm
 from victoriautos_backend.schemas.compra_form import CompraFormCreate, CompraFormPublic
 from victoriautos_backend.services.pdf_contract import fill_purchase_contract
@@ -21,8 +22,9 @@ async def list_pending_compra_forms(db: DbSession, _admin: AdminUser) -> list[Co
 
 
 @router.post("/", response_model=CompraFormPublic, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 async def create_compra_form(
-    payload: CompraFormCreate, request: Request, db: DbSession
+    request: Request, payload: CompraFormCreate, db: DbSession
 ) -> CompraForm:
     remote_ip = request.client.host if request.client else None
     await verify_recaptcha_token(payload.recaptcha_token, remote_ip)

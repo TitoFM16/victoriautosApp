@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy import select
 
 from victoriautos_backend.api.deps import AdminUser, DbSession
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.models.interes_form import InteresForm
 from victoriautos_backend.schemas.interes_form import (
     InteresFormCreate,
@@ -22,8 +23,9 @@ async def list_pending_interes_forms(db: DbSession, _admin: AdminUser) -> list[I
 
 
 @router.post("/", response_model=InteresFormPublic, status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute")
 async def create_interes_form(
-    payload: InteresFormCreate, request: Request, db: DbSession
+    request: Request, payload: InteresFormCreate, db: DbSession
 ) -> InteresForm:
     remote_ip = request.client.host if request.client else None
     await verify_recaptcha_token(payload.recaptcha_token, remote_ip)

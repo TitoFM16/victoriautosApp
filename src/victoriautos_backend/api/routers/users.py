@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, HTTPException, Request, Response, status
 from sqlalchemy import select
 
 from victoriautos_backend.api.deps import AdminUser, DbSession
 from victoriautos_backend.core.config import settings
+from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.core.security import (
     InvalidTokenError,
     create_access_token,
@@ -37,7 +38,8 @@ async def list_users(db: DbSession, _admin: AdminUser) -> list[User]:
 
 
 @router.post("/signup", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
-async def signup(payload: UserSignup, db: DbSession) -> User:
+@limiter.limit("5/minute")
+async def signup(request: Request, payload: UserSignup, db: DbSession) -> User:
     existing = await db.scalar(select(User).where(User.username == payload.username))
     if existing is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken")
@@ -55,7 +57,8 @@ async def signup(payload: UserSignup, db: DbSession) -> User:
 
 
 @router.post("/login")
-async def login(payload: UserLogin, response: Response, db: DbSession) -> dict:
+@limiter.limit("5/minute")
+async def login(request: Request, payload: UserLogin, response: Response, db: DbSession) -> dict:
     user = await db.scalar(select(User).where(User.username == payload.username))
     if user is None or not verify_password(payload.password, user.password_hash):
         raise HTTPException(
