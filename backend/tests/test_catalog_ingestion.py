@@ -7,6 +7,7 @@ from victoriautos_backend.services.catalog_ingestion import (
     is_vehicle_catalog_dataset,
     merge_catalog_rows,
     normalize_catalog_text,
+    parse_fasecolda_csv,
     parse_fasecolda_workbook,
     parse_mintransport_workbook,
     parse_model_year,
@@ -89,6 +90,37 @@ def test_parses_long_fasecolda_workbook(tmp_path: Path) -> None:
             "observations": "",
         }
     ]
+
+
+def test_parses_historical_fasecolda_csv(tmp_path: Path) -> None:
+    csv_path = tmp_path / "fasecolda.csv"
+    csv_path.write_text(
+        "Marca,Clase,Codigo,Referencia1,Referencia2,Referencia3,2017,2018,Cilindraje\n"
+        'Mazda,Automovil,02901001,3,Touring,"AT 2000CC",60000,65000,1998\n',
+        encoding="utf-8",
+    )
+
+    rows = parse_fasecolda_csv(
+        csv_path,
+        source_dataset_id="fasecolda-2017",
+        source_updated_at="2017-08-09",
+    )
+
+    assert len(rows) == 2
+    assert rows[0] == {
+        "source": "fasecolda-historical",
+        "source_dataset_id": "fasecolda-2017",
+        "source_record_id": "02901001",
+        "source_updated_at": "2017-08-09",
+        "vehicle_type": "AUTOMOVIL",
+        "brand": "MAZDA",
+        "line": "3",
+        "version": "TOURING AT 2000CC",
+        "model_year": 2017,
+        "engine_cc": "1998",
+        "market_value_cop": "60000000",
+        "observations": "",
+    }
 
 
 def test_merges_sources_without_discarding_provenance() -> None:

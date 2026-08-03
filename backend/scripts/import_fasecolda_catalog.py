@@ -17,6 +17,7 @@ import argparse
 from pathlib import Path
 
 from victoriautos_backend.services.catalog_ingestion import (
+    parse_fasecolda_csv,
     parse_fasecolda_workbook,
     write_catalog_csv,
 )
@@ -24,14 +25,20 @@ from victoriautos_backend.services.catalog_ingestion import (
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, required=True, help="Authorized local XLSX file")
+    parser.add_argument(
+        "--source", type=Path, required=True, help="Authorized local XLSX or historical CSV file"
+    )
     parser.add_argument("--output", type=Path, required=True, help="Normalized output CSV")
     args = parser.parse_args()
 
     workbook_path = args.source.expanduser().resolve()
-    if workbook_path.suffix.casefold() != ".xlsx":
-        parser.error("--source must be an .xlsx file")
-    rows = parse_fasecolda_workbook(workbook_path)
+    suffix = workbook_path.suffix.casefold()
+    if suffix == ".xlsx":
+        rows = parse_fasecolda_workbook(workbook_path)
+    elif suffix == ".csv":
+        rows = parse_fasecolda_csv(workbook_path)
+    else:
+        parser.error("--source must be an .xlsx or .csv file")
     count = write_catalog_csv(args.output, rows)
     print(f"Wrote {count} normalized Fasecolda catalog rows to {args.output}")
 

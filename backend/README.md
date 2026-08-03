@@ -204,7 +204,8 @@ uv run python scripts/merge_vehicle_catalog_exports.py \
 The Fasecolda helper never accesses or scrapes the website. Fasecolda's site-wide terms require
 prior written authorization for reproducing or storing its content, so obtain permission before
 using the local parser or publishing its output. The parser supports long-form workbooks and the
-traditional format where model years are price columns.
+traditional XLSX/CSV formats where model years are price columns. A historical or authorized
+source can be compared with MinTransporte using `scripts/compare_vehicle_catalogs.py`.
 
 The Datos Abiertos collector searches the Socrata catalog using several Spanish vehicle terms,
 keeps datasets containing brand, line/reference, and model year, and requests grouped values

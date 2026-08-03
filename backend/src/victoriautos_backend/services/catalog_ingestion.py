@@ -230,6 +230,67 @@ def parse_fasecolda_workbook(path: Path) -> list[dict[str, Any]]:
     return _deduplicate_rows(output)
 
 
+def parse_fasecolda_csv(
+    path: Path, *, source_dataset_id: str | None = None, source_updated_at: str = ""
+) -> list[dict[str, Any]]:
+    """Parse the historical public Fasecolda wide-form CSV export."""
+    output: list[dict[str, Any]] = []
+    with path.open(encoding="utf-8-sig", newline="") as source_file:
+        reader = csv.DictReader(source_file)
+        if reader.fieldnames is None:
+            raise ValueError("The Fasecolda CSV has no header row")
+        normalized_fields = {normalize_header(field): field for field in reader.fieldnames}
+        required = ("marca", "clase", "codigo", "referencia1")
+        missing = [field for field in required if field not in normalized_fields]
+        if missing:
+            raise ValueError(f"Missing Fasecolda CSV fields: {', '.join(missing)}")
+        year_fields = {
+            field: year
+            for field in reader.fieldnames
+            if (year := parse_model_year(field)) is not None
+        }
+        for row in reader:
+            brand = normalize_catalog_text(row.get(normalized_fields["marca"]))
+            line = normalize_catalog_text(row.get(normalized_fields["referencia1"]))
+            if not brand or not line:
+                continue
+            version = " ".join(
+                value
+                for key in ("referencia2", "referencia3")
+                if key in normalized_fields
+                if (value := normalize_catalog_text(row.get(normalized_fields[key])))
+            )
+            base = {
+                "source": "fasecolda-historical",
+                "source_dataset_id": source_dataset_id or path.name,
+                "source_record_id": normalize_catalog_text(row.get(normalized_fields["codigo"])),
+                "source_updated_at": source_updated_at,
+                "vehicle_type": normalize_catalog_text(row.get(normalized_fields["clase"])),
+                "brand": brand,
+                "line": line,
+                "version": version,
+                "engine_cc": _number_text(row.get(normalized_fields.get("cilindraje", ""), "")),
+                "observations": "",
+            }
+            for field, year in year_fields.items():
+                value = row.get(field)
+                if value in (None, "", "0", 0):
+                    continue
+                value_text = _number_text(value)
+                try:
+                    value_cop = str(int(float(value_text) * 1000))
+                except ValueError:
+                    continue
+                output.append(
+                    {
+                        **base,
+                        "model_year": year,
+                        "market_value_cop": value_cop,
+                    }
+                )
+    return _deduplicate_rows(output)
+
+
 def _cell(row: Sequence[Any], index: int | None) -> Any:
     return None if index is None or index >= len(row) else row[index]
 

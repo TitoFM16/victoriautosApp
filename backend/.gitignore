@@ -20,6 +20,9 @@ htmlcov/
 data/images/vehiculos/
 data/images/ofertas/
 
+# Local-only third-party catalog validation files
+data/private/
+
 # IDE / OS
 .DS_Store
 .vscode/
