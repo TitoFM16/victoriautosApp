@@ -1,5 +1,5 @@
 import { useState, lazy } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { formatMoney } from '../../shared/utils';
 import PropTypes from 'prop-types';
@@ -7,15 +7,27 @@ import { Helmet } from 'react-helmet-async';
 
 const LoadingComponent = lazy(() => import('./loadingComponent'));
 
-function VehicleDetailComponent({ 
-  vehicle, 
-  mode, 
-  reloadVehicle, 
-  imagePath, 
+const featureRows = [
+  ['Marca', 'marca'],
+  ['Línea', 'linea'],
+  ['Modelo', 'modelo'],
+  ['Kilometraje', 'km'],
+  ['Cilindraje', 'cilindraje'],
+  ['Transmisión', 'transmision'],
+  ['Dirección', 'direccion'],
+  ['Combustible', 'combustible'],
+  ['Color', 'color'],
+];
+
+function VehicleDetailComponent({
+  vehicle,
+  mode,
+  reloadVehicle,
+  imagePath,
   apiEndpoint,
   redirectPath,
   showClientInfo = false,
-  children 
+  children
 }) {
   const [currentImage, setCurrentImage] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -34,8 +46,8 @@ function VehicleDetailComponent({
 
   const saveChanges = () => {
     const allowedFields = [
-      "price", "consignacion", "tipo", "marca", "linea", "modelo", "combustible", 
-      "cilindraje", "traccion", "direccion", "frenos", "airbag", "placa", "vin", 
+      "price", "consignacion", "tipo", "marca", "linea", "modelo", "combustible",
+      "cilindraje", "traccion", "direccion", "frenos", "airbag", "placa", "vin",
       "chasis_no", "motor_no", "importacion_no", "importacion_date", "status", "featured"
     ];
 
@@ -70,7 +82,7 @@ function VehicleDetailComponent({
 
   const handleTouchStart = (e) => {
     if (e.touches.length > 1) return;
-    
+
     const touch = e.touches[0];
     setTouchStart({
       x: touch.clientX,
@@ -101,7 +113,7 @@ function VehicleDetailComponent({
   };
 
   if (!vehicle) {
-    return <h3>Loading...</h3>;
+    return <LoadingComponent />;
   }
 
   const metaTitle = `${vehicle.marca} ${vehicle.linea} ${vehicle.modelo} - Victoriautos`;
@@ -109,7 +121,7 @@ function VehicleDetailComponent({
   const metaImage = `${window.location.origin}${imagePath}${vehicle.id}/${vehicle.images[0]}`;
 
   return (
-    <div className="container">
+    <div className="mx-auto max-w-[1400px] px-5 py-10 sm:px-8 sm:py-14">
       <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
@@ -124,138 +136,118 @@ function VehicleDetailComponent({
         <meta name="twitter:image" content={metaImage} />
       </Helmet>
 
-      <div className="row mb-2">
-        <div className="col-12 col-md-9">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-2 d-none d-md-block">
-                {vehicle.images.map((image, index) => (
-                  <div key={index} className="row vertical-center">
-                    <div className="position-relative">
-                      {!thumbnailsLoaded[index] && (
-                        <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                          <LoadingComponent />
-                        </div>
-                      )}
-                      <img
-                        src={`${imagePath}${vehicle.id}/${image}`}
-                        alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
-                        className={`card side-column-images px-0 mb-2 ${currentImage === index ? "selected" : ""} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
-                        onMouseEnter={() => setCurrentImage(index)}
-                        onLoad={() => setThumbnailsLoaded(prev => ({...prev, [index]: true}))}
-                      />
-                    </div>
-                  </div>
-                ))}
+      {mode === 'client' && (
+        <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
+          <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
+          <span className="mx-2">/</span>
+          <Link to="/vitrina" className="!no-underline text-victoria-red hover:text-red-800">Vitrina</Link>
+          <span className="mx-2">/</span>
+          <span className="text-zinc-500">{vehicle.marca} {vehicle.linea}</span>
+        </nav>
+      )}
+
+      <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_360px]">
+        <div className="flex gap-3">
+          <div className="hidden w-20 shrink-0 flex-col gap-3 sm:flex">
+            {vehicle.images.map((image, index) => (
+              <div key={index} className="relative aspect-square overflow-hidden bg-zinc-100">
+                {!thumbnailsLoaded[index] && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
+                <img
+                  src={`${imagePath}${vehicle.id}/${image}`}
+                  alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
+                  className={`h-full w-full cursor-pointer object-cover transition ${currentImage === index ? "ring-2 ring-inset ring-victoria-red" : "opacity-70 hover:opacity-100"} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
+                  onMouseEnter={() => setCurrentImage(index)}
+                  onClick={() => setCurrentImage(index)}
+                  onLoad={() => setThumbnailsLoaded(prev => ({...prev, [index]: true}))}
+                />
               </div>
-              <div className="col-12 col-md-10">
-                <div className="position-relative" style={{ minHeight: '300px' }}>
-                  {!mainImageLoaded && (
-                    <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                      <LoadingComponent />
-                    </div>
-                  )}
-                  <img
-                    className={`card-img-top principal-image-vitrina mx-2 ${mainImageLoaded ? 'visible' : 'invisible'}`}
-                    src={`${imagePath}${vehicle.id}/${vehicle.images[currentImage]}`}
-                    alt={vehicle.name}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                    onLoad={() => setMainImageLoaded(true)}
-                    style={{ 
-                      width: '100%',
-                      height: 'auto',
-                      objectFit: 'contain',
-                      maxHeight: '600px',
-                      touchAction: 'pinch-zoom'
-                    }}
-                  />
-                </div>
-                <div className="d-flex d-md-none justify-content-center my-2">
-                  {vehicle.images.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`btn btn-sm mx-1 ${currentImage === index ? 'btn-primary' : 'btn-secondary'}`}
-                      onClick={() => setCurrentImage(index)}
-                      aria-label={`Image ${index + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
+            ))}
+          </div>
+          <div className="flex-1">
+            <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+              {!mainImageLoaded && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
+              <img
+                className={`h-full w-full object-contain ${mainImageLoaded ? 'visible' : 'invisible'}`}
+                src={`${imagePath}${vehicle.id}/${vehicle.images[currentImage]}`}
+                alt={vehicle.name}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onLoad={() => setMainImageLoaded(true)}
+                style={{ touchAction: 'pinch-zoom' }}
+              />
+            </div>
+            <div className="mt-3 flex justify-center gap-2 sm:hidden">
+              {vehicle.images.map((_, index) => (
+                <button
+                  key={index}
+                  className={`h-2 w-2 rounded-full ${currentImage === index ? 'bg-victoria-red' : 'bg-zinc-300'}`}
+                  onClick={() => setCurrentImage(index)}
+                  aria-label={`Imagen ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="col-12 col-md-3 card pb-2">
-          <div className="card-body">
-            <p className="card-text text-muted responsive-text">{vehicle.modelo} | {vehicle.km} km</p>
-            <h3 className="card-title responsive-title">{vehicle.marca} {vehicle.linea}</h3>
-            <h2 className="card-text display-6">${formatMoney(vehicle.price)}</h2>
+        <div className="border border-zinc-200 bg-white p-6 h-fit">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{vehicle.modelo} · {vehicle.km} km</p>
+          <h1 className="mt-2 !text-3xl font-black uppercase tracking-[-0.03em] text-victoria-dark">{vehicle.marca} {vehicle.linea}</h1>
+          <p className="mt-4 border-t border-zinc-200 pt-4 text-2xl font-black text-victoria-red">${formatMoney(vehicle.price)}</p>
 
-            {children}
+          {children}
 
-            {mode === "admin" && (
-              <div className="row py-4">
-                <div className="col-6 mb-2">
-                  <button type="button" className="btn btn-warning btn-block" onClick={toggleEditModal}>
-                    Editar
-                  </button>
-                </div>
-                <div className="col-6">
-                  <button type="button" className="btn btn-danger btn-block" onClick={deleteVehicle}>
-                    Eliminar
-                  </button>
-                </div>
+          {mode === "admin" && (
+            <div className="row py-4">
+              <div className="col-6 mb-2">
+                <button type="button" className="btn btn-warning btn-block" onClick={toggleEditModal}>
+                  Editar
+                </button>
               </div>
-            )}
-
-            {showClientInfo && (
-              <div className="row py-4">
-                <div className="col-12">
-                  <h5>Información del Cliente</h5>
-                  <table className="table">
-                    <tbody>
-                      <tr>
-                        <th scope="row">Nombre</th>
-                        <td>{vehicle.nombre} {vehicle.apellido}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Celular</th>
-                        <td>{vehicle.celular}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Comunicación whatsapp?</th>
-                        <td>{vehicle.wpp_check ? 'Si' : 'No'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <div className="col-6">
+                <button type="button" className="btn btn-danger btn-block" onClick={deleteVehicle}>
+                  Eliminar
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
+
+          {showClientInfo && (
+            <div className="row py-4">
+              <div className="col-12">
+                <h5>Información del Cliente</h5>
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Nombre</th>
+                      <td>{vehicle.nombre} {vehicle.apellido}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Celular</th>
+                      <td>{vehicle.celular}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Comunicación whatsapp?</th>
+                      <td>{vehicle.wpp_check ? 'Si' : 'No'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-12 col-md-9">
-          <div className="card-body">
-            <h4 className="card-title">Caracteristicas Principales</h4>
-            <table className="table table-striped">
-              <tbody>
-                <tr><th>Marca</th><td>{vehicle.marca}</td></tr>
-                <tr><th>Linea</th><td>{vehicle.linea}</td></tr>
-                <tr><th>Modelo</th><td>{vehicle.modelo}</td></tr>
-                <tr><th>Kilometraje</th><td>{vehicle.km}</td></tr>
-                <tr><th>Cilindraje</th><td>{vehicle.cilindraje}</td></tr>
-                <tr><th>Transmision</th><td>{vehicle.transmision}</td></tr>
-                <tr><th>Direccion</th><td>{vehicle.direccion}</td></tr>
-                <tr><th>Combustible</th><td>{vehicle.combustible}</td></tr>
-                <tr><th>Color</th><td>{vehicle.color}</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="mt-10 border border-zinc-200 bg-white p-6 sm:p-8">
+        <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Características principales</p>
+        <dl className="mt-5 divide-y divide-zinc-200">
+          {featureRows.map(([label, key]) => (
+            <div key={key} className="flex justify-between gap-4 py-3 text-sm">
+              <dt className="font-bold text-zinc-500">{label}</dt>
+              <dd className="font-bold text-victoria-dark">{vehicle[key]}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       {mode === "admin" && editModalOpen && (
@@ -309,4 +301,4 @@ VehicleDetailComponent.propTypes = {
   children: PropTypes.node
 };
 
-export default VehicleDetailComponent; 
+export default VehicleDetailComponent;

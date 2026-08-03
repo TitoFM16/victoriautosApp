@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import LoadingModal from '../shared/LoadingModal';
@@ -39,7 +38,7 @@ function VendeForm() {
         lateralDerImg: '',
         interiorImg: '',
         motorImg: '',
-        
+
     });
 
     const [showLoadingModal, setShowLoadingModal] = useState(false);
@@ -71,9 +70,9 @@ function VendeForm() {
             category: "button",
             label: "Enviar oferta",
             value: 1,
-          });          
+          });
         event.preventDefault();
-        
+
         if (!validateStep3()) {
             alert('Por favor suba todas las fotos requeridas');
             return;
@@ -85,9 +84,9 @@ function VendeForm() {
         }
 
         const DIR = formData.marca + "_" + formData.linea + "_" + formData.modelo + "/";
-        
+
         const submitFormData = new FormData();
-        
+
         // Add the reCAPTCHA response token with the exact key expected by the server
         submitFormData.append('recaptcha_token', formData.captcha);
 
@@ -110,14 +109,14 @@ function VendeForm() {
         Object.entries(formValues).forEach(([key, value]) => {
             submitFormData.append(key, value);
         });
-        
+
         // Add images
         const images = [
-            formData.frenteImg, 
-            formData.traseroImg, 
-            formData.lateralIzqImg, 
-            formData.lateralDerImg, 
-            formData.interiorImg, 
+            formData.frenteImg,
+            formData.traseroImg,
+            formData.lateralIzqImg,
+            formData.lateralDerImg,
+            formData.interiorImg,
             formData.motorImg
         ];
 
@@ -127,12 +126,12 @@ function VendeForm() {
 
         setShowLoadingModal(true);
         setSubmitStatus('loading');
-        
+
         axios.post('/api/ofertas', submitFormData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Accept': 'application/json'
-            }        
+            }
         })
         .then(res => {
             setSubmitStatus('success');
@@ -148,7 +147,7 @@ function VendeForm() {
             console.error('Error:', error.response || error);
         });
     };
-    
+
     const _next = () => {
         if (currentStep === 1 && !validateStep1()) {
             alert('Por favor complete todos los campos antes de continuar');
@@ -158,10 +157,10 @@ function VendeForm() {
             alert('Por favor complete todos los campos antes de continuar');
             return;
         }
-        
+
         setCurrentStep(prev => prev >= 2 ? 3 : prev + 1);
     }
-      
+
     const _prev = () => {
         setCurrentStep(prev => prev <= 0 ? 0 : prev - 1);
     }
@@ -169,46 +168,40 @@ function VendeForm() {
     const previousButton = () => {
         if (currentStep > 1) {
             return (
-                <div className='vertical-center'>
-                    <button 
-                        className="btn cancel-button float-right mx-2 my-2" 
-                        type="button" 
-                        onClick={_prev}
-                    >
-                        Atras
-                    </button>
-                </div>
+                <button
+                    className="border border-zinc-300 px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-victoria-dark transition hover:border-victoria-dark"
+                    type="button"
+                    onClick={_prev}
+                >
+                    Atrás
+                </button>
             );
         }
         return null;
     }
-    
+
     const nextButton = () => {
         if (currentStep < 3 && currentStep >= 1) {
             return (
-                <div className='vertical-center'>
-                    <button 
-                        className="btn submit-button float-left mx-2 my-2" 
-                        type="button" 
-                        onClick={_next}
-                    >
-                        Siguiente 
-                    </button>        
-                </div> 
+                <button
+                    className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                    type="button"
+                    onClick={_next}
+                >
+                    Siguiente
+                </button>
             );
         }
-        
+
         if (currentStep === 3) {
             return (
-                <div className='vertical-center'>
-                    <button
-                        className="btn submit-button float-left mx-2 my-2"
-                        type="submit"
-                        onClick={handleSubmit}
-                    >
-                        Enviar
-                    </button>
-                </div>
+                <button
+                    className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                    type="submit"
+                    onClick={handleSubmit}
+                >
+                    Enviar
+                </button>
             );
         }
         return null;
@@ -216,15 +209,15 @@ function VendeForm() {
     const empecemosButton = () => {
         if (currentStep === 0) {
             return (
-                <div className='vertical-center my-4 py-2'>
-                    <button 
-                        className="btn submit-button" 
-                        type="button" 
+                <div className="mt-9">
+                    <button
+                        className="rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800"
+                        type="button"
                         onClick={_next}
                     >
-                        Vamos! 
+                        Vamos!
                     </button>
-                </div>        
+                </div>
             );
         }
         return null;
@@ -234,18 +227,18 @@ function VendeForm() {
         const { nombre, apellido, celular, email } = formData;
         const celularRegex = /^3\d{9}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        return nombre && 
-               apellido && 
-               celular && 
-               celularRegex.test(celular) && 
-               email && 
+
+        return nombre &&
+               apellido &&
+               celular &&
+               celularRegex.test(celular) &&
+               email &&
                emailRegex.test(email);
     }
 
     const validateStep2 = () => {
         const { marca, linea, modelo, km, matricula, price } = formData;
-        
+
         const validateModelo = (value) => {
             const currentYear = new Date().getFullYear();
             const year = parseInt(value);
@@ -262,11 +255,11 @@ function VendeForm() {
             return !isNaN(precio) && precio > 0 && precio < 100000000000;
         };
 
-        return marca && 
-               linea && 
-               modelo && validateModelo(modelo) && 
-               km && validateKilometraje(km) && 
-               matricula && 
+        return marca &&
+               linea &&
+               modelo && validateModelo(modelo) &&
+               km && validateKilometraje(km) &&
+               matricula &&
                price && validatePrecio(price);
     }
 
@@ -288,22 +281,20 @@ function VendeForm() {
 
     return (
         <React.Fragment>
-            <div className="container d-flex flex-column py-2">
-                <Breadcrumb>
-                    <BreadcrumbItem><Link to="/home">Inicio</Link></BreadcrumbItem>
-                    <BreadcrumbItem active>Vende Tu Vehículo</BreadcrumbItem>
-                </Breadcrumb> 
-                <div className="col-12">
-                    <h3>Compramos tu usado</h3>
-                    <hr />
-                </div>   
+            <div className="mx-auto max-w-[900px] px-5 py-10 sm:px-8 sm:py-14">
+                <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
+                    <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
+                    <span className="mx-2">/</span>
+                    <span className="text-zinc-500">Vende Tu Vehículo</span>
+                </nav>
+                <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Compramos tu usado</h1>
                 <Step0
                     currentStep={currentStep}
                     handleChange={handleChange}
                 />
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <Step1 
-                        currentStep={currentStep} 
+                    <Step1
+                        currentStep={currentStep}
                         handleChange={handleChange}
                         nombre={formData.nombre}
                         apellido={formData.apellido}
@@ -311,8 +302,8 @@ function VendeForm() {
                         email={formData.email}
                         wppcheck={formData.wppcheck}
                     />
-                    <Step2 
-                        currentStep={currentStep} 
+                    <Step2
+                        currentStep={currentStep}
                         handleChange={handleChange}
                         marca={formData.marca}
                         linea={formData.linea}
@@ -321,8 +312,8 @@ function VendeForm() {
                         matricula={formData.matricula}
                         price={formData.price}
                     />
-                    <Step3 
-                        currentStep={currentStep} 
+                    <Step3
+                        currentStep={currentStep}
                         handleChange={handleChange}
                         frenteImg={formData.frenteImg}
                         traseroImg={formData.traseroImg}
@@ -331,25 +322,27 @@ function VendeForm() {
                         interiorImg={formData.interiorImg}
                         motorImg={formData.motorImg}
                     />
-                    <Captcha 
-                        onChange={handleCaptchaChange} 
+                    <Captcha
+                        onChange={handleCaptchaChange}
                         currentStep={currentStep}
                     />
                 </form>
-                <div className='prev-next-btn'>
-                    {previousButton()}
-                    {nextButton()}
-                </div>
+                {(previousButton() || nextButton()) && (
+                    <div className="mt-6 flex justify-between gap-3">
+                        {previousButton()}
+                        {nextButton()}
+                    </div>
+                )}
                 {empecemosButton()}
             </div>
-            <LoadingModal 
+            <LoadingModal
                 show={showLoadingModal}
                 status={submitStatus}
                 onClose={() => {
                     setShowLoadingModal(false);
                     if (submitStatus === 'success') {
                         // Optionally redirect or reset form
-                        window.location.href = '/home';
+                        window.location.href = '/';
                     }
                 }}
             />
@@ -365,12 +358,10 @@ function Step0(props){
         return null
     }
     return(
-        <div className="vertical-center">
-            <div className="container">
-                <h1 className='pb-4 px-2 fw-bold'>¿Tienes un vehiculo para la venta?</h1>
-                <h3 className='px-0 fw-light mb-4 pb-2'>¡En 3 simples pasos te lo compramos !</h3>
-                <FormStep0/>
-            </div>
+        <div>
+            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">¿Tienes un vehículo para la venta?</p>
+            <p className="mt-3 text-base text-zinc-600">¡En 3 simples pasos te lo compramos!</p>
+            <FormStep0/>
         </div>
     )
 }
@@ -390,26 +381,22 @@ Step0.propTypes = {
 function Step1(props) {
     if (props.currentStep !== 1) {
         return null
-    } 
+    }
     return(
-        <div className="form-group">
-            <div className="vertical-center">
-                <div className="container">
-                    <h1 className='pb-4 px-2'>Datos de Contacto</h1>
-                    <CircleSteps currentStep={props.currentStep} />
-                    <FormStep1  nombre={props.nombre}
-                                apellido={props.apellido}  
-                                celular={props.celular}
-                                email={props.email}
-                                wppcheck={props.wppcheck}
-                                handleChange = {props.handleChange}
-                    />
-                </div>
-            </div>
+        <div>
+            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Datos de Contacto</p>
+            <CircleSteps currentStep={props.currentStep} />
+            <FormStep1  nombre={props.nombre}
+                        apellido={props.apellido}
+                        celular={props.celular}
+                        email={props.email}
+                        wppcheck={props.wppcheck}
+                        handleChange = {props.handleChange}
+            />
         </div>
     );
 }
-  
+
 Step1.propTypes = {
   currentStep: PropTypes.number.isRequired,
   handleChange: PropTypes.func.isRequired,
@@ -430,28 +417,24 @@ Step1.propTypes = {
 function Step2(props) {
     if (props.currentStep !== 2) {
         return null
-    } 
+    }
     return(
-        <div className="form-group">
-            <div className="vertical-center">
-                <div className="container">
-                    <h1 className='pb-4 px-2'>Datos del Vehículo</h1>
-                    <CircleSteps currentStep={props.currentStep} />
-                    <FormStep2  
-                        marca={props.marca}
-                        linea={props.linea}
-                        modelo={props.modelo}
-                        km={props.km}
-                        matricula={props.matricula}
-                        price={props.price}
-                        handleChange={props.handleChange}
-                    />
-                </div>
-            </div>
+        <div>
+            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Datos del Vehículo</p>
+            <CircleSteps currentStep={props.currentStep} />
+            <FormStep2
+                marca={props.marca}
+                linea={props.linea}
+                modelo={props.modelo}
+                km={props.km}
+                matricula={props.matricula}
+                price={props.price}
+                handleChange={props.handleChange}
+            />
         </div>
     );
 }
- 
+
 Step2.propTypes = {
   currentStep: PropTypes.number.isRequired,
   handleChange: PropTypes.func.isRequired,
@@ -473,25 +456,19 @@ Step2.propTypes = {
 function Step3(props) {
     if (props.currentStep !== 3) {
         return null
-    } 
+    }
     return(
         <React.Fragment>
-        <div className="form-group">
-            <div className="vertical-center">
-                <div className="container">
-                    <h1 className='pb-4 px-2'>Fotografias del Vehículo</h1>
-                    <CircleSteps currentStep={props.currentStep} />
-                    <FormStep3  frenteImg={props.frenteImg}
-                                traseroImg={props.traseroImg}
-                                lateralIzqImg={props.lateralIzqImg}
-                                lateralDerImg={props.lateralDerImg}
-                                interiorImg={props.interiorImg}
-                                motorImg={props.motorImg}
-                                handleChange = {props.handleChange}
-                    />
-                </div>
-            </div>
-        </div>
+            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Fotografías del Vehículo</p>
+            <CircleSteps currentStep={props.currentStep} />
+            <FormStep3  frenteImg={props.frenteImg}
+                        traseroImg={props.traseroImg}
+                        lateralIzqImg={props.lateralIzqImg}
+                        lateralDerImg={props.lateralDerImg}
+                        interiorImg={props.interiorImg}
+                        motorImg={props.motorImg}
+                        handleChange = {props.handleChange}
+            />
         </React.Fragment>
     );
 }
@@ -517,29 +494,25 @@ Step3.propTypes = {
 function CircleSteps(props){
     if (props.currentStep === 0) {
         return null
-    } 
+    }
+    const steps = [
+        { number: 1, label: 'Datos de contacto' },
+        { number: 2, label: 'Datos del Vehículo' },
+        { number: 3, label: 'Fotos del Vehículo' },
+    ];
     return(
-        <div>
-            <div className="steps-container d-flex justify-content-center">
-                <div className={props.currentStep === 1? "step active": "step"}>
-                    <div className={props.currentStep === 1? "step-circle active": "step-circle"}>
-                        <p className='my-auto'>1</p>
+        <div className="mt-6 flex items-center justify-center gap-3 sm:gap-6">
+            {steps.map((step) => {
+                const active = props.currentStep === step.number;
+                return (
+                    <div key={step.number} className="flex items-center gap-2">
+                        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-black ${active ? 'bg-victoria-red text-white' : 'border border-zinc-300 text-zinc-400'}`}>
+                            {step.number}
+                        </span>
+                        <span className={`hidden text-xs font-bold sm:inline ${active ? 'text-victoria-dark' : 'text-zinc-400'}`}>{step.label}</span>
                     </div>
-                    <p className="d-none d-md-inline">Datos de contacto</p>
-                </div>
-                <div className={props.currentStep === 2? "step active": "step"}>
-                    <div className={props.currentStep === 2? "step-circle active": "step-circle"}>
-                        <p className='my-auto'>2</p>
-                    </div>
-                    <p className="d-none d-md-inline">Datos del Vehículo</p>
-                </div>
-                <div className={props.currentStep === 3? "step active": "step"}>
-                    <div className={props.currentStep === 3? "step-circle active": "step-circle"}>
-                        <p className='my-auto'>3</p>
-                    </div>
-                    <p className="d-none d-md-inline">Fotos del Vehículo</p>
-                </div>
-            </div>
+                );
+            })}
         </div>
     )
 }
@@ -560,17 +533,13 @@ const Captcha = ({ onChange, currentStep }) => {
     if (currentStep !== 3) {
         return null;
     }
-    
+
     return (
-        <div id="recaptcha">
-            <div className='row vertical-center '>
-                <div className="Captcha">
-                    <ReCAPTCHA
-                        sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
-                        onChange={onChange}
-                    />
-                </div>
-            </div>
+        <div className="mt-6 flex justify-center">
+            <ReCAPTCHA
+                sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
+                onChange={onChange}
+            />
         </div>
     );
 };

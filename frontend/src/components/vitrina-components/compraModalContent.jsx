@@ -6,6 +6,10 @@ import ReCAPTCHA from "react-google-recaptcha";
 import LoadingModal from '../shared/LoadingModal';
 import { Modal } from 'bootstrap';
 
+const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+
 const CompraModalContent = ({ car }) => {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -36,7 +40,7 @@ const CompraModalContent = ({ car }) => {
 
   const handleChange = event => {
     const { name, type, value, checked } = event.target;
-    
+
     if (name === 'celular') {
       // Only allow numbers and limit to 10 digits
       const numericValue = value.replace(/\D/g, '');
@@ -97,145 +101,137 @@ const CompraModalContent = ({ car }) => {
     <>
       <div className="modal fade" id="compraModal" tabIndex="-1" aria-labelledby="compraModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="compraModalLabel">Comprar Vehiculo</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div className="modal-content !rounded-none !border-0 !border-t-4 !border-victoria-red">
+            <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
+              <h2 className="!text-xl font-black tracking-[-0.02em] text-victoria-dark" id="compraModalLabel">Comprar Vehículo</h2>
+              <button type="button" className="grid h-9 w-9 place-items-center border border-zinc-300 text-lg leading-none text-victoria-dark" data-bs-dismiss="modal" aria-label="Close">×</button>
             </div>
-            <div className="modal-body">
+            <div className="px-6 py-6">
               <form onSubmit={handleSubmit}>
-                <div className="container">
-                  <p className="text-muted">Diligencía los datos y en breve un asesor te contactará</p>
-                  <div className="row">
-                    <div className="col-12 col-md-6 py-2">
-                      <div className="form-group">
-                        <label htmlFor="nombre">Nombre</label>
-                        <input
-                          className="form-control"
-                          id="nombre"
-                          name="nombre"
-                          type="text"
-                          placeholder="Escribe tu nombre"
-                          value={formData.nombre}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-md-6 py-2">
-                      <div className="form-group">
-                        <label htmlFor="apellido">Apellido</label>
-                        <input
-                          className="form-control"
-                          id="apellido"
-                          name="apellido"
-                          type="text"
-                          placeholder="Escribe tu apellido"
-                          value={formData.apellido}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-md-6 py-2">
-                      <div className="form-group">
-                        <label htmlFor="celular">Celular</label>
-                        <input
-                          className={`form-control ${formData.celular && !validateCelular(formData.celular) ? 'is-invalid' : ''}`}
-                          id="celular"
-                          name="celular"
-                          type="text"
-                          placeholder="Ej: 3001234567"
-                          value={formData.celular}
-                          onChange={handleChange}
-                        />
-                        {formData.celular && !validateCelular(formData.celular) && (
-                          <div className="invalid-feedback">
-                            Por favor ingrese un número de celular válido
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-md-6 py-2">
-                      <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                          className={`form-control ${formData.email && !validateEmail(formData.email) ? 'is-invalid' : ''}`}
-                          id="email"
-                          name="email"
-                          type="text"
-                          placeholder="Escribe tu email"
-                          value={formData.email}
-                          onChange={handleChange}
-                        />
-                        {formData.email && !validateEmail(formData.email) && (
-                          <div className="invalid-feedback">
-                            Por favor ingrese un email válido
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="col-12 col-md-6 py-2">
-                      <div className="form-group">
-                        <label htmlFor="cedula">Cédula</label>
-                        <input
-                          className={`form-control ${formData.cedula && !validateCedula(formData.cedula) ? 'is-invalid' : ''}`}
-                          id="cedula"
-                          name="cedula"
-                          type="text"
-                          placeholder="Escribe tu cédula"
-                          value={formData.cedula}
-                          onChange={handleChange}
-                        />
-                        {formData.cedula && !validateCedula(formData.cedula) && (
-                          <div className="invalid-feedback">
-                            Por favor ingrese una cédula válida
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="col-12 py-4">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input" 
-                          id="wppCheckbox"
-                          name="wppcheck" 
-                          type="checkbox" 
-                          checked={formData.wppcheck} 
-                          onChange={handleChange} 
-                        />
-                        <label className="form-check-label left-label-position-check" htmlFor="wppCheckbox">
-                          ¿Aceptas comunicacion via Whatsapp?
-                        </label>
-                      </div>          
-                    </div>
-
-                    <div className="col-12 py-4">
-                      <div id="recaptcha">
-                        <ReCAPTCHA
-                          sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
-                          onChange={handleCaptchaChange}
-                        />
-                      </div>
-                    </div>
+                <p className="text-sm text-zinc-600">Diligencia los datos y en breve un asesor te contactará</p>
+                <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className={labelClass} htmlFor="nombre">Nombre</label>
+                    <input
+                      className={controlClass}
+                      id="nombre"
+                      name="nombre"
+                      type="text"
+                      placeholder="Escribe tu nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                    />
                   </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="apellido">Apellido</label>
+                    <input
+                      className={controlClass}
+                      id="apellido"
+                      name="apellido"
+                      type="text"
+                      placeholder="Escribe tu apellido"
+                      value={formData.apellido}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="celular">Celular</label>
+                    <input
+                      className={formData.celular && !validateCelular(formData.celular) ? invalidControlClass : controlClass}
+                      id="celular"
+                      name="celular"
+                      type="text"
+                      placeholder="Ej: 3001234567"
+                      value={formData.celular}
+                      onChange={handleChange}
+                    />
+                    {formData.celular && !validateCelular(formData.celular) && (
+                      <p className="mt-2 text-xs font-bold text-victoria-red">
+                        Por favor ingrese un número de celular válido
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="email">Email</label>
+                    <input
+                      className={formData.email && !validateEmail(formData.email) ? invalidControlClass : controlClass}
+                      id="email"
+                      name="email"
+                      type="text"
+                      placeholder="Escribe tu email"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                    {formData.email && !validateEmail(formData.email) && (
+                      <p className="mt-2 text-xs font-bold text-victoria-red">
+                        Por favor ingrese un email válido
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className={labelClass} htmlFor="cedula">Cédula</label>
+                    <input
+                      className={formData.cedula && !validateCedula(formData.cedula) ? invalidControlClass : controlClass}
+                      id="cedula"
+                      name="cedula"
+                      type="text"
+                      placeholder="Escribe tu cédula"
+                      value={formData.cedula}
+                      onChange={handleChange}
+                    />
+                    {formData.cedula && !validateCedula(formData.cedula) && (
+                      <p className="mt-2 text-xs font-bold text-victoria-red">
+                        Por favor ingrese una cédula válida
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <label className="mt-6 flex items-center gap-3 text-sm font-bold text-zinc-700" htmlFor="wppCheckbox">
+                  <input
+                    className="h-5 w-5 accent-victoria-red"
+                    id="wppCheckbox"
+                    name="wppcheck"
+                    type="checkbox"
+                    checked={formData.wppcheck}
+                    onChange={handleChange}
+                  />
+                  ¿Aceptas comunicación vía Whatsapp?
+                </label>
+
+                <div className="mt-6">
+                  <ReCAPTCHA
+                    sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
+                    onChange={handleCaptchaChange}
+                  />
                 </div>
               </form>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn cancel-button" data-bs-dismiss="modal">Cerrar</button>
-              <button className="btn submit-button float-left mx-2 my-2"
-                      type="submit"
-                      onClick={handleSubmit}>Enviar</button>
+            <div className="flex justify-end gap-3 border-t border-zinc-200 px-6 py-5">
+              <button
+                type="button"
+                className="border border-zinc-300 px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-victoria-dark transition hover:border-victoria-dark"
+                data-bs-dismiss="modal"
+              >
+                Cerrar
+              </button>
+              <button
+                className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Enviar
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <LoadingModal 
+      <LoadingModal
         show={formData.showLoadingModal}
         status={formData.submitStatus}
         onClose={() => {

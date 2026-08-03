@@ -1,76 +1,80 @@
 import PropTypes from 'prop-types';
-import { Card, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+
+const selectClass = 'mt-2 h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
 
 const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleClearFilters }) => {
   return (
-    <div className="col-2">
-      <div className="row">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5>Filtros</h5>
-            <button 
-              className="btn btn-sm btn-outline-secondary"
-              onClick={handleClearFilters}
+    <div className="lg:col-span-1">
+      <div className="border border-zinc-200 bg-white p-6">
+        <div className="flex items-center justify-between">
+          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Filtros</p>
+          <button
+            type="button"
+            className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500 transition hover:text-victoria-red"
+            onClick={handleClearFilters}
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <div className="mt-6 space-y-5">
+          <div>
+            <label className={labelClass} htmlFor="marca">Marca</label>
+            <select
+              className={selectClass}
+              name="marca"
+              id="marca"
+              value={filter.marca}
+              onChange={handleFilter}
             >
-              Limpiar filtros
-            </button>
+              <option value="">Todas</option>
+              {distinctValues(filteredCars, "marca")
+                .sort()
+                .map((marca) => (
+                  <option key={marca} value={marca}>
+                    {marca}
+                  </option>
+                ))}
+            </select>
           </div>
-          <div className="row">
-            <div className="col-12">
-              <label htmlFor="marca">Marca</label>
-              <select
-                className="form-control"
-                name="marca"
-                id="marca"
-                value={filter.marca}
-                onChange={handleFilter}
-              >
-                <option value="">Todas</option>
-                {distinctValues(filteredCars, "marca")
-                  .sort()
-                  .map((marca) => (
-                    <option key={marca} value={marca}>
-                      {marca}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="linea">Linea</label>
-              <select
-                className="form-control"
-                name="linea"
-                id="linea"
-                onChange={handleFilter}
-              >
-                <option value="">Todas</option>
-                {distinctValues(filteredCars, "linea")
-                  .sort()
-                  .map((linea) => (
-                    <option key={linea} value={linea}>
-                      {linea}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="modelo">Modelo</label>
-              <select
-                className="form-control"
-                name="modelo"
-                id="modelo"
-                onChange={handleFilter}
-              >
-                <option value={0}>Todos</option>
-                {distinctValues(filteredCars, "modelo")
-                  .sort()
-                  .map((modelo) => (
-                    <option key={modelo} value={modelo}>
-                      {modelo}
-                    </option>
-                  ))}
-              </select>
-            </div>
+          <div>
+            <label className={labelClass} htmlFor="linea">Línea</label>
+            <select
+              className={selectClass}
+              name="linea"
+              id="linea"
+              value={filter.linea}
+              onChange={handleFilter}
+            >
+              <option value="">Todas</option>
+              {distinctValues(filteredCars, "linea")
+                .sort()
+                .map((linea) => (
+                  <option key={linea} value={linea}>
+                    {linea}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelClass} htmlFor="modelo">Modelo</label>
+            <select
+              className={selectClass}
+              name="modelo"
+              id="modelo"
+              value={filter.modelo}
+              onChange={handleFilter}
+            >
+              <option value={0}>Todos</option>
+              {distinctValues(filteredCars, "modelo")
+                .sort()
+                .map((modelo) => (
+                  <option key={modelo} value={modelo}>
+                    {modelo}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
       </div>
@@ -90,4 +94,4 @@ Filters.propTypes = {
   handleClearFilters: PropTypes.func.isRequired
 };
 
-export default Filters; 
+export default Filters;

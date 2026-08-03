@@ -4,6 +4,7 @@ import axios from 'axios';
 import whatsappIcon from '../../assets/icons/whatsapp-brands-solid.svg';
 import CompraModalContent from './compraModalContent';
 import VehicleDetailComponent from '../shared/VehicleDetailComponent';
+import LoadingComponent from '../shared/loadingComponent';
 
 const imgPath = "/images/vehiculos/";
 
@@ -25,26 +26,27 @@ const CarDetailComponent = ({ mode }) => {
   }, [carId]);
 
   if (!car) {
-    return <h3>Loading...</h3>;
+    return <LoadingComponent />;
   }
 
   const clientActions = (
-    <div className="row py-4">
-      <div className="col-6">
-        <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#compraModal">
-          Comprar
-        </button>
-      </div>
-      <div className="col-6">
-        <button
-          type="button"
-          className="btn btn-success btn-block"
-          onClick={() => window.open(`https://api.whatsapp.com/send?phone=573113178450&text=Hola, estoy interesado en el vehículo ${car.marca} ${car.linea} ${car.modelo}`, "_blank")}
-        >
-          <img src={whatsappIcon} alt="whatsapp" style={{ height: 20, width: 20 }} className="whatsapp-icon" />
-          Contactar
-        </button>
-      </div>
+    <div className="mt-6 grid grid-cols-2 gap-3">
+      <button
+        type="button"
+        className="rounded-xl bg-victoria-red px-4 py-3 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+        data-bs-toggle="modal"
+        data-bs-target="#compraModal"
+      >
+        Comprar
+      </button>
+      <button
+        type="button"
+        className="flex items-center justify-center gap-2 rounded-xl border border-zinc-300 px-4 py-3 text-xs font-black uppercase tracking-[0.12em] text-victoria-dark transition hover:border-victoria-dark"
+        onClick={() => window.open(`https://api.whatsapp.com/send?phone=573113178450&text=Hola, estoy interesado en el vehículo ${car.marca} ${car.linea} ${car.modelo}`, "_blank")}
+      >
+        <img src={whatsappIcon} alt="" className="h-4 w-4" />
+        Contactar
+      </button>
       <CompraModalContent car={car.id} />
     </div>
   );

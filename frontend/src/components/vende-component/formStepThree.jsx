@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Col, Row, Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 // Constants for image resizing
@@ -11,41 +10,41 @@ const resizeImage = (file) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = URL.createObjectURL(file);
-    
+
     img.onload = () => {
       // Calculate new dimensions maintaining aspect ratio
       let width = img.width;
       let height = img.height;
-      
+
       if (width > MAX_WIDTH) {
         height = Math.round((height * MAX_WIDTH) / width);
         width = MAX_WIDTH;
       }
-      
+
       if (height > MAX_HEIGHT) {
         width = Math.round((width * MAX_HEIGHT) / height);
         height = MAX_HEIGHT;
       }
-      
+
       // Create canvas and resize
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
-      
+
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       // Check if the original file is already WebP
       const isWebP = file.type === 'image/webp';
       const outputType = isWebP ? 'image/webp' : 'image/webp';
       const outputExt = isWebP ? 'webp' : 'webp';
-      
+
       // Convert to WebP with quality setting
       canvas.toBlob((blob) => {
         // Create new filename with webp extension
         const originalName = file.name.substring(0, file.name.lastIndexOf('.'));
         const newFileName = `${originalName}.${outputExt}`;
-        
+
         const resizedFile = new File([blob], newFileName, {
           type: outputType,
           lastModified: Date.now(),
@@ -53,10 +52,19 @@ const resizeImage = (file) => {
         resolve(resizedFile);
       }, outputType, QUALITY);
     };
-    
+
     img.onerror = reject;
   });
 };
+
+const photoSlots = [
+  { name: 'frenteImg', label: 'Frente' },
+  { name: 'traseroImg', label: 'Trasera' },
+  { name: 'lateralIzqImg', label: 'Lateral izquierda' },
+  { name: 'lateralDerImg', label: 'Lateral Derecha' },
+  { name: 'interiorImg', label: 'Interior' },
+  { name: 'motorImg', label: 'Motor' },
+];
 
 function FormStep3(props) {
   const [fileNames, setFileNames] = useState({
@@ -75,7 +83,7 @@ function FormStep3(props) {
     try {
       // Resize image before setting it
       const resizedFile = await resizeImage(files[0]);
-      
+
       // Create a new event with the resized file
       const newEvent = {
         target: {
@@ -98,158 +106,34 @@ function FormStep3(props) {
   };
 
   return (
-    <Container className="vende-form-container py-2 mb-2 border-in-container shadow">
-      <Row className="justify-content-center">
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="frenteImg">Frente</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="frenteImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="frenteImg"
-                  name="frenteImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.frenteImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
+    <div className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+      <div className="grid gap-6 sm:grid-cols-2">
+        {photoSlots.map(({ name, label }) => (
+          <div key={name}>
+            <label className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500" htmlFor={name}>{label}</label>
+            <div className="mt-2 flex overflow-hidden rounded-xl border border-zinc-300">
+              <label
+                className="flex shrink-0 cursor-pointer items-center bg-zinc-100 px-4 text-xs font-black uppercase tracking-[0.1em] text-victoria-dark transition hover:bg-zinc-200"
+                htmlFor={name}
+              >
+                Buscar
+              </label>
+              <input
+                type="file"
+                className="hidden"
+                id={name}
+                name={name}
+                onChange={handleFileChange}
+                accept="image/*"
+              />
+              <span className="flex h-12 flex-1 items-center truncate bg-white px-3 text-sm text-zinc-500">
+                {fileNames[name] || 'Ningún archivo seleccionado'}
+              </span>
             </div>
           </div>
-        </Col>
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="traseroImg">Trasera</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="traseroImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="traseroImg"
-                  name="traseroImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.traseroImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
-      <Row className="align-items-center justify-content-center">
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="lateralIzqImg">Lateral izquierda</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="lateralIzqImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="lateralIzqImg"
-                  name="lateralIzqImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.lateralIzqImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="lateralDerImg">Lateral Derecha</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="lateralDerImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="lateralDerImg"
-                  name="lateralDerImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.lateralDerImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
-      <Row className="align-items-center justify-content-center">
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="interiorImg">Interior</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="interiorImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="interiorImg"
-                  name="interiorImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.interiorImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Col>
-        <Col md={6} sm={12} className="form-box-spacer">
-          <div className="form-group">
-            <div className="container py-3">
-              <label className="left-photo-position" htmlFor="motorImg">Motor</label>
-              <div className="input-group custom-file-button">
-                <label className="input-group-text custom-file-button" htmlFor="motorImg">Buscar</label>
-                <input
-                  type="file"
-                  className="form-control d-none"
-                  id="motorImg"
-                  name="motorImg"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-                <input
-                  type="text"
-                  className="form-control"
-                  value={fileNames.motorImg || 'No file selected'}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+        ))}
+      </div>
+    </div>
   );
 }
 

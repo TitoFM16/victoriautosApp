@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
 import LoadingModal from './shared/LoadingModal';
 import { useVehicleDropdowns } from '../hooks/useVehicleDropdowns';
+
+const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
+const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
 
 const InteresForm = () => {
   const [formData, setFormData] = useState({
@@ -25,10 +28,10 @@ const InteresForm = () => {
 
   const location = useLocation();
 
-  const { 
-    marcaDropdown: hookMarcaDropdown, 
-    lineaDropdown: hookLineaDropdown, 
-    fetchLineas 
+  const {
+    marcaDropdown: hookMarcaDropdown,
+    lineaDropdown: hookLineaDropdown,
+    fetchLineas
   } = useVehicleDropdowns();
 
   const sortedMarcaOptions = hookMarcaDropdown && Array.isArray(hookMarcaDropdown)
@@ -88,7 +91,7 @@ const InteresForm = () => {
 
   const handleChange = event => {
     const { name, value, type, checked } = event.target;
-    
+
     if (type === 'checkbox') {
       setFormData(prev => ({ ...prev, [name]: checked }));
       return;
@@ -178,7 +181,7 @@ const InteresForm = () => {
     if (location.state?.marca) {
       return (
         <input
-          className="form-control"
+          className={controlClass}
           id="marca"
           name="marca"
           type="text"
@@ -190,7 +193,7 @@ const InteresForm = () => {
     }
     return (
       <select
-        className="form-control"
+        className={controlClass}
         id="marca"
         name="marca"
         value={formData.marca}
@@ -213,7 +216,7 @@ const InteresForm = () => {
     if (location.state?.linea) {
       return (
         <input
-          className="form-control"
+          className={controlClass}
           id="linea"
           name="linea"
           type="text"
@@ -225,7 +228,7 @@ const InteresForm = () => {
     }
     return (
       <select
-        className="form-control"
+        className={controlClass}
         id="linea"
         name="linea"
         value={formData.linea}
@@ -248,206 +251,183 @@ const InteresForm = () => {
   return (
     <>
       {formData.showModal && (
-        <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Vehículo no encontrado</h5>
-                <button type="button" className="btn-close" onClick={handleModalClose}></button>
-              </div>
-              <div className="modal-body">
-                <p>
-                  En el momento no tenemos el vehículo {formData.marca} {formData.linea} {formData.modelo} deseado en nuestro stock actual. Diligencia tus datos y en breve te contactaremos con una oferta 
-                  de tu vehículo deseado
-                </p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn submit-button" onClick={handleModalClose}>
-                  Cerrar
-                </button>
-              </div>
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/60 px-5" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md border-t-4 border-victoria-red bg-white shadow-[0_30px_90px_rgba(0,0,0,.35)]">
+            <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
+              <h2 className="!text-lg font-black tracking-[-0.02em] text-victoria-dark">Vehículo no encontrado</h2>
+              <button type="button" className="grid h-9 w-9 place-items-center border border-zinc-300 text-lg leading-none text-victoria-dark" onClick={handleModalClose} aria-label="Cerrar">×</button>
+            </div>
+            <div className="px-6 py-6">
+              <p className="text-sm leading-6 text-zinc-600">
+                En el momento no tenemos el vehículo {formData.marca} {formData.linea} {formData.modelo} deseado en nuestro stock actual. Diligencia tus datos y en breve te contactaremos con una oferta
+                de tu vehículo deseado
+              </p>
+            </div>
+            <div className="flex justify-end border-t border-zinc-200 px-6 py-5">
+              <button
+                type="button"
+                className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                onClick={handleModalClose}
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      <LoadingModal 
+      <LoadingModal
         show={formData.showLoadingModal}
         status={formData.submitStatus}
         onClose={() => {
           setFormData(prev => ({ ...prev, showLoadingModal: false }));
           if (formData.submitStatus === 'success') {
-            window.location.href = '/home';
+            window.location.href = '/';
           }
         }}
       />
 
-      <form onSubmit={handleSubmit}>
-        <div className="container">
-          <Breadcrumb>
-            <BreadcrumbItem><Link to="/home">Inicio</Link></BreadcrumbItem>
-            <BreadcrumbItem active>Interes de compra</BreadcrumbItem>
-          </Breadcrumb> 
-          <div className="col-12">
-            <h3>Interes de compra</h3>
-            <hr />
-          </div>   
-          <div className="row">
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="nombre">Nombre</label>
-                <input
-                  className="form-control"
-                  id="nombre"
-                  name="nombre"
-                  type="text"
-                  placeholder="Escribe tu nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                />
-              </div>
+      <div className="mx-auto max-w-[900px] px-5 py-10 sm:px-8 sm:py-14">
+        <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
+          <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
+          <span className="mx-2">/</span>
+          <span className="text-zinc-500">Interés de compra</span>
+        </nav>
+        <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Interés de compra</h1>
+
+        <form onSubmit={handleSubmit} className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label className={labelClass} htmlFor="nombre">Nombre</label>
+              <input
+                className={controlClass}
+                id="nombre"
+                name="nombre"
+                type="text"
+                placeholder="Escribe tu nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="apellido">Apellido</label>
-                <input
-                  className="form-control"
-                  id="apellido"
-                  name="apellido"
-                  type="text"
-                  placeholder="Escribe tu apellido"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                />
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="apellido">Apellido</label>
+              <input
+                className={controlClass}
+                id="apellido"
+                name="apellido"
+                type="text"
+                placeholder="Escribe tu apellido"
+                value={formData.apellido}
+                onChange={handleChange}
+              />
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="celular">Celular</label>
-                <input
-                  className={`form-control ${formData.celular && !validateCelular(formData.celular) ? 'is-invalid' : ''}`}
-                  id="celular"
-                  name="celular"
-                  type="text"
-                  placeholder="Ej: 3001234567"
-                  value={formData.celular}
-                  onChange={handleChange}
-                />
-                {formData.celular && !validateCelular(formData.celular) && (
-                  <div className="invalid-feedback">
-                    Por favor ingrese un número de celular válido
-                  </div>
-                )}
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="celular">Celular</label>
+              <input
+                className={formData.celular && !validateCelular(formData.celular) ? invalidControlClass : controlClass}
+                id="celular"
+                name="celular"
+                type="text"
+                placeholder="Ej: 3001234567"
+                value={formData.celular}
+                onChange={handleChange}
+              />
+              {formData.celular && !validateCelular(formData.celular) && (
+                <p className="mt-2 text-xs font-bold text-victoria-red">
+                  Por favor ingrese un número de celular válido
+                </p>
+              )}
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="marca">Marca</label>
-                {renderMarcaField()}
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="marca">Marca</label>
+              {renderMarcaField()}
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="linea">Línea</label>
-                {renderLineaField()}
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="linea">Línea</label>
+              {renderLineaField()}
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="modelo">Modelo</label>
-                <input
-                  className={`form-control ${formData.modelo && !validateModelo(formData.modelo) ? 'is-invalid' : ''}`}
-                  id="modelo"
-                  name="modelo"
-                  type="text"
-                  placeholder="Ej: 2020"
-                  value={formData.modelo}
-                  onChange={handleChange}
-                />
-                {formData.modelo && !validateModelo(formData.modelo) && (
-                  <div className="invalid-feedback">
-                    Por favor ingrese un año válido
-                  </div>
-                )}
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="modelo">Modelo</label>
+              <input
+                className={formData.modelo && !validateModelo(formData.modelo) ? invalidControlClass : controlClass}
+                id="modelo"
+                name="modelo"
+                type="text"
+                placeholder="Ej: 2020"
+                value={formData.modelo}
+                onChange={handleChange}
+              />
+              {formData.modelo && !validateModelo(formData.modelo) && (
+                <p className="mt-2 text-xs font-bold text-victoria-red">
+                  Por favor ingrese un año válido
+                </p>
+              )}
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="km">Kilometraje</label>
-                <input
-                  className={`form-control ${formData.km && !validateKilometraje(formData.km) ? 'is-invalid' : ''}`}
-                  id="km"
-                  name="km"
-                  type="text"
-                  placeholder="Ej: 50000"
-                  value={formData.km}
-                  onChange={handleChange}
-                />
-                {formData.km && !validateKilometraje(formData.km) && (
-                  <div className="invalid-feedback">
-                    El kilometraje debe ser menor a 10.000.000
-                  </div>
-                )}
-              </div>
+            <div>
+              <label className={labelClass} htmlFor="km">Kilometraje</label>
+              <input
+                className={formData.km && !validateKilometraje(formData.km) ? invalidControlClass : controlClass}
+                id="km"
+                name="km"
+                type="text"
+                placeholder="Ej: 50000"
+                value={formData.km}
+                onChange={handleChange}
+              />
+              {formData.km && !validateKilometraje(formData.km) && (
+                <p className="mt-2 text-xs font-bold text-victoria-red">
+                  El kilometraje debe ser menor a 10.000.000
+                </p>
+              )}
             </div>
 
-            <div className="col-12 col-md-6 py-2">
-              <div className="form-group">
-                <label htmlFor="price">Precio</label>
-                <input
-                  className={`form-control ${formData.price && !validatePrecio(formData.price) ? 'is-invalid' : ''}`}
-                  id="price"
-                  name="price"
-                  type="text"
-                  placeholder="Ej: $ 50.000.000"
-                  value={formatPrice(formData.price)}
-                  onChange={handleChange}
-                />
-                {formData.price && !validatePrecio(formData.price) && (
-                  <div className="invalid-feedback">
-                    Por favor ingresa un precio razonable :)
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="col-12 py-4">
-              <div className="form-check">
-                <input
-                  className="form-check-input" 
-                  id="wppCheckbox"
-                  name="wppcheck" 
-                  type="checkbox" 
-                  defaultChecked={formData.wppcheck} 
-                  onChange={handleChange} 
-                />
-                <label className="form-check-label left-label-position-check" htmlFor="wppCheckbox">
-                  ¿Aceptas comunicacion via Whatsapp?
-                </label>
-              </div>          
-            </div>
-
-            <div className="col-12 py-4">
-              <div id="recaptcha">
-                <ReCAPTCHA
-                  sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
-                  onChange={handleCaptchaChange}
-                />
-              </div>
-            </div>
-
-            <div className="col-12 py-4">
-              <button type="submit" className="btn submit-button">Enviar</button>
+            <div>
+              <label className={labelClass} htmlFor="price">Precio</label>
+              <input
+                className={formData.price && !validatePrecio(formData.price) ? invalidControlClass : controlClass}
+                id="price"
+                name="price"
+                type="text"
+                placeholder="Ej: $ 50.000.000"
+                value={formatPrice(formData.price)}
+                onChange={handleChange}
+              />
+              {formData.price && !validatePrecio(formData.price) && (
+                <p className="mt-2 text-xs font-bold text-victoria-red">
+                  Por favor ingresa un precio razonable :)
+                </p>
+              )}
             </div>
           </div>
-        </div>
-      </form>
+
+          <label className="mt-6 flex items-center gap-3 text-sm font-bold text-zinc-700" htmlFor="wppCheckbox">
+            <input
+              className="h-5 w-5 accent-victoria-red"
+              id="wppCheckbox"
+              name="wppcheck"
+              type="checkbox"
+              defaultChecked={formData.wppcheck}
+              onChange={handleChange}
+            />
+            ¿Aceptas comunicación vía Whatsapp?
+          </label>
+
+          <div className="mt-6">
+            <ReCAPTCHA
+              sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
+              onChange={handleCaptchaChange}
+            />
+          </div>
+
+          <button type="submit" className="mt-6 rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800">Enviar</button>
+        </form>
+      </div>
     </>
   );
 };

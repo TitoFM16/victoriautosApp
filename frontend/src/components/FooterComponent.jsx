@@ -52,7 +52,7 @@ function Footer() {
             <Link className="text-sm font-bold text-white/65 !no-underline transition hover:text-white" to="/vitrina">Comprar vehículo →</Link>
             <Link className="text-sm font-bold text-white/65 !no-underline transition hover:text-white" to="/vende">Vender mi vehículo →</Link>
             <Link className="text-sm font-bold text-white/65 !no-underline transition hover:text-white" to="/financiamiento">Financiación →</Link>
-            <Link className="text-sm font-bold text-white/65 !no-underline transition hover:text-white" to="/nosotros">Contacto →</Link>
+            <a className="text-sm font-bold text-white/65 !no-underline transition hover:text-white" href="https://wa.me/573155806571">Contacto →</a>
           </nav>
         </div>
       </div>

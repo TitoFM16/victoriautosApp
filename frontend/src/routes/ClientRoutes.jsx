@@ -21,7 +21,7 @@ const ClientRoutes = ({ cars }) => {
           <Route path="/vitrina/:carId" element={<CarDetailComponent mode="client" />} />
           <Route path="/vende" element={<VendeForm />} />
           <Route path="/interes" element={<InteresFormComponent />} />
-          {/*<Route path="/financiamiento" element={<CreditCalculatorPage />} />*/}
+          <Route path="/financiamiento" element={<CreditCalculatorPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
