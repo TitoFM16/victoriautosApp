@@ -215,9 +215,8 @@ to review matching sources, `--include-dataset ID` to add a known source, and
 
 Outputs keep their source dataset ID and update date. Any product using them must display the
 required attribution `Fuente: Portal de Datos Abiertos www.datos.gov.co` and the original update
-date. Review source quality and aliases before importing the CSV into `vehiculos`: different
-publishers use inconsistent brand/line spelling, registrations are not sales, and the current
-table does not yet model year as part of its uniqueness constraint.
+date. Review source quality and aliases before publishing it: different publishers use
+inconsistent brand/line spelling, and registrations are not sales.
 
 The MinTransporte collector downloads the official annual base-gravable XLSX tables linked from
 the ministry's publication page. These are nationwide reference tables rather than territorial
@@ -225,6 +224,51 @@ registrations and include automobiles, pickups/camperos, double-cab pickups, ele
 motorcycles, passenger/cargo vehicles, ambulances, and hybrids. Values are published in thousands
 of pesos and are normalized to COP. The grouped `2001 y anteriores` column is intentionally
 excluded because it does not identify an exact model year.
+
+### Refreshing the form catalog in PostgreSQL
+
+After applying migrations, publish the current official nationwide tables directly to the
+database:
+
+```bash
+uv run alembic upgrade head
+uv run python scripts/sync_vehicle_catalog.py
+```
+
+The command discovers the current year's MinTransporte XLSX tables, downloads every table,
+adds compatible privacy-safe territorial aggregates from Datos Abiertos, and updates
+`vehicle_catalog_sources` and
+`vehicle_catalog_items` in one transaction. Existing `/api/buscavehiculo` responses combine
+active refreshed rows with manually maintained legacy `vehiculos` rows, so current frontend
+forms and admin additions remain compatible. `GET /api/buscavehiculo/modelos` provides model
+years for a selected `tipo`, `marca`, and exact `linea`.
+
+Only sources explicitly marked `publish_to_forms` are exposed by the public dropdown API.
+MinTransporte is enabled; territorial registration aggregates are stored as freshness and
+coverage evidence but remain disabled because their free-text lines contain misspellings and
+near-duplicates. Promote those rows only through a reviewed alias/curation process.
+
+The sync is safe to schedule weekly (for example with the hosting provider's scheduler). It
+upserts rows using stable source keys, marks source rows absent from a successful new snapshot
+inactive instead of deleting them, and records the last successful run. Downloads and parsing
+finish before the transaction starts. An empty snapshot or fewer than 100,000 parsed source rows
+is rejected, so a changed government page cannot silently wipe the active catalog. At the start
+of a new tax year, verify the automatically derived `tablas-YYYY` page; `--page-url` and
+`--source-date` are available when the Ministry publishes at a different path. By default the
+source date is read from the official document listing rather than being replaced by the date the
+job happened to run.
+Use `--skip-datos-abiertos` when an operational refresh should publish only the national
+baseline. Use `--only-datos-abiertos` for a faster supplemental refresh between national-table
+runs. The three known compatible datasets are checked explicitly even when Socrata search ranking
+does not return them.
+
+MinTransporte is the production baseline because it is nationwide, official, downloadable, and
+legally reusable. Datos Abiertos territorial sources are useful for market-presence validation
+and spelling reconciliation, but their schemas and coverage vary and they should not replace the
+national baseline. Fasecolda remains an optional comparison/enrichment source: its website says a
+monthly public Excel exists, but the advertised bulk link currently redirects away from the file.
+Do not automate vehicle-by-vehicle queries; enable a Fasecolda feed only after the current Excel
+download is restored or Victoriautos receives documented API access and usage permission.
 
 There is no equivalent script for the MongoDB collections (cars, forms, users,
 tramites, plate searches): that data model changed enough (new primary keys,

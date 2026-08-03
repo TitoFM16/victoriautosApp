@@ -3,6 +3,7 @@ from pathlib import Path
 from openpyxl import Workbook
 
 from victoriautos_backend.services.catalog_ingestion import (
+    extract_mintransport_publication_date,
     find_semantic_fields,
     is_vehicle_catalog_dataset,
     merge_catalog_rows,
@@ -18,7 +19,12 @@ def test_normalizes_catalog_values_without_losing_accents() -> None:
     assert normalize_catalog_text("  Mercedes-Benz   Clase A ") == "MERCEDES-BENZ CLASE A"
     assert normalize_catalog_text("Citroën") == "CITROËN"
     assert parse_model_year("2022.0") == 2022
+    assert parse_model_year("2.026") == 2026
     assert parse_model_year("1880") is None
+
+
+def test_extracts_mintransport_publication_date() -> None:
+    assert extract_mintransport_publication_date("Publicación: 06/01/2026 15:13:00") == "2026-01-06"
 
 
 def test_detects_spanish_catalog_fields() -> None:

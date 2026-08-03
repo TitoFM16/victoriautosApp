@@ -21,6 +21,7 @@ from urllib.parse import urljoin, urlparse
 import httpx
 
 from victoriautos_backend.services.catalog_ingestion import (
+    extract_mintransport_publication_date,
     merge_catalog_rows,
     parse_mintransport_workbook,
     write_catalog_csv,
@@ -72,6 +73,13 @@ def discover_xlsx_links(client: httpx.Client, page_url: str) -> list[tuple[str, 
     return sorted(links.items(), key=lambda item: item[1])
 
 
+def discover_publication_date(client: httpx.Client, page_url: str) -> str:
+    _require_mintransport_url(page_url)
+    response = client.get(page_url)
+    response.raise_for_status()
+    return extract_mintransport_publication_date(response.text)
+
+
 def download_xlsx(client: httpx.Client, url: str, destination: Path) -> None:
     _require_mintransport_url(url)
     total = 0
@@ -101,7 +109,7 @@ def _require_mintransport_url(url: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--page-url", default=DEFAULT_PAGE_URL)
-    parser.add_argument("--source-date", default="2026-01-06")
+    parser.add_argument("--source-date", help="Override the official publication date")
     parser.add_argument("--output", type=Path, required=True, help="Source-preserving CSV")
     parser.add_argument("--merged-output", type=Path, help="Optional merged form-ready CSV")
     parser.add_argument("--max-tables", type=int, default=0, help="0 means every XLSX table")
@@ -110,6 +118,7 @@ def main() -> None:
     headers = {"User-Agent": "VictoriautosCatalogCollector/1.0"}
     rows = []
     with httpx.Client(headers=headers, follow_redirects=True, timeout=90.0) as client:
+        source_date = args.source_date or discover_publication_date(client, args.page_url)
         links = discover_xlsx_links(client, args.page_url)
         if args.max_tables > 0:
             links = links[: args.max_tables]
@@ -121,8 +130,8 @@ def main() -> None:
                 rows.extend(
                     parse_mintransport_workbook(
                         local_path,
-                        source_dataset_id=f"{args.source_date}:{filename}",
-                        source_updated_at=args.source_date,
+                        source_dataset_id=f"{source_date}:{filename}",
+                        source_updated_at=source_date,
                     )
                 )
 

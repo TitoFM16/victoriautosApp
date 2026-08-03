@@ -101,12 +101,24 @@ def normalize_catalog_text(value: Any) -> str:
 def parse_model_year(value: Any) -> int | None:
     if value is None or isinstance(value, bool):
         return None
+    text = str(value).strip()
+    if re.fullmatch(r"\d[.,]\d{3}", text):
+        text = text.replace(".", "").replace(",", "")
     try:
-        year = int(float(str(value).strip()))
+        year = int(float(text))
     except (TypeError, ValueError):
         return None
     maximum = datetime.now(tz=UTC).year + 1
     return year if 1900 <= year <= maximum else None
+
+
+def extract_mintransport_publication_date(html: str) -> str:
+    """Read the official DD/MM/YYYY publication date from a document listing."""
+    match = re.search(r"Publicaci.n:\s*(\d{2})/(\d{2})/(\d{4})", html, flags=re.IGNORECASE)
+    if match is None:
+        raise ValueError("Could not determine the MinTransporte publication date")
+    day, month, year = match.groups()
+    return f"{year}-{month}-{day}"
 
 
 def find_semantic_fields(
