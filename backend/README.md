@@ -173,6 +173,58 @@ uv run python scripts/migrate_vehicle_catalog.py --source "postgresql://user:pas
 
 Safe to re-run - duplicate `(tipo, marca, linea, version)` combinations are skipped.
 
+## Building a Colombian vehicle catalog
+
+Source-preserving collectors can create normalized CSV inputs without changing the
+production database:
+
+```bash
+# Fasecolda: process only an XLSX Victoriautos is authorized to store and use.
+uv run python scripts/import_fasecolda_catalog.py \
+  --source ~/Downloads/GuiaValores.xlsx \
+  --output data/catalog/fasecolda.csv
+
+# Datos Abiertos: discover every compatible dataset and query only aggregated fields.
+uv run python scripts/collect_datos_abiertos_catalog.py \
+  --output data/catalog/datos_abiertos_sources.csv \
+  --merged-output data/catalog/datos_abiertos_merged.csv
+
+# MinTransporte: nationwide official brand/line/year/value tables.
+uv run python scripts/collect_mintransporte_catalog.py \
+  --output data/catalog/mintransporte_sources.csv \
+  --merged-output data/catalog/mintransporte_merged.csv
+
+# Combine the nationwide reference and territorial market-presence sources.
+uv run python scripts/merge_vehicle_catalog_exports.py \
+  data/catalog/mintransporte_sources.csv \
+  data/catalog/datos_abiertos_sources.csv \
+  --output data/catalog/colombia_vehicle_catalog.csv
+```
+
+The Fasecolda helper never accesses or scrapes the website. Fasecolda's site-wide terms require
+prior written authorization for reproducing or storing its content, so obtain permission before
+using the local parser or publishing its output. The parser supports long-form workbooks and the
+traditional format where model years are price columns.
+
+The Datos Abiertos collector searches the Socrata catalog using several Spanish vehicle terms,
+keeps datasets containing brand, line/reference, and model year, and requests grouped values
+through SODA. It never requests plate, VIN, owner, or full vehicle-level rows. Use `--list-only`
+to review matching sources, `--include-dataset ID` to add a known source, and
+`SOCRATA_APP_TOKEN` to supply an optional Socrata application token.
+
+Outputs keep their source dataset ID and update date. Any product using them must display the
+required attribution `Fuente: Portal de Datos Abiertos www.datos.gov.co` and the original update
+date. Review source quality and aliases before importing the CSV into `vehiculos`: different
+publishers use inconsistent brand/line spelling, registrations are not sales, and the current
+table does not yet model year as part of its uniqueness constraint.
+
+The MinTransporte collector downloads the official annual base-gravable XLSX tables linked from
+the ministry's publication page. These are nationwide reference tables rather than territorial
+registrations and include automobiles, pickups/camperos, double-cab pickups, electric vehicles,
+motorcycles, passenger/cargo vehicles, ambulances, and hybrids. Values are published in thousands
+of pesos and are normalized to COP. The grouped `2001 y anteriores` column is intentionally
+excluded because it does not identify an exact model year.
+
 There is no equivalent script for the MongoDB collections (cars, forms, users,
 tramites, plate searches): that data model changed enough (new primary keys,
 consolidated schema, Argon2 password hashing) that a straight copy isn't
