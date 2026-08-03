@@ -155,7 +155,7 @@ function Buscador() {
           <p className="mb-7 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.28em] text-white/75 before:h-px before:w-9 before:bg-victoria-red">
             Consignataria en Pasto, Nariño
           </p>
-          <h1 className="max-w-[760px] !text-5xl font-black leading-[0.9] tracking-[-0.06em] text-white sm:!text-7xl xl:!text-[5.75rem]">
+          <h1 className="relative z-10 max-w-[760px] !text-5xl font-black leading-[0.9] tracking-[-0.06em] text-white [text-shadow:0_2px_2px_rgba(0,0,0,.95),0_10px_32px_rgba(0,0,0,.95)] sm:!text-7xl sm:[text-shadow:none] xl:!text-[5.75rem]">
             El carro que sigue en tu historia.
           </h1>
           <p className="mt-8 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">

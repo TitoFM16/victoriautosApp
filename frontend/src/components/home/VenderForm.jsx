@@ -75,7 +75,7 @@ function VenderForm() {
     });
   }
 
-  const controlClass = 'mt-2 h-12 w-full border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
+  const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
   const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
 
   return (
@@ -152,7 +152,7 @@ function VenderForm() {
           )}
         </div>
         <div className="sm:col-span-2">
-          <button type='submit' className="min-h-13 w-full bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-red-800">
+          <button type='submit' className="min-h-13 w-full rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-red-800">
             Completar información
           </button>
         </div>

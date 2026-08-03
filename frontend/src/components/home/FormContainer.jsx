@@ -5,7 +5,7 @@ import LoadingComponent from '../shared/loadingComponent';
 
 const VenderForm = lazy(() => import('./VenderForm'));
 
-const controlClass = 'mt-2 h-12 w-full border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
+const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
 const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
 
 const FormContainer = ({
@@ -33,7 +33,7 @@ const FormContainer = ({
   } = formData;
 
   return (
-    <div className="border-t-4 border-victoria-red bg-white text-victoria-dark shadow-[0_30px_90px_rgba(0,0,0,.35)]">
+    <div className="overflow-hidden rounded-[1.5rem] border border-white/20 border-t-4 border-t-victoria-red bg-white text-victoria-dark shadow-[0_30px_90px_rgba(0,0,0,.35)] sm:rounded-[1.75rem]">
       <div className="grid grid-cols-2 border-b border-zinc-200" role="tablist" aria-label="Comprar o vender">
         <button
           type="button"
@@ -156,7 +156,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <button type="submit" className="mt-1 flex min-h-13 items-center justify-center gap-3 bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800 sm:col-span-2">
+            <button type="submit" className="mt-1 flex min-h-13 items-center justify-center gap-3 rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800 sm:col-span-2">
               Buscar vehículos
               <img src={SearchIcon} alt="" className="h-5 w-5" />
             </button>
