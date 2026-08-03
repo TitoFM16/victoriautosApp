@@ -1,13 +1,32 @@
 
+@import "tailwindcss";
+
+@theme {
+  --color-victoria-red: #b42318;
+  --color-victoria-dark: #111315;
+  --color-victoria-cream: #f4f1ea;
+  --font-sans: "Arial", "Helvetica Neue", sans-serif;
+}
+
+:root {
+  color: #111315;
+  background: #f4f1ea;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  min-width: 320px;
+  font-family: Arial, "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* background-color: #ededed; */
-  overflow-x: hidden; /* machete pa que no desborde */
+  overflow-x: hidden;
 }
 
 
@@ -15,4 +34,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-  
+
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #b42318;
+  color: white;
+}

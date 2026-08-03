@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import purgecss from '@mojojoejo/vite-plugin-purgecss'; // Import the plugin
+import tailwindcss from '@tailwindcss/vite'
 import Inspect from 'vite-plugin-inspect'
 
 const SCSS_Logger = {
@@ -33,20 +33,7 @@ export default defineConfig({
       }
     },
   },  
-  plugins: [react(),
-    purgecss({
-      // Specify the paths to all of your template and source files
-      content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
-      safelist: [
-        'hero-banner-as-title',
-        'hero-title-as-title',
-        'top-text-as-title',
-        'highlight-container-as-title',
-        'highlight-text-as-title'
-      ]
-    }),
-    Inspect() 
-  ],
+  plugins: [react(), tailwindcss(), Inspect()],
   css: {
     preprocessorOptions: {
       scss: {

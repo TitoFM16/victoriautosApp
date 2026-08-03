@@ -75,13 +75,15 @@ function VenderForm() {
     });
   }
 
+  const controlClass = 'mt-2 h-12 w-full border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
+  const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+
   return (
-    <form className="container web-busca-form" onSubmit={handleVenderSubmit}>
-      <div className='form-group row'>
-        <div className='col-12 col-md-6'>
-          <label className="web-form-label" htmlFor='venderMarca'>Marca</label>
+    <form className="mt-7 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2" onSubmit={handleVenderSubmit}>
+        <div>
+          <label className={labelClass} htmlFor='venderMarca'>Marca</label>
           <select
-            className='form-control'
+            className={controlClass}
             id='venderMarca'
             value={venderMarca}
             onChange={(e) => {
@@ -97,10 +99,10 @@ function VenderForm() {
             ))}
           </select>
         </div>
-        <div className='col-12 col-md-6'>
-          <label className="web-form-label" htmlFor='venderLinea'>Línea</label>
+        <div>
+          <label className={labelClass} htmlFor='venderLinea'>Línea</label>
           <select
-            className='form-control'
+            className={controlClass}
             id='venderLinea'
             value={venderLinea}
             onChange={(e) => setVenderLinea(e.target.value)}
@@ -117,44 +119,43 @@ function VenderForm() {
             })}
           </select>
         </div>
-        <div className='col-12 col-md-6'>
-          <label className="web-form-label" htmlFor='venderModelo'>Modelo</label>
+        <div>
+          <label className={labelClass} htmlFor='venderModelo'>Modelo</label>
           <input
             type="text"
-            className={`form-control ${venderModelo && !validateModelo(venderModelo) ? 'is-invalid' : ''}`}
+            className={`${controlClass} ${venderModelo && !validateModelo(venderModelo) ? 'border-red-600' : ''}`}
             id='venderModelo'
             value={venderModelo}
             onChange={handleModeloChange}
             placeholder="Ej: 2020"
           />
           {venderModelo && !validateModelo(venderModelo) && (
-            <div className="invalid-feedback">
+            <p className="mt-1 text-xs font-semibold text-red-700" role="alert">
               El año debe estar entre 1920 y {new Date().getFullYear() + 1}
-            </div>
+            </p>
           )}
         </div>
-        <div className='col-12 col-md-6'>
-          <label className="web-form-label" htmlFor='venderKilometraje'>Kilometraje</label>
+        <div>
+          <label className={labelClass} htmlFor='venderKilometraje'>Kilometraje</label>
           <input
             type="text"
-            className={`form-control ${venderKilometraje && !validateKilometraje(venderKilometraje) ? 'is-invalid' : ''}`}
+            className={`${controlClass} ${venderKilometraje && !validateKilometraje(venderKilometraje) ? 'border-red-600' : ''}`}
             id='venderKilometraje'
             value={venderKilometraje}
             onChange={handleKilometrajeChange}
             placeholder="Ej: 50000"
           />
           {venderKilometraje && !validateKilometraje(venderKilometraje) && (
-            <div className="invalid-feedback">
+            <p className="mt-1 text-xs font-semibold text-red-700" role="alert">
               El kilometraje debe ser menor a 10.000.000
-            </div>
+            </p>
           )}
         </div>
-        <div className='col-12 d-flex justify-content-center align-items-center py-3'>
-          <button type='submit' className='btn btn-sm submit-button'>
+        <div className="sm:col-span-2">
+          <button type='submit' className="min-h-13 w-full bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-red-800">
             Completar información
           </button>
         </div>
-      </div>
     </form>
   );
 }
