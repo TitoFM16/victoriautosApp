@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: victoriautos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: victoriautos
+      POSTGRES_PASSWORD: victoriautos
+      POSTGRES_DB: victoriautos
+    ports:
+      # Mapped to 5433 on the host to avoid clashing with a locally installed
+      # Postgres on the default 5432.
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U victoriautos -d victoriautos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional: the API itself, containerized, talking to the `postgres` service
+  # above over the compose network. Useful for testing the built image; for
+  # day-to-day development `uv run fastapi dev ...` with hot reload is faster.
+  app:
+    build: .
+    container_name: victoriautos-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: development
+      # Dev-only secret - never reuse this value outside local testing.
+      SECRET_KEY: dev-only-secret-change-me
+      DATABASE_URL: postgresql+asyncpg://victoriautos:victoriautos@postgres:5432/victoriautos
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY:-}
+    ports:
+      # Host port 3005 matches the original Node app's port; container listens
+      # on 8000 internally. Change the left side if 3005 is already taken.
+      - "3005:8000"
+    volumes:
+      - app_images:/app/data/images
+
+volumes:
+  postgres_data:
+  app_images:
