@@ -137,18 +137,18 @@ function Buscador() {
         className="absolute inset-0 -z-20 hidden h-full w-full object-cover object-[62%_center] sm:block"
         loading="eager"
       />
-      <div className="absolute inset-x-0 top-0 -z-20 grid h-[720px] grid-cols-3 bg-[#17191b] sm:hidden" aria-hidden="true">
+      <div className="absolute inset-x-0 top-0 -z-20 grid h-[720px] grid-cols-3 bg-[#151719] sm:hidden" aria-hidden="true">
         {mobileBrandLogos.map((logo, index) => (
-          <div key={logo} className="grid place-items-center border-b border-r border-white/5 p-7">
+          <div key={logo} className="grid place-items-center border-b border-r border-white/10 p-6 even:bg-white/[0.025]">
             <img
               src={logo}
               alt=""
-              className={`max-h-16 w-full max-w-20 opacity-[0.14] grayscale brightness-0 invert ${index % 2 === 0 ? 'scale-90' : ''}`}
+              className={`max-h-16 w-full max-w-20 brightness-0 invert opacity-40 drop-shadow-[0_0_18px_rgba(255,255,255,.08)] ${index % 2 === 0 ? 'scale-90' : ''}`}
             />
           </div>
         ))}
       </div>
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(13,15,17,.7)_0%,rgba(13,15,17,.96)_31%,rgba(13,15,17,.7)_100%)] sm:bg-[linear-gradient(90deg,rgba(13,15,17,.97)_0%,rgba(13,15,17,.87)_42%,rgba(13,15,17,.35)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(13,15,17,.16)_0%,rgba(13,15,17,.68)_30%,rgba(13,15,17,.92)_62%,rgba(13,15,17,.76)_100%)] sm:bg-[linear-gradient(90deg,rgba(13,15,17,.97)_0%,rgba(13,15,17,.87)_42%,rgba(13,15,17,.35)_100%)]" />
 
       <div className="mx-auto grid min-h-[720px] max-w-[1400px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(480px,.75fr)] lg:py-20">
         <div className="max-w-3xl pt-2 lg:pr-8">
