@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Victoriautos Consignataria s.a.s, compra, venta, consignación e importación de vehículos nuevos y usados. Pasto Nariño Colombia"
+    />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0">
+    </noscript>
+        
+    <!--PRELOAD IMAGES -->
+    <link rel="preload" href="assets/images/vehiculos_aereo.webp" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="assets/images/entrada_marco_blanco_repellado.webp" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="/src/assets/images/logo.webp" type="image/webp" fetchpriority="high">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <title>Victoriautos Consignataria S.A.S</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TEYM3EQFGE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-TEYM3EQFGE', {
+        'page_path': window.location.pathname,
+        'restrict_page_path': /^\/admin/  // Exclude admin paths
+      });
+    </script>
+
+    <link rel="preload" href="/src/components/home/HeroBanner.css" as="style">
+
+    <!-- og tags -->
+    <meta property="og:title" content="Victoriautos Consignataria S.A.S" />
+    <meta property="og:description" content="Victoriautos Consignataria s.a.s, compra, venta, permuta, consignación e importación de vehículos nuevos y usados. Pasto Nariño Colombia" />
+    <meta property="og:image" content="https://victoriautos.com/logo.webp" />
+    <meta property="og:url" content="https://victoriautos.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content="Victoriautos Consignataria S.A.S" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

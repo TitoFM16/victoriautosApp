@@ -1,0 +1,455 @@
+import { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import ReCAPTCHA from "react-google-recaptcha";
+import axios from 'axios';
+import LoadingModal from './shared/LoadingModal';
+import { useVehicleDropdowns } from '../hooks/useVehicleDropdowns';
+
+const InteresForm = () => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    celular: '',
+    wppcheck: false,
+    marca: '',
+    linea: '',
+    modelo: '',
+    km: '',
+    price: '',
+    showModal: false,
+    captcha: '',
+    showLoadingModal: false,
+    submitStatus: 'loading'
+  });
+
+  const location = useLocation();
+
+  const { 
+    marcaDropdown: hookMarcaDropdown, 
+    lineaDropdown: hookLineaDropdown, 
+    fetchLineas 
+  } = useVehicleDropdowns();
+
+  const sortedMarcaOptions = hookMarcaDropdown && Array.isArray(hookMarcaDropdown)
+    ? [...hookMarcaDropdown].sort((a, b) => a.marca.localeCompare(b.marca))
+    : [];
+
+  const sortedLineaOptions = hookLineaDropdown && Array.isArray(hookLineaDropdown)
+    ? [...hookLineaDropdown].sort((a, b) => {
+        const aText = a.linea + ' ' + (a.version || '');
+        const bText = b.linea + ' ' + (b.version || '');
+        return aText.localeCompare(bText);
+      })
+    : [];
+
+  useEffect(() => {
+    if (location.state) {
+      setFormData(prev => ({
+        ...prev,
+        marca: location.state.marca,
+        linea: location.state.linea,
+        modelo: location.state.modelo,
+        km: location.state.km,
+        price: location.state.price,
+        showModal: true
+      }));
+    }
+  }, [location.state]);
+
+  const validateModelo = (value) => {
+    const currentYear = new Date().getFullYear();
+    const year = parseInt(value);
+    return year >= 1920 && year <= currentYear + 1;
+  };
+
+  const validateKilometraje = (value) => {
+    const km = parseInt(value.replace(/\D/g, ''));
+    return !isNaN(km) && km >= 0 && km < 10000000;
+  };
+
+  const validatePrecio = (value) => {
+    const precio = parseInt(value.replace(/\D/g, ''));
+    return !isNaN(precio) && precio > 0 && precio < 100000000000;
+  };
+
+  const validateCelular = (value) => {
+    const celularRegex = /^3\d{9}$/;
+    return celularRegex.test(value);
+  };
+
+  const formatPrice = (value) => {
+    const number = parseInt(value.replace(/\D/g, ''));
+    if (!isNaN(number)) {
+      return `$ ${number.toLocaleString('es-CO')}`;
+    }
+    return value;
+  };
+
+  const handleChange = event => {
+    const { name, value, type, checked } = event.target;
+    
+    if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: checked }));
+      return;
+    }
+
+    let processedValue = value;
+
+    switch (name) {
+      case 'celular':
+        processedValue = value.replace(/\D/g, '').slice(0, 10);
+        break;
+      case 'modelo':
+        processedValue = value.replace(/\D/g, '').slice(0, 4);
+        break;
+      case 'km':
+        processedValue = value.replace(/\D/g, '').slice(0, 7);
+        break;
+      case 'price':
+        processedValue = value.replace(/\D/g, '');
+        break;
+      default:
+        processedValue = value;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: processedValue
+    }));
+  };
+
+  const handleCaptchaChange = (value) => {
+    setFormData(prev => ({ ...prev, captcha: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!formData.captcha) {
+      alert('Por favor complete el captcha');
+      return;
+    }
+
+    if (formData.modelo && !validateModelo(formData.modelo)) {
+      alert('Por favor ingrese un año válido entre 1920 y ' + (new Date().getFullYear() + 1));
+      return;
+    }
+
+    if (formData.km && !validateKilometraje(formData.km)) {
+      alert('Por favor ingrese un kilometraje válido');
+      return;
+    }
+
+    if (formData.price && !validatePrecio(formData.price)) {
+      alert('Por favor ingrese un precio razonable');
+      return;
+    }
+
+    setFormData(prev => ({ ...prev, showLoadingModal: true, submitStatus: 'loading' }));
+
+    try {
+      const numericPrice = formData.price ? parseInt(formData.price.replace(/\D/g, '')) : '';
+
+      await axios.post('/api/interescompra', {
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        celular: formData.celular,
+        wpp_check: formData.wppcheck,
+        marca: formData.marca,
+        linea: formData.linea,
+        modelo: formData.modelo,
+        km: formData.km,
+        price: String(numericPrice),
+        recaptcha_token: formData.captcha
+      });
+      setFormData(prev => ({ ...prev, submitStatus: 'success' }));
+    } catch (error) {
+      console.error('Error:', error);
+      setFormData(prev => ({ ...prev, submitStatus: 'error' }));
+    }
+  };
+
+  const handleModalClose = () => {
+    setFormData(prev => ({ ...prev, showModal: false }));
+  };
+
+  const renderMarcaField = () => {
+    if (location.state?.marca) {
+      return (
+        <input
+          className="form-control"
+          id="marca"
+          name="marca"
+          type="text"
+          value={formData.marca}
+          onChange={handleChange}
+          readOnly
+        />
+      );
+    }
+    return (
+      <select
+        className="form-control"
+        id="marca"
+        name="marca"
+        value={formData.marca}
+        onChange={(e) => {
+          handleChange(e);
+          fetchLineas(e.target.value);
+        }}
+      >
+        <option value="">Seleccione una marca</option>
+        {sortedMarcaOptions.map(marca => (
+          <option key={marca.id} value={marca.marca}>
+            {marca.marca}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
+  const renderLineaField = () => {
+    if (location.state?.linea) {
+      return (
+        <input
+          className="form-control"
+          id="linea"
+          name="linea"
+          type="text"
+          value={formData.linea}
+          onChange={handleChange}
+          readOnly
+        />
+      );
+    }
+    return (
+      <select
+        className="form-control"
+        id="linea"
+        name="linea"
+        value={formData.linea}
+        onChange={handleChange}
+        disabled={!formData.marca}
+      >
+        <option value="">Seleccione una línea</option>
+        {sortedLineaOptions.map(linea => {
+          const text = linea.linea + ' ' + (linea.version || '');
+          return (
+            <option key={linea.id} value={text}>
+              {text}
+            </option>
+          );
+        })}
+      </select>
+    );
+  };
+
+  return (
+    <>
+      {formData.showModal && (
+        <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Vehículo no encontrado</h5>
+                <button type="button" className="btn-close" onClick={handleModalClose}></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  En el momento no tenemos el vehículo {formData.marca} {formData.linea} {formData.modelo} deseado en nuestro stock actual. Diligencia tus datos y en breve te contactaremos con una oferta 
+                  de tu vehículo deseado
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn submit-button" onClick={handleModalClose}>
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <LoadingModal 
+        show={formData.showLoadingModal}
+        status={formData.submitStatus}
+        onClose={() => {
+          setFormData(prev => ({ ...prev, showLoadingModal: false }));
+          if (formData.submitStatus === 'success') {
+            window.location.href = '/home';
+          }
+        }}
+      />
+
+      <form onSubmit={handleSubmit}>
+        <div className="container">
+          <Breadcrumb>
+            <BreadcrumbItem><Link to="/home">Inicio</Link></BreadcrumbItem>
+            <BreadcrumbItem active>Interes de compra</BreadcrumbItem>
+          </Breadcrumb> 
+          <div className="col-12">
+            <h3>Interes de compra</h3>
+            <hr />
+          </div>   
+          <div className="row">
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="nombre">Nombre</label>
+                <input
+                  className="form-control"
+                  id="nombre"
+                  name="nombre"
+                  type="text"
+                  placeholder="Escribe tu nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="apellido">Apellido</label>
+                <input
+                  className="form-control"
+                  id="apellido"
+                  name="apellido"
+                  type="text"
+                  placeholder="Escribe tu apellido"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="celular">Celular</label>
+                <input
+                  className={`form-control ${formData.celular && !validateCelular(formData.celular) ? 'is-invalid' : ''}`}
+                  id="celular"
+                  name="celular"
+                  type="text"
+                  placeholder="Ej: 3001234567"
+                  value={formData.celular}
+                  onChange={handleChange}
+                />
+                {formData.celular && !validateCelular(formData.celular) && (
+                  <div className="invalid-feedback">
+                    Por favor ingrese un número de celular válido
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="marca">Marca</label>
+                {renderMarcaField()}
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="linea">Línea</label>
+                {renderLineaField()}
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="modelo">Modelo</label>
+                <input
+                  className={`form-control ${formData.modelo && !validateModelo(formData.modelo) ? 'is-invalid' : ''}`}
+                  id="modelo"
+                  name="modelo"
+                  type="text"
+                  placeholder="Ej: 2020"
+                  value={formData.modelo}
+                  onChange={handleChange}
+                />
+                {formData.modelo && !validateModelo(formData.modelo) && (
+                  <div className="invalid-feedback">
+                    Por favor ingrese un año válido
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="km">Kilometraje</label>
+                <input
+                  className={`form-control ${formData.km && !validateKilometraje(formData.km) ? 'is-invalid' : ''}`}
+                  id="km"
+                  name="km"
+                  type="text"
+                  placeholder="Ej: 50000"
+                  value={formData.km}
+                  onChange={handleChange}
+                />
+                {formData.km && !validateKilometraje(formData.km) && (
+                  <div className="invalid-feedback">
+                    El kilometraje debe ser menor a 10.000.000
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-12 col-md-6 py-2">
+              <div className="form-group">
+                <label htmlFor="price">Precio</label>
+                <input
+                  className={`form-control ${formData.price && !validatePrecio(formData.price) ? 'is-invalid' : ''}`}
+                  id="price"
+                  name="price"
+                  type="text"
+                  placeholder="Ej: $ 50.000.000"
+                  value={formatPrice(formData.price)}
+                  onChange={handleChange}
+                />
+                {formData.price && !validatePrecio(formData.price) && (
+                  <div className="invalid-feedback">
+                    Por favor ingresa un precio razonable :)
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="col-12 py-4">
+              <div className="form-check">
+                <input
+                  className="form-check-input" 
+                  id="wppCheckbox"
+                  name="wppcheck" 
+                  type="checkbox" 
+                  defaultChecked={formData.wppcheck} 
+                  onChange={handleChange} 
+                />
+                <label className="form-check-label left-label-position-check" htmlFor="wppCheckbox">
+                  ¿Aceptas comunicacion via Whatsapp?
+                </label>
+              </div>          
+            </div>
+
+            <div className="col-12 py-4">
+              <div id="recaptcha">
+                <ReCAPTCHA
+                  sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
+                  onChange={handleCaptchaChange}
+                />
+              </div>
+            </div>
+
+            <div className="col-12 py-4">
+              <button type="submit" className="btn submit-button">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </>
+  );
+};
+
+export default InteresForm;
