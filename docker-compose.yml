@@ -1,0 +1,77 @@
+# Whole-stack local development: Postgres + backend (hot reload) + frontend
+# (hot reload). Run `docker compose up` from the repo root.
+#
+# This is separate from backend/docker-compose.yml, which builds the
+# production backend image (no source mount, no reload) for testing that
+# image specifically - see backend/README.md.
+#
+# First run will take a little longer (dependency install into the named
+# volumes below); subsequent starts are fast since those volumes persist.
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: victoriautos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: victoriautos
+      POSTGRES_PASSWORD: victoriautos
+      POSTGRES_DB: victoriautos
+    ports:
+      # Mapped to 5433 on the host to avoid clashing with a locally installed
+      # Postgres on the default 5432.
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/docker/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U victoriautos -d victoriautos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: victoriautos-backend-dev
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      # SECRET_KEY, RECAPTCHA_SECRET_KEY, etc. DATABASE_URL below overrides
+      # whatever's in this file, since the container reaches Postgres by
+      # service name, not localhost.
+      - ./backend/.env
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+asyncpg://victoriautos:victoriautos@postgres:5432/victoriautos
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./backend:/app
+      # Named volume shadows the bind mount at .venv so the container's
+      # Linux-built venv doesn't get clobbered by a host macOS/Windows one.
+      - backend_venv:/app/.venv
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: victoriautos-frontend-dev
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_BACKEND_URL: http://backend:3005
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      # Named volume shadows node_modules for the same reason as .venv above.
+      - frontend_node_modules:/app/node_modules
+
+volumes:
+  postgres_data:
+  backend_venv:
+  frontend_node_modules:

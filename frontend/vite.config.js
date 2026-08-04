@@ -15,24 +15,29 @@ const SCSS_Logger = {
 };
 
 
+// Backend URL: defaults to localhost for native `yarn dev`. When running
+// inside docker-compose, VITE_BACKEND_URL is set to http://backend:3005
+// since `localhost` inside the frontend container is the container itself.
+const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:3005';
+
 // https://vite.dev/config/
 export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3005',  // Backend URL
+        target: backendUrl,
         changeOrigin: true, // Needed for virtual hosted sites
         secure: false,      // Set to false if using self-signed SSL
         // Remove the rewrite rule or modify it to match your backend routes
-        // rewrite: (path) => path.replace(/^\/api/, ''), 
+        // rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/images': {  // Add this proxy rule for images
-        target: 'http://localhost:3005',
+        target: backendUrl,
         changeOrigin: true,
         secure: false,
       }
     },
-  },  
+  },
   plugins: [react(), tailwindcss(), Inspect()],
   css: {
     preprocessorOptions: {
