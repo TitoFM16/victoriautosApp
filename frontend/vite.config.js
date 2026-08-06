@@ -28,6 +28,14 @@ export default defineConfig({
         target: backendUrl,
         changeOrigin: true, // Needed for virtual hosted sites
         secure: false,      // Set to false if using self-signed SSL
+        // FastAPI 307-redirects routes missing a trailing slash (e.g.
+        // /api/cars -> /api/cars/). Without autoRewrite, that redirect's
+        // Location header carries the proxy target verbatim - fine for
+        // localhost:3005, but when target is a docker-compose service name
+        // (backend:3005) the browser can't resolve it and the request hangs.
+        // autoRewrite swaps the target's host:port back to this dev server's
+        // in Location headers so the browser follows it through the proxy.
+        autoRewrite: true,
         // Remove the rewrite rule or modify it to match your backend routes
         // rewrite: (path) => path.replace(/^\/api/, ''),
       },
@@ -35,6 +43,7 @@ export default defineConfig({
         target: backendUrl,
         changeOrigin: true,
         secure: false,
+        autoRewrite: true,
       }
     },
   },
