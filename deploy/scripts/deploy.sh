@@ -65,8 +65,11 @@ rsync -az --delete -e "$bundle_dir/rsync-ssh" \
     "$bundle_dir/backend/" "$SSH_HOST:$REMOTE_ROOT/backend/"
 rsync -az --delete -e "$bundle_dir/rsync-ssh" \
     "$bundle_dir/deploy/" "$SSH_HOST:$REMOTE_ROOT/deploy/"
-rsync -az --chmod=D755,F644 -e "$bundle_dir/rsync-ssh" \
+rsync -az -e "$bundle_dir/rsync-ssh" \
     "$repo_root/frontend/dist/" "$SSH_HOST:$REMOTE_ROOT/frontend/releases/$release/"
+# macOS openrsync has no --chmod; make the release readable by nginx remotely.
+ssh "${ssh_args[@]}" "$SSH_HOST" \
+    "find '$REMOTE_ROOT/frontend/releases/$release' -type d -exec chmod 755 {} + && find '$REMOTE_ROOT/frontend/releases/$release' -type f -exec chmod 644 {} +"
 # The sample env is safe and useful for first setup (real .env is always preserved).
 rsync -az -e "$bundle_dir/rsync-ssh" \
     "$bundle_dir/backend/.env.example" "$SSH_HOST:$REMOTE_ROOT/backend/.env.example"
