@@ -32,7 +32,7 @@ function FormStep1(props) {
     };
 
     return(
-        <div className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+        <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
             <div className="grid gap-6 sm:grid-cols-2">
                 <div>
                     <label className={labelClass} htmlFor="nombre">Nombre</label>

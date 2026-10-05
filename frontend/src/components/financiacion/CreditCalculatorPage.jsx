@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
@@ -35,7 +35,7 @@ const CreditCalculator = () => {
   }, [financedValue, term]);
 
   return (
-    <div className="border border-zinc-200 bg-white p-6 sm:p-10">
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
       <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Financiación</p>
       <h2 className="mt-3 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Calcular crédito</h2>
 
@@ -53,13 +53,13 @@ const CreditCalculator = () => {
 
       <div className="mt-6">
         <p className={labelClass}>Plazo en meses</p>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {[12, 24, 36, 48, 60, 72].map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setTerm(m)}
-              className={`rounded-xl border px-4 py-2 text-sm font-bold transition ${term === m ? 'border-victoria-red bg-victoria-red text-white' : 'border-zinc-300 text-victoria-dark hover:border-victoria-dark'}`}
+              className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-bold transition ${term === m ? 'border-victoria-red bg-victoria-red text-white shadow-sm' : 'border-zinc-300 bg-white text-victoria-dark hover:border-victoria-dark'}`}
             >
               {m} meses
             </button>
@@ -76,7 +76,7 @@ const CreditCalculator = () => {
 
       <a
         href="#solicitud-credito"
-        className="!no-underline mt-6 inline-block rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800"
+        className="!no-underline mt-6 inline-block w-full rounded-xl bg-victoria-red px-7 py-4 text-center text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800 sm:w-auto"
       >
         Solicitar crédito
       </a>
@@ -112,7 +112,7 @@ const CreditApplicationForm = () => {
   };
 
   return (
-    <form id="solicitud-credito" onSubmit={handleSubmit} className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+    <form id="solicitud-credito" onSubmit={handleSubmit} className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
       <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Paso 2</p>
       <h2 className="mt-3 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Solicitud de crédito</h2>
 
@@ -209,7 +209,7 @@ const CreditApplicationForm = () => {
         He leído y acepto las <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer" className="text-victoria-red hover:text-red-800">Políticas de Privacidad</a>
       </label>
 
-      <button type="submit" className="mt-6 rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800">Enviar Solicitud</button>
+      <button type="submit" className="mt-6 w-full rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800 sm:w-auto">Enviar Solicitud</button>
     </form>
   );
 };

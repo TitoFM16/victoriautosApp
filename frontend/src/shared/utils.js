@@ -1,4 +1,5 @@
-//format money function export
 export function formatMoney(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }
+  return new Intl.NumberFormat('es-CO', {
+    maximumFractionDigits: 0,
+  }).format(Number(x));
+}

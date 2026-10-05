@@ -88,7 +88,7 @@ const FormContainer = ({
               <select className={controlClass} id="marca" name="marca" value={marca} onChange={handleInputChange} disabled={!tipo}>
                 <option value="">{tipo ? 'Todas las marcas' : 'Elige un tipo primero'}</option>
                 {tipo && sortedMarcaOptions.map((option) => (
-                  <option key={option.id} value={option.marca}>{option.marca}</option>
+                  <option key={option.id || option.marca} value={option.marca}>{option.marca}</option>
                 ))}
               </select>
             </div>
@@ -99,7 +99,7 @@ const FormContainer = ({
                 <option value="">{marca ? 'Todas las líneas' : 'Elige una marca primero'}</option>
                 {marca && sortedLineaOptions.map((option) => {
                   const text = `${option.linea} ${option.version || ''}`.trim();
-                  return <option key={option.id} value={text}>{text}</option>;
+                  return <option key={option.id || text} value={text}>{text}</option>;
                 })}
               </select>
             </div>
@@ -172,7 +172,7 @@ const FormContainer = ({
 };
 
 const vehicleOption = PropTypes.shape({
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   marca: PropTypes.string,
   linea: PropTypes.string,
   version: PropTypes.string,

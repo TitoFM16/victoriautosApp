@@ -22,8 +22,8 @@ function RenderVitrinaItem({ car }) {
   const image = car.images?.[0];
 
   return (
-    <article className="group bg-white">
-      <Link to={`/vitrina/${car.id}`} className="block text-victoria-dark no-underline" aria-label={`Ver ${car.marca} ${car.linea}`}>
+    <article className="group min-w-0 bg-white">
+      <Link to={`/vitrina/${car.id}`} className="block min-w-0 text-victoria-dark no-underline" aria-label={`Ver ${car.marca} ${car.linea}`}>
         <div className="relative aspect-[16/10] overflow-hidden bg-zinc-200">
           {image && !imageLoaded && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
           {image ? (
@@ -39,8 +39,8 @@ function RenderVitrinaItem({ car }) {
           )}
           {car.featured && <span className="absolute left-0 top-0 bg-victoria-red px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-white">Destacado</span>}
         </div>
-        <div className="border border-t-0 border-zinc-200 p-6">
-          <div className="flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500">
+        <div className="min-w-0 border border-t-0 border-zinc-200 p-5 sm:p-6">
+          <div className="flex min-w-0 items-center justify-between gap-3 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-500">
             <span>Modelo {car.modelo}</span>
             {car.km != null && <span>{Number(car.km).toLocaleString('es-CO')} km</span>}
           </div>
@@ -59,7 +59,9 @@ RenderVitrinaItem.propTypes = {
     marca: PropTypes.string.isRequired,
     linea: PropTypes.string.isRequired,
     modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    price: PropTypes.number.isRequired
+    km: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    featured: PropTypes.bool,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
   }).isRequired
 };
 
@@ -77,7 +79,7 @@ const Vitrina = ({ cars }) => {
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1023);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLoadingMore] = useState(false);
 
   const handleFilter = (event) => {
     const { name, value } = event.target;
@@ -199,7 +201,7 @@ const Vitrina = ({ cars }) => {
         )}
       </div>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[260px_1fr]">
+      <div className="mt-8 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         <Suspense fallback={<LoadingComponent />}>
           {isMobile ? (
             <MobileFilters
@@ -222,7 +224,7 @@ const Vitrina = ({ cars }) => {
           )}
         </Suspense>
 
-        <div>
+        <div className="min-w-0">
           {filteredCars.length === 0 ? (
             <div className="grid gap-6 bg-victoria-dark px-7 py-10 text-white sm:px-10">
               <div>
@@ -273,7 +275,9 @@ Vitrina.propTypes = {
       marca: PropTypes.string.isRequired,
       linea: PropTypes.string.isRequired,
       modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      price: PropTypes.number.isRequired
+      km: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      featured: PropTypes.bool,
+      price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
     })
   ).isRequired
 };

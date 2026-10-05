@@ -44,6 +44,20 @@ function Buscador() {
   const navigate = useNavigate();
   const cars = useSelector((state) => state.cars.cars);
 
+  const inventoryBrandOptions = (selectedType) => [...new Set(
+    cars
+      .filter((car) => !selectedType || car.tipo === selectedType)
+      .map((car) => car.marca)
+      .filter(Boolean),
+  )].map((brand) => ({ id: `inventory-${selectedType}-${brand}`, marca: brand }));
+
+  const inventoryLineOptions = (selectedType, selectedBrand) => [...new Set(
+    cars
+      .filter((car) => (!selectedType || car.tipo === selectedType) && car.marca === selectedBrand)
+      .map((car) => car.linea)
+      .filter(Boolean),
+  )].map((line) => ({ id: `inventory-${selectedBrand}-${line}`, linea: line, version: '' }));
+
   const sortedMarcaOptions = useMemo(
     () => [...marcaDropdown]
       .filter((item) => item && typeof item.marca === 'string')
@@ -67,7 +81,11 @@ function Buscador() {
     if (marca) queryParams.set('marca', marca);
     if (linea) queryParams.set('linea', linea);
 
-    const matchingCars = cars.filter((car) => car.marca === marca && car.linea === linea);
+    const matchingCars = cars.filter((car) => (
+      (!tipo || car.tipo === tipo) &&
+      (!marca || car.marca === marca) &&
+      (!linea || car.linea === linea)
+    ));
     if (matchingCars.length > 0) {
       navigate(`/vitrina?${queryParams.toString()}`);
     } else {
@@ -95,8 +113,11 @@ function Buscador() {
       if (value) {
         axios
           .get(`/api/buscavehiculo/?tipo=${value}`)
-          .then((response) => setMarcaDropdown(response.data))
-          .catch((error) => console.error(error));
+          .then((response) => {
+            const catalogOptions = Array.isArray(response.data) ? response.data : [];
+            setMarcaDropdown(catalogOptions.length > 0 ? catalogOptions : inventoryBrandOptions(value));
+          })
+          .catch(() => setMarcaDropdown(inventoryBrandOptions(value)));
       } else {
         setMarcaDropdown([]);
       }
@@ -108,8 +129,11 @@ function Buscador() {
       if (value) {
         axios
           .get(`/api/buscavehiculo/?tipo=${tipo}&marca=${value}`)
-          .then((response) => setLineaDropdown(response.data))
-          .catch((error) => console.error(error));
+          .then((response) => {
+            const catalogOptions = Array.isArray(response.data) ? response.data : [];
+            setLineaDropdown(catalogOptions.length > 0 ? catalogOptions : inventoryLineOptions(tipo, value));
+          })
+          .catch(() => setLineaDropdown(inventoryLineOptions(tipo, value)));
       } else {
         setLineaDropdown([]);
       }

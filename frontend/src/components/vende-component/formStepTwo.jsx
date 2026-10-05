@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import axios from 'axios';
 
@@ -7,8 +8,17 @@ const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-whit
 const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
 const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
 
+const inventoryMarcasFrom = (cars) => [...new Set(cars.map((car) => car.marca).filter(Boolean))]
+    .map((brand) => ({ marca: brand }));
+
+const inventoryLineasFrom = (cars, brand) => [...new Set(cars
+    .filter((car) => car.marca === brand)
+    .map((car) => car.linea)
+    .filter(Boolean))].map((line) => ({ linea: line, version: '' }));
+
 function FormStep2(props) {
 
+    const inventoryCars = useSelector((state) => state.cars.cars);
     const [marca, setMarca] = useState(props.marca || "");
     const [, setLinea] = useState(props.linea || "");
     const [marcaDropdown, setMarcaDropdown] = useState([]);
@@ -70,12 +80,13 @@ function FormStep2(props) {
         axios
             .get('/api/buscavehiculo/?tipo=' + tipo)
             .then((response) => {
-                setMarcaDropdown(response.data);
+                const catalogOptions = Array.isArray(response.data) ? response.data : [];
+                setMarcaDropdown(catalogOptions.length > 0 ? catalogOptions : inventoryMarcasFrom(inventoryCars));
             })
-            .catch((error) => {
-                console.log(error);
+            .catch(() => {
+                setMarcaDropdown(inventoryMarcasFrom(inventoryCars));
             });
-    }, []);
+    }, [inventoryCars]);
 
     // Effect to fetch lineas when marca is pre-filled
     useEffect(() => {
@@ -83,13 +94,14 @@ function FormStep2(props) {
             axios
                 .get('/api/buscavehiculo/?tipo=' + tipo + '&marca=' + props.marca)
                 .then((response) => {
-                    setLineaDropdown(response.data);
+                    const catalogOptions = Array.isArray(response.data) ? response.data : [];
+                    setLineaDropdown(catalogOptions.length > 0 ? catalogOptions : inventoryLineasFrom(inventoryCars, props.marca));
                 })
-                .catch((error) => {
-                    console.log(error);
+                .catch(() => {
+                    setLineaDropdown(inventoryLineasFrom(inventoryCars, props.marca));
                 });
         }
-    }, [props.marca]);
+    }, [inventoryCars, props.marca]);
 
 
     // Wrapper function to handle marca change and keep props.handleChange intact
@@ -107,10 +119,11 @@ function FormStep2(props) {
         axios
             .get('/api/buscavehiculo/?tipo=' + tipo + '&marca=' + value)
             .then((response) => {
-            setLineaDropdown(response.data); // Set the linea options from server
+            const catalogOptions = Array.isArray(response.data) ? response.data : [];
+            setLineaDropdown(catalogOptions.length > 0 ? catalogOptions : inventoryLineasFrom(inventoryCars, value));
         })
-            .catch((error) => {
-          console.log(error);
+            .catch(() => {
+          setLineaDropdown(inventoryLineasFrom(inventoryCars, value));
         });
     }
 
@@ -130,7 +143,7 @@ function FormStep2(props) {
     };
 
   return(
-        <div className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+        <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
             <div className="grid gap-6 sm:grid-cols-2">
                 <div>
                     <label className={labelClass} htmlFor="marca">Marca del vehículo</label>
@@ -146,7 +159,7 @@ function FormStep2(props) {
                             .sort((a, b) => a.marca.localeCompare(b.marca)) // Sort alphabetically by the "marca" field
                             .map((marca) => {
                                 return (
-                                    <option key={marca.id} value={marca.marca}>{marca.marca}</option>
+                                    <option key={marca.id || marca.marca} value={marca.marca}>{marca.marca}</option>
                                 );
                             }) : null}
                     </select>
@@ -164,9 +177,10 @@ function FormStep2(props) {
                         {marca !== '' ? lineaDropdown
                             .sort((a, b) => (a.linea + ' ' + (a.version || '')).localeCompare(b.linea + ' ' + (b.version || '')))
                             .map((linea) => {
+                                const text = `${linea.linea} ${linea.version || ''}`.trim();
                                 return (
-                                    <option key={linea.id} value={linea.linea + ' ' + (linea.version || '')}>
-                                        {linea.linea + ' ' + (linea.version || '')}
+                                    <option key={linea.id || text} value={text}>
+                                        {text}
                                     </option>
                                 );
                             }) : null}

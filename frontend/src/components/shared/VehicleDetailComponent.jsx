@@ -190,10 +190,10 @@ function VehicleDetailComponent({
           </div>
         </div>
 
-        <div className="border border-zinc-200 bg-white p-6 h-fit">
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{vehicle.modelo} · {vehicle.km} km</p>
+        <div className="h-fit rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)]">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{vehicle.modelo} · {Number(vehicle.km).toLocaleString('es-CO')} km</p>
           <h1 className="mt-2 !text-3xl font-black uppercase tracking-[-0.03em] text-victoria-dark">{vehicle.marca} {vehicle.linea}</h1>
-          <p className="mt-4 border-t border-zinc-200 pt-4 text-2xl font-black text-victoria-red">${formatMoney(vehicle.price)}</p>
+          <p className="mt-4 border-t border-zinc-200 pt-4 text-2xl font-black text-victoria-red">$ {formatMoney(vehicle.price)}</p>
 
           {children}
 
@@ -238,13 +238,13 @@ function VehicleDetailComponent({
         </div>
       </div>
 
-      <div className="mt-10 border border-zinc-200 bg-white p-6 sm:p-8">
+      <div className="mt-10 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.05)] sm:p-8">
         <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Características principales</p>
         <dl className="mt-5 divide-y divide-zinc-200">
           {featureRows.map(([label, key]) => (
             <div key={key} className="flex justify-between gap-4 py-3 text-sm">
               <dt className="font-bold text-zinc-500">{label}</dt>
-              <dd className="font-bold text-victoria-dark">{vehicle[key]}</dd>
+              <dd className="font-bold text-victoria-dark">{key === 'km' ? Number(vehicle[key]).toLocaleString('es-CO') : vehicle[key]}</dd>
             </div>
           ))}
         </dl>
