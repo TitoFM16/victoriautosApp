@@ -4,29 +4,8 @@ import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 
 import dealershipImage from '../../assets/images/entrada_marco_blanco_repellado.webp';
-import audiLogo from '../../assets/icons/brands/audi-svgrepo-com.svg';
-import bmwLogo from '../../assets/icons/brands/bmw-svgrepo-com.svg';
-import chevroletLogo from '../../assets/icons/brands/chevrolet-svgrepo-com.svg';
-import fordLogo from '../../assets/icons/brands/ford-svgrepo-com.svg';
-import hondaLogo from '../../assets/icons/brands/honda-svgrepo-com.svg';
-import mazdaLogo from '../../assets/icons/brands/mazda-svgrepo-com.svg';
-import mercedesLogo from '../../assets/icons/brands/mercedes-benz-logo-svgrepo-com.svg';
-import toyotaLogo from '../../assets/icons/brands/toyota-svgrepo-com.svg';
-import volkswagenLogo from '../../assets/icons/brands/volkswagen-svgrepo-com.svg';
 import LoadingComponent from '../shared/loadingComponent';
 import FormContainer from './FormContainer';
-
-const mobileBrandLogos = [
-  audiLogo,
-  bmwLogo,
-  chevroletLogo,
-  fordLogo,
-  hondaLogo,
-  mazdaLogo,
-  mercedesLogo,
-  toyotaLogo,
-  volkswagenLogo,
-];
 
 function Buscador() {
   const [activeTab, setActiveTab] = useState('comprar');
@@ -154,32 +133,23 @@ function Buscador() {
   };
 
   return (
-    <section className="relative isolate overflow-hidden bg-victoria-dark text-white">
+    <section className="dealership-hero">
       <img
         src={dealershipImage}
         alt="Sala de ventas Victoriautos sobre la Avenida Panamericana en Pasto"
-        className="absolute inset-0 -z-20 hidden h-full w-full object-cover object-[62%_center] sm:block"
+        className="dealership-hero-image"
         loading="eager"
+        fetchPriority="high"
+        decoding="async"
       />
-      <div className="absolute inset-x-0 top-0 -z-20 grid h-[720px] grid-cols-3 bg-[#151719] sm:hidden" aria-hidden="true">
-        {mobileBrandLogos.map((logo, index) => (
-          <div key={logo} className="grid place-items-center border-b border-r border-white/10 p-6 even:bg-white/[0.025]">
-            <img
-              src={logo}
-              alt=""
-              className={`max-h-16 w-full max-w-20 brightness-0 invert opacity-40 drop-shadow-[0_0_18px_rgba(255,255,255,.08)] ${index % 2 === 0 ? 'scale-90' : ''}`}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(13,15,17,.16)_0%,rgba(13,15,17,.68)_30%,rgba(13,15,17,.92)_62%,rgba(13,15,17,.76)_100%)] sm:bg-[linear-gradient(90deg,rgba(13,15,17,.97)_0%,rgba(13,15,17,.87)_42%,rgba(13,15,17,.35)_100%)]" />
+      <div className="dealership-hero-overlay" aria-hidden="true" />
 
-      <div className="mx-auto grid min-h-[720px] max-w-[1400px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(480px,.75fr)] lg:py-20">
+      <div className="dealership-hero-content mx-auto grid min-h-[720px] max-w-[1400px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(480px,.75fr)] lg:py-20">
         <div className="max-w-3xl pt-2 lg:pr-8">
           <p className="mb-7 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.28em] text-white/75 before:h-px before:w-9 before:bg-victoria-red">
             Consignataria en Pasto, Nariño
           </p>
-          <h1 className="relative z-10 max-w-[760px] !text-5xl font-black leading-[0.9] tracking-[-0.06em] text-white [text-shadow:0_2px_2px_rgba(0,0,0,.95),0_10px_32px_rgba(0,0,0,.95)] sm:!text-7xl sm:[text-shadow:none] xl:!text-[5.75rem]">
+          <h1 className="dealership-hero-title relative z-10 max-w-[760px] !text-5xl font-black leading-[0.9] tracking-[-0.06em] text-white [text-shadow:0_2px_2px_rgba(0,0,0,.95),0_10px_32px_rgba(0,0,0,.95)] sm:!text-7xl sm:[text-shadow:none] xl:!text-[5.75rem]">
             El carro que sigue en tu historia.
           </h1>
           <p className="mt-8 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">

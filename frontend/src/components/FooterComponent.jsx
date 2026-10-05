@@ -12,7 +12,7 @@ function Footer() {
   if (location.pathname.includes('/admin')) return null;
 
   return (
-    <footer className="bg-victoria-dark text-white">
+    <footer className="site-footer bg-victoria-dark text-white">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-16 sm:px-8 md:grid-cols-[1.1fr_1fr_1fr] md:py-20">
         <div>
           <div className="flex items-center gap-4">

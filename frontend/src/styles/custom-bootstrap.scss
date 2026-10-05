@@ -5,6 +5,14 @@
 
 // 2. Include any default variable overrides here
 $primary: #b40505;
+$border-radius: .75rem;
+$border-radius-lg: 1rem;
+$border-radius-sm: .625rem;
+$btn-border-radius: 999px;
+$btn-border-radius-lg: 999px;
+$btn-border-radius-sm: 999px;
+$input-border-radius: .75rem;
+$card-border-radius: 1rem;
 // Add any other variable overrides here
 
 // 3. Include remainder of required Bootstrap stylesheets (order is important)
@@ -44,3 +52,4 @@ $primary: #b40505;
 
 
 // 5. Add additional custom code here
+@import "public";

@@ -288,52 +288,54 @@ function VendeForm() {
                     <span className="text-zinc-500">Vende Tu Vehículo</span>
                 </nav>
                 <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Compramos tu usado</h1>
-                <Step0
-                    currentStep={currentStep}
-                    handleChange={handleChange}
-                />
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <Step1
+                <div className="public-form-card">
+                    <Step0
                         currentStep={currentStep}
                         handleChange={handleChange}
-                        nombre={formData.nombre}
-                        apellido={formData.apellido}
-                        celular={formData.celular}
-                        email={formData.email}
-                        wppcheck={formData.wppcheck}
                     />
-                    <Step2
-                        currentStep={currentStep}
-                        handleChange={handleChange}
-                        marca={formData.marca}
-                        linea={formData.linea}
-                        modelo={formData.modelo}
-                        km={formData.km}
-                        matricula={formData.matricula}
-                        price={formData.price}
-                    />
-                    <Step3
-                        currentStep={currentStep}
-                        handleChange={handleChange}
-                        frenteImg={formData.frenteImg}
-                        traseroImg={formData.traseroImg}
-                        lateralIzqImg={formData.lateralIzqImg}
-                        lateralDerImg={formData.lateralDerImg}
-                        interiorImg={formData.interiorImg}
-                        motorImg={formData.motorImg}
-                    />
-                    <Captcha
-                        onChange={handleCaptchaChange}
-                        currentStep={currentStep}
-                    />
-                </form>
-                {(previousButton() || nextButton()) && (
-                    <div className="mt-6 flex justify-between gap-3">
-                        {previousButton()}
-                        {nextButton()}
-                    </div>
-                )}
-                {empecemosButton()}
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <Step1
+                            currentStep={currentStep}
+                            handleChange={handleChange}
+                            nombre={formData.nombre}
+                            apellido={formData.apellido}
+                            celular={formData.celular}
+                            email={formData.email}
+                            wppcheck={formData.wppcheck}
+                        />
+                        <Step2
+                            currentStep={currentStep}
+                            handleChange={handleChange}
+                            marca={formData.marca}
+                            linea={formData.linea}
+                            modelo={formData.modelo}
+                            km={formData.km}
+                            matricula={formData.matricula}
+                            price={formData.price}
+                        />
+                        <Step3
+                            currentStep={currentStep}
+                            handleChange={handleChange}
+                            frenteImg={formData.frenteImg}
+                            traseroImg={formData.traseroImg}
+                            lateralIzqImg={formData.lateralIzqImg}
+                            lateralDerImg={formData.lateralDerImg}
+                            interiorImg={formData.interiorImg}
+                            motorImg={formData.motorImg}
+                        />
+                        <Captcha
+                            onChange={handleCaptchaChange}
+                            currentStep={currentStep}
+                        />
+                    </form>
+                    {(previousButton() || nextButton()) && (
+                        <div className="mt-6 flex justify-between gap-3">
+                            {previousButton()}
+                            {nextButton()}
+                        </div>
+                    )}
+                    {empecemosButton()}
+                </div>
             </div>
             <LoadingModal
                 show={showLoadingModal}

@@ -33,8 +33,8 @@ const FormContainer = ({
   } = formData;
 
   return (
-    <div className="overflow-hidden rounded-[1.5rem] border border-white/20 border-t-4 border-t-victoria-red bg-white text-victoria-dark shadow-[0_30px_90px_rgba(0,0,0,.35)] sm:rounded-[1.75rem]">
-      <div className="grid grid-cols-2 border-b border-zinc-200" role="tablist" aria-label="Comprar o vender">
+    <div className="hero-search-card">
+      <div className="hero-search-tabs" role="tablist" aria-label="Comprar o vender">
         <button
           type="button"
           role="tab"

@@ -101,7 +101,7 @@ const CompraModalContent = ({ car }) => {
     <>
       <div className="modal fade" id="compraModal" tabIndex="-1" aria-labelledby="compraModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-lg">
-          <div className="modal-content !rounded-none !border-0 !border-t-4 !border-victoria-red">
+          <div className="modal-content public-modal">
             <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
               <h2 className="!text-xl font-black tracking-[-0.02em] text-victoria-dark" id="compraModalLabel">Comprar Vehículo</h2>
               <button type="button" className="grid h-9 w-9 place-items-center border border-zinc-300 text-lg leading-none text-victoria-dark" data-bs-dismiss="modal" aria-label="Close">×</button>

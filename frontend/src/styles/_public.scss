@@ -1,0 +1,344 @@
+// Shared tokens; public layout rules stay inside the existing public wrapper.
+:root {
+  --va-accent: #a7322a;
+  --va-accent-hover: #862820;
+  --va-ink: #242322;
+  --va-muted: #68645f;
+  --va-canvas: #f7f5f0;
+  --va-line: #e8e4dd;
+  --va-radius-sm: 12px;
+  --va-radius-card: 16px;
+  --va-radius-panel: 24px;
+  --va-radius-pill: 999px;
+  --va-shadow: 0 2px 5px rgb(48 38 28 / 3%), 0 10px 28px rgb(48 38 28 / 6%);
+  --va-shadow-hover: 0 4px 10px rgb(48 38 28 / 5%), 0 16px 36px rgb(48 38 28 / 11%);
+  --va-focus: 0 0 0 4px rgb(167 50 42 / 16%);
+}
+
+// Admin inherits only the shared control/card rounding.
+.btn { border-radius: var(--va-radius-pill); }
+.form-control, .form-select { border-radius: var(--va-radius-sm); }
+.card, .modal-content { border-radius: var(--va-radius-card); }
+
+.non-admin-header-wrapper {
+  --color-victoria-red: var(--va-accent);
+  --color-victoria-dark: var(--va-ink);
+  --color-victoria-cream: var(--va-canvas);
+  min-height: 100vh;
+  background: var(--va-canvas);
+  color: var(--va-ink);
+
+  // Bootstrap's !important spacing helpers otherwise win over the existing
+  // public utility classes and squeeze phone layouts into 48px side gutters.
+  .px-5 { padding-inline: 20px !important; }
+  .gap-5 { gap: 1.25rem !important; }
+  @media (min-width: 640px) {
+    .px-5 { padding-inline: 32px !important; }
+  }
+
+  :where(button, a, input, select, textarea):focus-visible {
+    outline: 2px solid var(--va-accent);
+    outline-offset: 3px;
+    box-shadow: var(--va-focus);
+  }
+
+  :where(button, .va-button, a.bg-victoria-red) {
+    min-height: 44px;
+    border-radius: var(--va-radius-pill);
+    letter-spacing: normal;
+    text-transform: none;
+    font-weight: 600;
+    transition: background-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  }
+
+  button { min-width: 44px; }
+
+  :where(button.bg-victoria-red, a.bg-victoria-red) {
+    background: var(--va-accent);
+    &:hover { background: var(--va-accent-hover); }
+  }
+
+  :where(input:not([type='checkbox'], [type='radio'], [type='range'], [type='hidden']), select, textarea) {
+    min-height: 48px;
+    min-width: 0;
+    max-width: 100%;
+    border-radius: var(--va-radius-sm);
+    &:focus { box-shadow: var(--va-focus); }
+  }
+
+  label:not(:has(input[type='checkbox'])) {
+    letter-spacing: .02em;
+    text-transform: none;
+    font-size: .8125rem;
+    font-weight: 600;
+  }
+
+  label:has(input[type='checkbox']) { min-height: 44px; }
+  nav[aria-label='breadcrumb'] { line-height: 2; }
+  nav[aria-label='breadcrumb'] a { display: inline-block; min-height: 44px; }
+  :is(div, aside, form, section).bg-white.border { border-color: var(--va-line); border-radius: var(--va-radius-card); }
+  .bg-victoria-dark:not(footer) { border-radius: var(--va-radius-panel); }
+
+  .va-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    width: fit-content;
+    padding: .8rem 1.4rem;
+    font-size: .875rem;
+    text-decoration: none;
+  }
+
+  .va-button-secondary {
+    border: 1px solid #d6ccc2;
+    background: transparent;
+    color: var(--va-ink);
+    &:hover { background: #eee9e1; border-color: #c7b8a8; }
+  }
+
+  .public-form-card {
+    margin-top: 2rem;
+    padding: clamp(1rem, 4vw, 2.5rem);
+    border: 1px solid rgb(48 38 28 / 5%);
+    border-radius: var(--va-radius-panel);
+    background: white;
+    box-shadow: var(--va-shadow);
+  }
+
+  .public-modal {
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--va-radius-panel);
+    box-shadow: var(--va-shadow-hover);
+    > div { padding-block: 1.25rem !important; }
+  }
+
+  // Leave room for reCAPTCHA's fixed 304px widget on narrow phones.
+  @media (max-width: 399px) {
+    #compraModal .modal-content > div { padding-inline: 1rem; }
+    form.bg-white { padding-inline: .875rem; }
+  }
+
+  @media (hover: hover) {
+    :where(button.bg-victoria-red, a.bg-victoria-red, .va-button):hover {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgb(255 255 255 / 88%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: box-shadow 200ms ease;
+  &.is-scrolled { box-shadow: 0 3px 20px rgb(48 38 28 / 8%); }
+  nav a { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+.dealership-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 16px auto 0;
+  width: calc(100% - 32px);
+  max-width: 1400px;
+  border-radius: var(--va-radius-panel);
+  background: #252321;
+  color: white;
+
+  .dealership-hero-image {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% center;
+  }
+
+  .dealership-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgb(24 22 20 / 92%), rgb(24 22 20 / 72%) 48%, rgb(24 22 20 / 22%));
+  }
+
+  .dealership-hero-title { text-shadow: none; line-height: 1.04; }
+  .dealership-hero-content { min-height: 680px; padding-block: 4rem; }
+
+  @media (max-width: 639px) {
+    width: calc(100% - 24px);
+    margin-top: 12px;
+    .dealership-hero-overlay {
+      background: linear-gradient(180deg, rgb(24 22 20 / 65%), rgb(24 22 20 / 92%) 48%, #252321);
+    }
+    .dealership-hero-content { gap: 2rem; padding: 2.5rem 1rem 1rem; padding-inline: 1rem !important; }
+    .dealership-hero-title { font-size: 2.75rem !important; }
+  }
+}
+
+.hero-search-card {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--va-radius-panel);
+  background: white;
+  color: var(--va-ink);
+  box-shadow: 0 12px 48px rgb(0 0 0 / 18%);
+
+  .hero-search-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+    margin: .75rem .75rem 0;
+    padding: .375rem;
+    border-radius: var(--va-radius-pill);
+    background: var(--va-canvas);
+    button { min-height: 44px; padding-inline: .5rem !important; }
+    button[aria-selected='false'] { background: transparent; }
+  }
+}
+
+.feature-section { padding: 2rem 20px 0; }
+.feature-grid {
+  display: grid;
+  gap: 1rem;
+  max-width: 1336px;
+  margin: auto;
+  @media (min-width: 640px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.feature-card {
+  padding: 1.5rem;
+  border-radius: var(--va-radius-card);
+  background: #fffdfa;
+  box-shadow: 0 3px 16px rgb(48 38 28 / 4%);
+  p:first-child { display: flex; align-items: center; gap: .75rem; color: var(--va-accent); font-weight: 600; }
+  p:last-child { margin: 1rem 0 0; font-size: 1rem; line-height: 1.5; font-weight: 600; }
+}
+.feature-number {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f6eae5;
+  font-size: .75rem;
+}
+
+.inventory-section .swiper { padding: 8px 4px 32px; margin: -8px -4px -32px; }
+.vehicle-card {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--va-radius-card);
+  background: white;
+  box-shadow: var(--va-shadow);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+  > a { display: block; color: var(--va-ink); text-decoration: none; }
+  &:focus-within { outline: 2px solid var(--va-accent); outline-offset: 3px; }
+  h3 { margin: 1rem 0 0; font-size: 1.35rem; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+  @media (hover: hover) {
+    &:hover { transform: translateY(-4px); box-shadow: var(--va-shadow-hover); }
+    &:hover img { transform: scale(1.03); }
+  }
+}
+.vehicle-card-media { position: relative; }
+.vehicle-card-body { padding: 1.5rem; }
+.vehicle-badge {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  padding: .45rem .85rem;
+  border-radius: var(--va-radius-pill);
+  background: var(--va-accent);
+  color: white;
+  font-size: .6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.vehicle-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  span { padding: .35rem .65rem; border-radius: var(--va-radius-pill); background: var(--va-canvas); color: var(--va-muted); font-size: .75rem; font-weight: 500; }
+}
+.vehicle-price { margin: 1.25rem 0 0; color: var(--va-accent); font-size: 1.5rem; font-weight: 700; }
+
+.vehicle-image {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #eeeae3;
+  img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 200ms ease; }
+  &.is-loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, #faf8f3 50%, transparent 80%);
+    animation: vehicle-shimmer 1.6s ease-in-out infinite;
+  }
+}
+.vehicle-image-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--va-muted); font-size: .8125rem; }
+@keyframes vehicle-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+.public-vehicle-detail {
+  .vehicle-detail-media { border-radius: var(--va-radius-panel); box-shadow: var(--va-shadow); }
+  .vehicle-thumbnail { overflow: hidden; border: 2px solid transparent; border-radius: var(--va-radius-sm); padding: 0; }
+  .vehicle-thumbnail.is-active { border-color: var(--va-accent); }
+  .vehicle-thumbnail .vehicle-image { aspect-ratio: 1; }
+  .vehicle-gallery-dot {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: transparent;
+    &::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #c7bfb5; }
+    &.is-active::after { background: var(--va-accent); }
+  }
+  > .bg-white, > .grid > .bg-white { border-color: var(--va-line); box-shadow: var(--va-shadow); }
+}
+
+.selling-media {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: var(--va-radius-panel);
+  background: #e9e2d7;
+  box-shadow: var(--va-shadow);
+  .selling-media-image { position: relative; aspect-ratio: 4 / 3; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+}
+.selling-media-label {
+  position: absolute;
+  z-index: 2;
+  top: 16px;
+  left: 16px;
+  right: auto;
+  max-width: calc(100% - 32px);
+  padding: .7rem 1rem;
+  border-radius: var(--va-radius-pill);
+  background: rgb(255 255 255 / 94%);
+  color: var(--va-ink);
+  box-shadow: var(--va-shadow);
+  font-size: .75rem;
+  font-weight: 600;
+}
+.site-footer {
+  margin-top: 3rem;
+  border-radius: var(--va-radius-panel) var(--va-radius-panel) 0 0;
+  a[aria-label] { border-radius: var(--va-radius-pill); }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  nav { gap: .25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .non-admin-header-wrapper *, .non-admin-header-wrapper *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}

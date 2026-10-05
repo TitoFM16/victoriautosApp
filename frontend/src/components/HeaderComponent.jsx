@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import logo from '../assets/icons/logo.svg';
 
 const Header = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const updateScroll = () => setScrolled(window.scrollY > 12);
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    return () => window.removeEventListener('scroll', updateScroll);
+  }, []);
 
   if (location.pathname.startsWith("/admin")) return null;
 
@@ -20,11 +28,11 @@ const Header = () => {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl">
+    <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <nav className="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between px-5 sm:px-8" aria-label="Navegación principal">
         <Link className="flex min-w-0 items-center gap-3 !no-underline" to="/" onClick={handleNavClick}>
           <img 
-            src={logo} 
+            src="/logo.svg"
             className="h-11 w-11 shrink-0"
             alt="Victoriautos Consignataria logo" 
             loading="eager" 

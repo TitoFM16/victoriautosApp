@@ -4,6 +4,7 @@ import axios from 'axios';
 import { formatMoney } from '../../shared/utils';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
+import VehicleImage from './VehicleImage';
 
 const LoadingComponent = lazy(() => import('./loadingComponent'));
 
@@ -121,7 +122,7 @@ function VehicleDetailComponent({
   const metaImage = `${window.location.origin}${imagePath}${vehicle.id}/${vehicle.images[0]}`;
 
   return (
-    <div className="mx-auto max-w-[1400px] px-5 py-10 sm:px-8 sm:py-14">
+    <div className={`${mode === 'client' ? 'public-vehicle-detail' : ''} mx-auto max-w-[1400px] px-5 py-10 sm:px-8 sm:py-14`}>
       <Helmet>
         <title>{metaTitle}</title>
         <meta name="description" content={metaDescription} />
@@ -147,51 +148,102 @@ function VehicleDetailComponent({
       )}
 
       <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_360px]">
-        <div className="flex gap-3">
-          <div className="hidden w-20 shrink-0 flex-col gap-3 sm:flex">
-            {vehicle.images.map((image, index) => (
-              <div key={index} className="relative aspect-square overflow-hidden bg-zinc-100">
-                {!thumbnailsLoaded[index] && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
+        {mode === 'admin' ? (
+          <div className="flex gap-3">
+            <div className="hidden w-20 shrink-0 flex-col gap-3 sm:flex">
+              {vehicle.images.map((image, index) => (
+                <div key={index} className="relative aspect-square overflow-hidden bg-zinc-100">
+                  {!thumbnailsLoaded[index] && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
+                  <img
+                    src={`${imagePath}${vehicle.id}/${image}`}
+                    alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
+                    className={`h-full w-full cursor-pointer object-cover transition ${currentImage === index ? "ring-2 ring-inset ring-victoria-red" : "opacity-70 hover:opacity-100"} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
+                    onMouseEnter={() => setCurrentImage(index)}
+                    onClick={() => setCurrentImage(index)}
+                    onLoad={() => setThumbnailsLoaded(prev => ({...prev, [index]: true}))}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex-1">
+              <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+                {!mainImageLoaded && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
                 <img
-                  src={`${imagePath}${vehicle.id}/${image}`}
-                  alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
-                  className={`h-full w-full cursor-pointer object-cover transition ${currentImage === index ? "ring-2 ring-inset ring-victoria-red" : "opacity-70 hover:opacity-100"} ${thumbnailsLoaded[index] ? 'visible' : 'invisible'}`}
-                  onMouseEnter={() => setCurrentImage(index)}
-                  onClick={() => setCurrentImage(index)}
-                  onLoad={() => setThumbnailsLoaded(prev => ({...prev, [index]: true}))}
+                  className={`h-full w-full object-contain ${mainImageLoaded ? 'visible' : 'invisible'}`}
+                  src={`${imagePath}${vehicle.id}/${vehicle.images[currentImage]}`}
+                  alt={vehicle.name}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  onLoad={() => setMainImageLoaded(true)}
+                  style={{ touchAction: 'pinch-zoom' }}
                 />
               </div>
-            ))}
+              <div className="mt-3 flex justify-center gap-2 sm:hidden">
+                {vehicle.images.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`h-2 w-2 rounded-full ${currentImage === index ? 'bg-victoria-red' : 'bg-zinc-300'}`}
+                    onClick={() => setCurrentImage(index)}
+                    aria-label={`Imagen ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="flex-1">
-            <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
-              {!mainImageLoaded && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
-              <img
-                className={`h-full w-full object-contain ${mainImageLoaded ? 'visible' : 'invisible'}`}
-                src={`${imagePath}${vehicle.id}/${vehicle.images[currentImage]}`}
-                alt={vehicle.name}
+        ) : (
+          <div className="flex gap-3">
+            <div className="hidden w-20 shrink-0 flex-col gap-3 sm:flex">
+              {vehicle.images.map((image, index) => (
+                <button
+                  key={image}
+                  type="button"
+                  className={`vehicle-thumbnail ${currentImage === index ? 'is-active' : ''}`}
+                  aria-label={`Ver imagen ${index + 1}`}
+                  aria-pressed={currentImage === index}
+                  onMouseEnter={() => setCurrentImage(index)}
+                  onClick={() => setCurrentImage(index)}
+                >
+                  <VehicleImage
+                    src={`${imagePath}${vehicle.id}/${image}`}
+                    alt={`${vehicle.marca}_${vehicle.linea}_${vehicle.modelo}_${index}`}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="min-w-0 flex-1">
+              <VehicleImage
+                className="vehicle-detail-media"
+                src={vehicle.images[currentImage] ? `${imagePath}${vehicle.id}/${vehicle.images[currentImage]}` : undefined}
+                alt={`${vehicle.marca} ${vehicle.linea}, modelo ${vehicle.modelo}`}
+                eager
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                onLoad={() => setMainImageLoaded(true)}
                 style={{ touchAction: 'pinch-zoom' }}
               />
-            </div>
-            <div className="mt-3 flex justify-center gap-2 sm:hidden">
-              {vehicle.images.map((_, index) => (
-                <button
-                  key={index}
-                  className={`h-2 w-2 rounded-full ${currentImage === index ? 'bg-victoria-red' : 'bg-zinc-300'}`}
-                  onClick={() => setCurrentImage(index)}
-                  aria-label={`Imagen ${index + 1}`}
-                />
-              ))}
+              <div className="mt-3 flex flex-wrap justify-center gap-2 sm:hidden">
+                {vehicle.images.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`vehicle-gallery-dot ${currentImage === index ? 'is-active' : ''}`}
+                    onClick={() => setCurrentImage(index)}
+                    aria-label={`Imagen ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="h-fit rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)]">
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{vehicle.modelo} · {Number(vehicle.km).toLocaleString('es-CO')} km</p>
+          {mode === 'client' ? (
+            <div className="vehicle-chips">
+              <span>{vehicle.modelo}</span><span>{Number(vehicle.km).toLocaleString('es-CO')} km</span>
+            </div>
+          ) : (
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{vehicle.modelo} · {Number(vehicle.km).toLocaleString('es-CO')} km</p>
+          )}
           <h1 className="mt-2 !text-3xl font-black uppercase tracking-[-0.03em] text-victoria-dark">{vehicle.marca} {vehicle.linea}</h1>
           <p className="mt-4 border-t border-zinc-200 pt-4 text-2xl font-black text-victoria-red">$ {formatMoney(vehicle.price)}</p>
 

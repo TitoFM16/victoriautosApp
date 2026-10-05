@@ -295,7 +295,7 @@ const InteresForm = () => {
         </nav>
         <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Interés de compra</h1>
 
-        <form onSubmit={handleSubmit} className="mt-8 border border-zinc-200 bg-white p-6 sm:p-10">
+        <form onSubmit={handleSubmit} className="public-form-card">
           <div className="grid gap-6 sm:grid-cols-2">
             <div>
               <label className={labelClass} htmlFor="nombre">Nombre</label>

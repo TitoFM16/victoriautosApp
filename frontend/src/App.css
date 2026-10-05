@@ -544,12 +544,12 @@ div.step-circle.active{
 /* following code customize acordion icon in vitrinavirtual filters*/
 .accordion-button::after {
   /*add svg icon as background-image*/
-  background-image: url('assets/icons/plus-solid.svg');
+  background-image: url('./assets/icons/plus-solid.svg');
 
 }
 .accordion-button:not(.collapsed)::after {
   /*add svg icon as background-image*/
-  background-image: url('assets/icons/minus-solid.svg');
+  background-image: url('./assets/icons/minus-solid.svg');
 }
 
 .caracteristicas-title{

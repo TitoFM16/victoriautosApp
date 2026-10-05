@@ -26,11 +26,11 @@ const InvitaVentaComponent = () => {
             Quiero vender mi vehículo →
           </button>
         </div>
-        <figure className="overflow-hidden bg-zinc-100">
-          <figcaption className="bg-victoria-dark px-5 py-4 text-center text-[10px] font-black uppercase tracking-[0.18em] text-white sm:text-left">
+        <figure className="selling-media">
+          <figcaption className="selling-media-label">
             Proceso simple · Atención humana
           </figcaption>
-          <div className="relative min-h-[390px] sm:min-h-[480px]">
+          <div className="selling-media-image">
             <img
               src={iphoneImage}
               srcSet={`${iphoneImageMobile} 680w, ${iphoneImage} 1200w`}
@@ -38,6 +38,7 @@ const InvitaVentaComponent = () => {
               alt="Proceso digital para vender un vehículo con Victoriautos"
               className="absolute inset-0 h-full w-full object-cover object-center"
               loading="lazy"
+              decoding="async"
             />
           </div>
         </figure>

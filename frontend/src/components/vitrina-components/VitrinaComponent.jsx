@@ -3,67 +3,11 @@ import { Link } from 'react-router-dom';
 import filterIcon from '../../assets/icons/filters.svg';
 import PropTypes from 'prop-types';
 import LoadingComponent from '../shared/loadingComponent';
+import VehicleCard from '../shared/VehicleCard';
 
 // Lazy load the filter components
 const Filters = lazy(() => import('./Filters'));
 const MobileFilters = lazy(() => import('./MobileFilters'));
-
-function formatMoney(value) {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function RenderVitrinaItem({ car }) {
-  const imagePath = "/images/vehiculos/";
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const image = car.images?.[0];
-
-  return (
-    <article className="group min-w-0 bg-white">
-      <Link to={`/vitrina/${car.id}`} className="block min-w-0 text-victoria-dark no-underline" aria-label={`Ver ${car.marca} ${car.linea}`}>
-        <div className="relative aspect-[16/10] overflow-hidden bg-zinc-200">
-          {image && !imageLoaded && <div className="absolute inset-0 animate-pulse bg-zinc-200" />}
-          {image ? (
-            <img
-              className={`h-full w-full object-cover transition duration-500 group-hover:scale-[1.03] ${imageLoaded ? 'visible' : 'invisible'}`}
-              src={imagePath + car.id + "/" + image}
-              alt={`${car.marca} ${car.linea}, modelo ${car.modelo}`}
-              loading="lazy"
-              onLoad={() => setImageLoaded(true)}
-            />
-          ) : (
-            <div className="grid h-full place-items-center text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Imagen próximamente</div>
-          )}
-          {car.featured && <span className="absolute left-0 top-0 bg-victoria-red px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-white">Destacado</span>}
-        </div>
-        <div className="min-w-0 border border-t-0 border-zinc-200 p-5 sm:p-6">
-          <div className="flex min-w-0 items-center justify-between gap-3 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-500">
-            <span>Modelo {car.modelo}</span>
-            {car.km != null && <span>{Number(car.km).toLocaleString('es-CO')} km</span>}
-          </div>
-          <h3 className="mt-3 truncate !text-2xl font-black uppercase tracking-[-0.035em]">{car.marca} {car.linea}</h3>
-          <p className="mt-6 border-t border-zinc-200 pt-5 text-xl font-black text-victoria-red">{formatMoney(car.price)}</p>
-        </div>
-      </Link>
-    </article>
-  );
-}
-
-RenderVitrinaItem.propTypes = {
-  car: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired,
-    marca: PropTypes.string.isRequired,
-    linea: PropTypes.string.isRequired,
-    modelo: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    km: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    featured: PropTypes.bool,
-    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-  }).isRequired
-};
 
 const Vitrina = ({ cars }) => {
   const [filter, setFilter] = useState(() => {
@@ -255,8 +199,8 @@ const Vitrina = ({ cars }) => {
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredCars.map((car) => (
-                <RenderVitrinaItem key={car.id} car={car} />
+              {filteredCars.map((car, index) => (
+                <VehicleCard key={car.id} car={car} eager={index < 3} />
               ))}
               {renderLoadingMore()}
             </div>
