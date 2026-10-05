@@ -1,3 +1,6 @@
+import hashlib
+import hmac
+import re
 import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -8,6 +11,14 @@ from pwdlib import PasswordHash
 from victoriautos_backend.core.config import settings
 
 password_hasher = PasswordHash.recommended()
+LEGACY_PASSWORD_PREFIX = "legacy-pbkdf2-sha256$"
+
+
+def legacy_password_hash(salt: str, digest: str) -> str:
+    """Encode passport-local-mongoose 8.0.0 defaults, rejecting incomplete exports."""
+    if not re.fullmatch(r"[0-9a-fA-F]{64}", salt) or not re.fullmatch(r"[0-9a-fA-F]{1024}", digest):
+        raise ValueError("Invalid legacy password salt/hash; export raw MongoDB users")
+    return f"{LEGACY_PASSWORD_PREFIX}25000${salt}${digest}"
 
 
 def hash_password(password: str) -> str:
@@ -15,6 +26,17 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, password_hash: str) -> bool:
+    if password_hash.startswith(LEGACY_PASSWORD_PREFIX):
+        try:
+            _, iterations, salt, digest = password_hash.split("$")
+            if iterations != "25000":
+                return False
+            legacy_password_hash(salt, digest)
+        except ValueError:
+            return False
+        # The plugin passes the hex salt STRING to Node crypto.pbkdf2, not decoded bytes.
+        derived = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 25000, 512)
+        return hmac.compare_digest(derived, bytes.fromhex(digest))
     return password_hasher.verify(password, password_hash)
 
 

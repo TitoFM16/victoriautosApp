@@ -7,6 +7,7 @@ from victoriautos_backend.api.deps import AdminUser, DbSession
 from victoriautos_backend.core.config import settings
 from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.core.security import (
+    LEGACY_PASSWORD_PREFIX,
     InvalidTokenError,
     create_access_token,
     decode_access_token,
@@ -64,6 +65,10 @@ async def login(request: Request, payload: UserLogin, response: Response, db: Db
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed"
         )
+
+    if user.password_hash.startswith(LEGACY_PASSWORD_PREFIX):
+        user.password_hash = hash_password(payload.password)
+        await db.commit()
 
     token = create_access_token(user.id)
     response.set_cookie(COOKIE_NAME, token, httponly=True, **_cookie_kwargs())
