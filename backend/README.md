@@ -270,12 +270,87 @@ monthly public Excel exists, but the advertised bulk link currently redirects aw
 Do not automate vehicle-by-vehicle queries; enable a Fasecolda feed only after the current Excel
 download is restored or Victoriautos receives documented API access and usage permission.
 
-There is no equivalent script for the MongoDB collections (cars, forms, users,
-tramites, plate searches): that data model changed enough (new primary keys,
-consolidated schema, Argon2 password hashing) that a straight copy isn't
-meaningful. If you need to carry over real production data from Mongo, write a
-one-off script following the same pattern, reviewed against the current schema
-in `src/victoriautos_backend/models/`.
+## Migrating legacy MongoDB production data
+
+`scripts/migrate_legacy_mongo.py` imports every record from the seven legacy
+collections below, without a MongoDB driver or new dependencies. It reads one
+`<collection>.json` **JSON array** per collection, supporting both relaxed and
+canonical MongoDB Extended JSON. Missing collection files are logged and skipped;
+check the final counts against the source before switching traffic.
+
+On the old server, pause application writes and run these commands from the old
+app directory. `mongoUrl` is the same dotenv setting used by its `app.js`:
+
+```bash
+cd /path/to/victoriautosServer
+umask 077
+mkdir -p /tmp/victoriautos-mongo-export
+export mongoUrl="$(node -r dotenv/config -p 'process.env.mongoUrl')"
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.cars.find().toArray()))' > /tmp/victoriautos-mongo-export/cars.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.interes_forms.find().toArray()))' > /tmp/victoriautos-mongo-export/interes_forms.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.ofertas_forms.find().toArray()))' > /tmp/victoriautos-mongo-export/ofertas_forms.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.compra_forms.find().toArray()))' > /tmp/victoriautos-mongo-export/compra_forms.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.users.find().toArray()))' > /tmp/victoriautos-mongo-export/users.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.tramites.find().toArray()))' > /tmp/victoriautos-mongo-export/tramites.json
+mongosh "$mongoUrl" --quiet --eval 'print(EJSON.stringify(db.platesearches.find().toArray()))' > /tmp/victoriautos-mongo-export/platesearches.json
+unset mongoUrl
+```
+
+An absent `platesearches` collection produces `[]`. Alternatively, run
+`mongoexport --uri "$mongoUrl" --collection cars --jsonArray --out /tmp/victoriautos-mongo-export/cars.json`
+and repeat for each collection while `mongoUrl` is set. Export the **raw collections**;
+API responses and Mongoose projections omit private car fields and user salt/hash.
+Transfer the exports securely: they contain personal information and password hashes.
+Do not put exports in Git. Keep legacy writes paused through the final export and cutover.
+
+On the destination, configure `DATABASE_URL` in the backend environment and run,
+from `backend/`, in this order:
+
+```bash
+uv run alembic upgrade head
+uv run python scripts/migrate_vehicle_catalog.py --source "$LEGACY_CATALOG_DSN"
+uv run python scripts/migrate_legacy_mongo.py --export-dir /path/to/export --images-root /path/to/old/public/images --dry-run
+uv run python scripts/migrate_legacy_mongo.py --export-dir /path/to/export --images-root /path/to/old/public/images
+rsync -av /path/to/old/public/images/ data/images/
+```
+
+The old images directory must be locally accessible for `--images-root`; omit that
+option if unavailable. For remote copying, use
+`rsync -av old-server:/path/to/victoriautosServer/public/images/ data/images/`.
+Replace `data/images/` with the configured `IMAGES_DIR` if overridden. The importer
+only checks folders and listed files and reports missing images; it never copies or
+renames them. The `vehiculos` reference catalog remains the separate script's responsibility.
+
+Cars and offers preserve their legacy UUIDs, retaining `vehiculos/<uuid>/` and
+`ofertas/<uuid>/` image paths and bare filenames. Missing/invalid UUIDs fall back to
+a stable UUID5 derived from the Mongo ObjectId; the warning identifies the new
+folder name to use when renaming the copied folder. Noncanonical UUID spellings
+also trigger a rename warning. Other entities receive stable ObjectId-derived UUID5s.
+Timestamps, private car fields, form statuses, contact values, and user roles/admin
+flags are preserved. MongoDB already lost any leading zeros in numeric phone/ID
+fields; the import converts the remaining numbers to text. Unknown car statuses
+become `OCULTO` with a warning. Optional unresolved car references become null with
+a warning; include `cars.json` to resolve them. Plate searches require a resolved
+user from `users.json`, otherwise the transaction fails. BSON-only dates/decimals
+inside plate-search JSON results retain lossless EJSON wrappers.
+
+All inserts execute in one transaction. `--dry-run` executes and rolls back the
+same inserts; its per-entity inserted counts mean **would insert**. Reruns skip
+existing primary keys, preserving newer data and upgraded passwords. This is an
+import, not a synchronization tool: later legacy edits are not applied to existing
+rows. Invalid records, duplicate exported IDs/UUIDs, or conflicting usernames or
+plate/user pairs fail the import rather than silently discarding data. Resolve
+conflicts before rerunning; an existing bootstrap admin with the same username
+and a different ID will cause a conflict. Missing files and image warnings do not
+abort the import. Review the inserted/skipped/warnings summary for every entity.
+
+The installed legacy `passport-local-mongoose` **8.0.0** uses PBKDF2-SHA256 with
+25,000 iterations, a 512-byte derived key, and a 32-byte random salt encoded as hex.
+Its `index.js` and `lib/pbkdf2.js` pass that **hex string as UTF-8 text**, without
+hex-decoding it. Imported hashes are stored as
+`legacy-pbkdf2-sha256$25000$<salt>$<hash>`. Successful login replaces the stored hash
+with the normal Argon2id hash and commits it before issuing the existing JWT cookie;
+failed login leaves the hash unchanged. No password reset is needed.
 
 ## Architecture decisions made during migration
 
@@ -332,10 +407,9 @@ These were explicitly chosen (not assumed) when porting from the Node app:
   `await` outside any function (a syntax-adjacent bug) - not migrated; the real
   reCAPTCHA logic (`middleware/captchaMiddleware.js`) was already separate and is
   what's ported here.
-- **Password hashing** moved from `passport-local-mongoose`'s PBKDF2 scheme to
-  Argon2id (current OWASP-recommended default). If you ever migrate real user
-  accounts from the old database, existing password hashes are not compatible -
-  those users will need a password reset.
+- **Password hashing** uses Argon2id for new passwords. Imported
+  `passport-local-mongoose` PBKDF2 hashes are verified for compatibility and upgraded
+  to Argon2id on successful login (see the legacy migration instructions above).
 
 ## Breaking changes from the old API
 

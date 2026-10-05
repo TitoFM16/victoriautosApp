@@ -1,0 +1,10 @@
+/home/ubuntu/.pm2/logs/*.log /home/ubuntu/workspace/victoriautosServer/error.txt {
+    su ubuntu ubuntu
+    weekly
+    rotate 4
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

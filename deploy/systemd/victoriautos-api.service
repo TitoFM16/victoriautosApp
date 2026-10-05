@@ -1,0 +1,29 @@
+[Unit]
+Description=Victoria Autos FastAPI
+After=network.target postgresql.service
+Wants=postgresql.service
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/victoriautosApp/backend
+EnvironmentFile=/home/ubuntu/victoriautosApp/backend/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/home/ubuntu/victoriautosApp/backend/.venv/bin/uvicorn victoriautos_backend.main:app --host 127.0.0.1 --port 3006 --workers 1 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+MemoryMax=350M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/victoriautosApp/backend/data/images
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

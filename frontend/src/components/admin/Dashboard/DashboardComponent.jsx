@@ -1,30 +1,4 @@
-import { useState, useEffect, Suspense } from 'react';
-import axios from 'axios';
-import React from 'react';
-
-const Chart = React.lazy(() => import('react-chartjs-2'));
-
-const DashboardComponent = (props) => {
-    const [searchData, setSearchData] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchSearchData = async () => {
-            try {
-                const response = await axios.get('/api/search/stats');
-                setSearchData(response.data);
-            } catch (error) {
-                console.error('Error fetching search data:', error);
-            }
-            setLoading(false);
-        };
-        fetchSearchData();
-    }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
+const DashboardComponent = () => {
     return (
         <div className="container">
             <div className="row">
@@ -32,9 +6,7 @@ const DashboardComponent = (props) => {
                     <h3>Dashboard</h3>
                     <div className="card mt-4">
                         <div className="card-body">
-                            <Suspense fallback={<div>Loading chart...</div>}>
-                                <Chart {...props} />
-                            </Suspense>
+                            <p className="mb-0 text-muted">Las estadísticas de búsquedas aún no están disponibles.</p>
                         </div>
                     </div>
                 </div>
@@ -43,4 +15,4 @@ const DashboardComponent = (props) => {
     );
 };
 
-export default DashboardComponent; 
+export default DashboardComponent;

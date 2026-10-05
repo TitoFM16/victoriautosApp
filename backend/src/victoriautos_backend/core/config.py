@@ -35,7 +35,8 @@ class Settings(BaseSettings):
 
     # Local image storage (mirrors old public/images layout)
     images_dir: Path = BASE_DIR / "data" / "images"
-    max_upload_size_bytes: int = 20 * 1024 * 1024
+    max_upload_size_bytes: int = Field(default=20 * 1024 * 1024, ge=1)
+    max_upload_files: int = Field(default=6, ge=1)
     webp_quality: int = 80
 
     # Plate lookup external APIs

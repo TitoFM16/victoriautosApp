@@ -10,7 +10,6 @@
 
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 
@@ -66,17 +65,6 @@ const NegociosComponent = () => {
         );
     });
 
-    const eliminarNegocio = (id) => {
-        axios.delete('/api/negocios/' + id)
-            .then(response => {
-                console.log(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        setNegociosVitrina(negociosVitrina.filter(el => el._id !== id));
-    }
-
     const renderVitrinaCard = (negocio, index) => (
         <div key={index} className="card mb-3">
             <div className="card-body">
@@ -91,8 +79,7 @@ const NegociosComponent = () => {
                 <p className="mb-2"><strong>Email:</strong> {negocio.interes.email}</p>
                 
                 <div className="d-flex gap-2">
-                    <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
-                    <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                    <span className="text-muted">Solo consulta</span>
                 </div>
             </div>
         </div>
@@ -117,8 +104,7 @@ const NegociosComponent = () => {
                 <p className="mb-2"><strong>Email:</strong> {negocio.interes.email}</p>
                 
                 <div className="d-flex gap-2">
-                    <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
-                    <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                    <span className="text-muted">Solo consulta</span>
                 </div>
             </div>
         </div>
@@ -145,6 +131,7 @@ const NegociosComponent = () => {
             <div className="row">
                 <div className="col-12">
                     <h3 className="mb-4">Negocios</h3>
+                    <p className="text-muted">Estas coincidencias se calculan automáticamente a partir de los vehículos y solicitudes. No se pueden editar ni eliminar individualmente.</p>
                     
                     {/* Tabs */}
                     <div className="d-flex justify-content-start mb-4">
@@ -232,8 +219,7 @@ const NegociosComponent = () => {
                                                         <td>{negocio.interes.email}</td>
                                                         <td>
                                                             <div className="d-flex gap-2">
-                                                                <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
-                                                                <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                                                                <span className="text-muted">Solo consulta</span>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -276,8 +262,7 @@ const NegociosComponent = () => {
                                                         <td>{negocio.interes.email}</td>
                                                         <td>
                                                             <div className="d-flex gap-2">
-                                                                <Link to={"/admin/negocios/edit/" + negocio._id} className="btn btn-sm btn-primary">Editar</Link>
-                                                                <button className="btn btn-sm btn-danger" onClick={() => eliminarNegocio(negocio._id)}>Eliminar</button>
+                                                                <span className="text-muted">Solo consulta</span>
                                                             </div>
                                                         </td>
                                                     </tr>

@@ -12,3 +12,6 @@ projects, each with its own tooling and history — see each folder's own README
 There is no shared build tool (no turborepo/nx) — the two sides talk over HTTP,
 not a shared toolchain, so each folder is built/run/tested independently with
 its own package manager.
+
+Production setup, cutover, rollback, backups, and routine releases on the existing
+EC2 instance are documented in [`deploy/README.md`](deploy/README.md).
