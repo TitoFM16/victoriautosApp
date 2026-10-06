@@ -7,6 +7,11 @@ import dealershipImage from '../../assets/images/entrada_marco_blanco_repellado.
 import LoadingComponent from '../shared/loadingComponent';
 import FormContainer from './FormContainer';
 
+// Same brand-logo wall the original site used behind the buscador on phones.
+const brandLogos = Object.values(
+  import.meta.glob('../../assets/icons/brands/*.svg', { eager: true, query: '?url', import: 'default' }),
+);
+
 function Buscador() {
   const [activeTab, setActiveTab] = useState('comprar');
   const [tipo, setTipo] = useState('');
@@ -145,6 +150,11 @@ function Buscador() {
         decoding="async"
       />
       <div className="home-hero__overlay" aria-hidden="true" />
+      <div className="home-hero__brands" aria-hidden="true">
+        {[...brandLogos, ...brandLogos, ...brandLogos].map((src, index) => (
+          <img key={index} src={src} alt="" width="44" height="44" loading="lazy" decoding="async" />
+        ))}
+      </div>
 
       <div className="home-hero__inner">
         <div className="home-hero__copy">

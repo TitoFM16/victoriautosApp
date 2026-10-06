@@ -149,6 +149,76 @@
     @media (min-width: 640px) { flex-wrap: wrap; overflow: visible; margin-top: 1.5rem; }
   }
 
+  // ---------- phones/tablets: light hero over a brand-logo wall ----------
+  // The storefront photo crops badly in a tall phone layout, so below 768px the
+  // hero swaps to the original site's grayscale brand matrix on a light canvas.
+  .home-hero__brands { display: none; }
+  @media (max-width: 767.98px) {
+    .home-hero {
+      background: var(--va-surface-2);
+      color: var(--va-ink);
+      border: 1px solid var(--va-line);
+    }
+    .home-hero__image, .home-hero__overlay { display: none; }
+    .home-hero__brands {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 26px 18px;
+      padding: 18px 14px;
+      align-content: start;
+      overflow: hidden;
+      // Logos fade out behind the search card so they never compete with it.
+      mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / 70%) 45%, transparent 75%);
+      img {
+        width: 100%;
+        max-width: 38px;
+        height: auto;
+        margin: auto;
+        opacity: .08;
+        filter: grayscale(100%);
+      }
+    }
+    .home-eyebrow--light { color: var(--va-accent); }
+    .home-hero__title { color: var(--va-ink); text-shadow: none; }
+    .home-hero__subline { color: var(--va-muted); }
+    .home-hero__chips li {
+      border-color: var(--va-line);
+      background: var(--va-surface);
+      color: var(--va-ink);
+      box-shadow: 0 1px 2px rgb(48 38 28 / 6%);
+      .material-symbols-outlined { color: var(--va-accent); }
+    }
+    .home-search { box-shadow: var(--va-shadow); border: 1px solid var(--va-line); }
+
+    // Buscador reveals one field at a time (FormContainer.jsx).
+    .home-field.is-pending { display: none; }
+    .home-field.is-revealed { animation: home-field-in 220ms ease-out; }
+    .home-form__more {
+      grid-column: 1 / -1;
+      justify-self: start;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--va-accent);
+      font-weight: 600;
+      font-size: .9375rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  @media (min-width: 768px) { .home-form__more { display: none; } }
+  @keyframes home-field-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-field.is-revealed { animation: none; }
+  }
+
   // ---------- buscador card ----------
   .home-search {
     min-width: 0;

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '../../assets/icons/search_icon.svg';
 import LoadingComponent from '../shared/loadingComponent';
@@ -7,6 +7,11 @@ const VenderForm = lazy(() => import('./VenderForm'));
 
 const controlClass = 'home-control';
 const labelClass = 'home-label';
+const LAST_STEP = 5; // tipo, marca, linea, modelo, precio, kilometraje
+
+// On phones the buscador reveals one field at a time (see .is-pending in
+// _home.scss): choosing a value in field N shows field N + 1. Desktop always
+// shows all six.
 
 const FormContainer = ({
   activeTab,
@@ -31,6 +36,16 @@ const FormContainer = ({
     price,
     km,
   } = formData;
+  const [revealedStep, setRevealedStep] = useState(0);
+  const [showAllFields, setShowAllFields] = useState(false);
+  const reveal = (step) => setRevealedStep((current) => Math.max(current, step + 1));
+  const fieldClass = (step, extra = '') => (
+    `home-field ${extra} ${step > revealedStep && !showAllFields ? 'is-pending' : 'is-revealed'}`
+  );
+  const onCatalogChange = (step) => (event) => {
+    handleInputChange(event);
+    if (event.target.value) reveal(step);
+  };
 
   return (
     <div className="home-search">
@@ -62,9 +77,9 @@ const FormContainer = ({
 
         {activeTab === 'comprar' ? (
           <form className="home-form" onSubmit={handleSubmit}>
-            <div className="home-field">
+            <div className={fieldClass(0)}>
               <label className={labelClass} htmlFor="tipo">Tipo</label>
-              <select className={controlClass} id="tipo" name="tipo" value={tipo} onChange={handleInputChange}>
+              <select className={controlClass} id="tipo" name="tipo" value={tipo} onChange={onCatalogChange(0)}>
                 <option value="">Todos los tipos</option>
                 <option value="AUT">Automóvil</option>
                 <option value="CAM">Camioneta</option>
@@ -80,9 +95,9 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div className="home-field">
+            <div className={fieldClass(1)}>
               <label className={labelClass} htmlFor="marca">Marca</label>
-              <select className={controlClass} id="marca" name="marca" value={marca} onChange={handleInputChange} disabled={!tipo}>
+              <select className={controlClass} id="marca" name="marca" value={marca} onChange={onCatalogChange(1)} disabled={!tipo}>
                 <option value="">{tipo ? 'Todas las marcas' : 'Elige un tipo primero'}</option>
                 {tipo && sortedMarcaOptions.map((option) => (
                   <option key={option.id || option.marca} value={option.marca}>{option.marca}</option>
@@ -90,9 +105,9 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div className="home-field">
+            <div className={fieldClass(2)}>
               <label className={labelClass} htmlFor="linea">Línea</label>
-              <select className={controlClass} id="linea" name="linea" value={linea} onChange={handleInputChange} disabled={!marca}>
+              <select className={controlClass} id="linea" name="linea" value={linea} onChange={onCatalogChange(2)} disabled={!marca}>
                 <option value="">{marca ? 'Todas las líneas' : 'Elige una marca primero'}</option>
                 {marca && sortedLineaOptions.map((option) => {
                   const text = `${option.linea} ${option.version || ''}`.trim();
@@ -101,7 +116,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div className="home-field is-half">
+            <div className={fieldClass(3, 'is-half')}>
               <label className={labelClass} htmlFor="modelo">Modelo desde</label>
               {modelo === 'otro' ? (
                 <input
@@ -109,7 +124,7 @@ const FormContainer = ({
                   id="modeloInput"
                   name="modeloInput"
                   value={modeloInput}
-                  onChange={(event) => setModeloInput(event.target.value)}
+                  onChange={(event) => { setModeloInput(event.target.value); reveal(3); }}
                   onBlur={(event) => {
                     const value = event.target.value;
                     if (value && (!/^\d{4}$/.test(value) || parseInt(value) < 1920 || parseInt(value) > currentYear)) {
@@ -122,7 +137,7 @@ const FormContainer = ({
                   maxLength={4}
                 />
               ) : (
-                <select className={controlClass} id="modelo" name="modelo" value={modelo} onChange={(event) => setModelo(event.target.value)}>
+                <select className={controlClass} id="modelo" name="modelo" value={modelo} onChange={(event) => { setModelo(event.target.value); reveal(3); }}>
                   <option value="">Cualquier modelo</option>
                   {Array.from({ length: currentYear - 2000 + 1 }, (_, index) => currentYear - index).map((year) => (
                     <option key={year} value={year}>{year}</option>
@@ -132,9 +147,9 @@ const FormContainer = ({
               )}
             </div>
 
-            <div className="home-field is-half">
+            <div className={fieldClass(4, 'is-half')}>
               <label className={labelClass} htmlFor="precio">Presupuesto máximo</label>
-              <select className={controlClass} id="precio" name="precio" value={price} onChange={(event) => setPrice(event.target.value)}>
+              <select className={controlClass} id="precio" name="precio" value={price} onChange={(event) => { setPrice(event.target.value); reveal(4); }}>
                 <option value="">Cualquier precio</option>
                 {[...Array(20)].map((_, index) => (
                   <option key={index} value={(index + 1) * 10000000}>${((index + 1) * 10).toLocaleString('es-CO')}.000.000</option>
@@ -142,7 +157,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div className="home-field">
+            <div className={fieldClass(5)}>
               <label className={labelClass} htmlFor="kilometraje">Kilometraje máximo</label>
               <select className={controlClass} id="kilometraje" name="kilometraje" value={km} onChange={(event) => setKm(event.target.value)}>
                 <option value="">Cualquier kilometraje</option>
@@ -152,6 +167,12 @@ const FormContainer = ({
                 ))}
               </select>
             </div>
+
+            {revealedStep < LAST_STEP && !showAllFields && (
+              <button type="button" className="home-form__more" onClick={() => setShowAllFields(true)}>
+                Ver todos los filtros
+              </button>
+            )}
 
             <button type="submit" className="home-btn home-btn--primary home-form__submit">
               Buscar vehículos
