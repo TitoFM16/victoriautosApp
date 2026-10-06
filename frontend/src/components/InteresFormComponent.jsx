@@ -7,6 +7,7 @@ import LoadingModal from './shared/LoadingModal';
 import { useVehicleDropdowns } from '../hooks/useVehicleDropdowns';
 
 import { WHATSAPP_DISPLAY, whatsappUrl } from '../services/whatsapp';
+import PrivacyConsent, { PRIVACY_CONSENT_MESSAGE } from './shared/PrivacyConsent';
 
 const inputClass = (invalid) => `vf-input${invalid ? ' is-invalid' : ''}`;
 
@@ -30,6 +31,7 @@ const InteresForm = () => {
     apellido: '',
     celular: '',
     wppcheck: false,
+    privacy: false,
     marca: '',
     linea: '',
     modelo: '',
@@ -143,6 +145,11 @@ const InteresForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!formData.privacy) {
+      alert(PRIVACY_CONSENT_MESSAGE);
+      return;
+    }
 
     if (!formData.captcha) {
       alert('Por favor complete el captcha');
@@ -435,8 +442,10 @@ const InteresForm = () => {
                 defaultChecked={formData.wppcheck}
                 onChange={handleChange}
               />
-              <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
+              <span>¿Aceptas comunicación vía Whatsapp?</span>
             </label>
+
+            <PrivacyConsent checked={formData.privacy} onChange={handleChange} />
           </section>
 
           <div className="vf-captcha">

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import PrivacyConsent from '../shared/PrivacyConsent';
 
 const inputClass = (invalid) => `vf-input${invalid ? ' is-invalid' : ''}`;
 
@@ -105,8 +106,10 @@ function FormStep1(props) {
                     defaultChecked={props.wppcheck}
                     onChange={props.handleChange}
                 />
-                <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
+                <span>¿Aceptas comunicación vía Whatsapp?</span>
             </label>
+
+            <PrivacyConsent checked={props.privacy} onChange={props.handleChange} />
         </div>
     );
 
@@ -118,6 +121,7 @@ FormStep1.propTypes = {
   celular: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   wppcheck: PropTypes.bool.isRequired,
+  privacy: PropTypes.bool.isRequired,
   handleChange: PropTypes.func.isRequired
 };
 

@@ -12,6 +12,7 @@ import FormStep0 from './formStepZero';
 import FormStep1 from './formStepOne';
 import FormStep2 from './formStepTwo';
 import FormStep3 from './formStepThree';
+import { PRIVACY_CONSENT_MESSAGE } from '../shared/PrivacyConsent';
 
 
 
@@ -26,6 +27,7 @@ function VendeForm() {
         celular: '',
         email: '',
         wppcheck: false,
+        privacy: false,
         marca: state?.marca || '',
         linea: state?.linea || '',
         modelo: state?.modelo || '',
@@ -150,6 +152,10 @@ function VendeForm() {
     };
 
     const _next = () => {
+        if (currentStep === 1 && !formData.privacy) {
+            alert(PRIVACY_CONSENT_MESSAGE);
+            return;
+        }
         if (currentStep === 1 && !validateStep1()) {
             alert('Por favor complete todos los campos antes de continuar');
             return;
@@ -308,6 +314,7 @@ function VendeForm() {
                             celular={formData.celular}
                             email={formData.email}
                             wppcheck={formData.wppcheck}
+                            privacy={formData.privacy}
                         />
                         <Step2
                             currentStep={currentStep}
@@ -412,6 +419,7 @@ function Step1(props) {
                         celular={props.celular}
                         email={props.email}
                         wppcheck={props.wppcheck}
+                        privacy={props.privacy}
                         handleChange = {props.handleChange}
             />
         </div>
@@ -425,7 +433,8 @@ Step1.propTypes = {
   apellido: PropTypes.string.isRequired,
   celular: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
-  wppcheck: PropTypes.bool.isRequired
+  wppcheck: PropTypes.bool.isRequired,
+  privacy: PropTypes.bool.isRequired
 };
 
 //----------------------------------------------------------------------------------------------------------------------

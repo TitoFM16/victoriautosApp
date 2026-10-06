@@ -5,6 +5,7 @@ import axios from "axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import LoadingModal from '../shared/LoadingModal';
 import { Modal } from 'bootstrap';
+import PrivacyConsent, { PRIVACY_CONSENT_MESSAGE } from '../shared/PrivacyConsent';
 
 const controlClass = 'mt-2 h-12 w-full rounded-xl border border-[var(--va-line)] bg-white px-4 text-base text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
 const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-4 text-base text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
@@ -18,6 +19,7 @@ const CompraModalContent = ({ car }) => {
     email: '',
     cedula: '',
     wppcheck: false,
+    privacy: false,
     captcha: '',
     showLoadingModal: false,
     submitStatus: 'loading'
@@ -71,6 +73,11 @@ const CompraModalContent = ({ car }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!formData.privacy) {
+      alert(PRIVACY_CONSENT_MESSAGE);
+      return;
+    }
 
     if (!formData.captcha) {
       alert('Por favor complete el captcha');
@@ -200,8 +207,14 @@ const CompraModalContent = ({ car }) => {
                     checked={formData.wppcheck}
                     onChange={handleChange}
                   />
-                  <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
+                  <span>¿Aceptas comunicación vía Whatsapp?</span>
                 </label>
+
+                <PrivacyConsent
+                  className="mt-4 flex items-start gap-3 text-sm font-bold text-zinc-700 [&_input]:mt-0.5 [&_input]:h-5 [&_input]:w-5 [&_input]:shrink-0 [&_input]:accent-victoria-red [&_a]:underline"
+                  checked={formData.privacy}
+                  onChange={handleChange}
+                />
 
                 <div className="mt-6">
                   <ReCAPTCHA
