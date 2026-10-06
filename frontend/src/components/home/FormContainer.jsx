@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import SearchIcon from '../../assets/icons/search_icon.svg';
 import LoadingComponent from '../shared/loadingComponent';
@@ -8,6 +8,7 @@ const VenderForm = lazy(() => import('./VenderForm'));
 const controlClass = 'home-control';
 const labelClass = 'home-label';
 const LAST_STEP = 5; // tipo, marca, linea, modelo, precio, kilometraje
+const STEP_IDS = ['tipo', 'marca', 'linea', 'modelo', 'precio', 'kilometraje'];
 
 // On phones the buscador reveals one field at a time (see .is-pending in
 // _home.scss): choosing a value in field N shows field N + 1. Desktop always
@@ -39,6 +40,16 @@ const FormContainer = ({
   const [revealedStep, setRevealedStep] = useState(0);
   const [showAllFields, setShowAllFields] = useState(false);
   const reveal = (step) => setRevealedStep((current) => Math.max(current, step + 1));
+
+  // Keep the field that just appeared in view on phones (it may open below the fold).
+  useEffect(() => {
+    if (revealedStep === 0 || !window.matchMedia('(max-width: 767.98px)').matches) return;
+    const field = document.getElementById(STEP_IDS[revealedStep])?.closest('.home-field');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Wait for the grow animation so 'nearest' measures the final height.
+    const timer = setTimeout(() => field?.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' }), 260);
+    return () => clearTimeout(timer);
+  }, [revealedStep]);
   const fieldClass = (step, extra = '') => (
     `home-field ${extra} ${step > revealedStep && !showAllFields ? 'is-pending' : 'is-revealed'}`
   );

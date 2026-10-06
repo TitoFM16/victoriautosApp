@@ -266,3 +266,5 @@
 @media (max-width: 991.98px) {
   .va-wa-btn:not(.va-wa-btn--block) { display: none; }
 }
+
+.site-footer__legal { color: inherit !important; text-decoration: underline; text-underline-offset: 2px; }

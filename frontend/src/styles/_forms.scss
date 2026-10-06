@@ -384,3 +384,13 @@
   }
   .vf-apply { margin-top: 1.5rem; scroll-margin-top: calc(var(--va-header-h, 72px) + 16px); }
 }
+
+// Privacy policy page (/politicas-de-privacidad): readable long-form text.
+.non-admin-header-wrapper .vp-policy {
+  .vf-card { max-width: 72ch; }
+  h2 { margin: 2rem 0 .5rem; font-size: 1.125rem; font-weight: 700; letter-spacing: -.01em; }
+  .vf-card > p:first-child { margin-top: 0; }
+  p, li { color: var(--va-ink); font-size: .975rem; line-height: 1.65; }
+  ul { margin: .5rem 0 0; padding-left: 1.25rem; display: grid; gap: .4rem; }
+  a { color: var(--va-accent); font-weight: 600; text-underline-offset: 2px; }
+}

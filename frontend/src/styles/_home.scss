@@ -195,7 +195,9 @@
 
     // Buscador reveals one field at a time (FormContainer.jsx).
     .home-field.is-pending { display: none; }
-    .home-field.is-revealed { animation: home-field-in 220ms ease-out; }
+    // Height, gap and opacity grow together so the content below glides down
+    // instead of jumping when the next field appears.
+    .home-field.is-revealed { animation: home-field-in 420ms cubic-bezier(.22, 1, .36, 1) backwards; }
     .home-form__more {
       grid-column: 1 / -1;
       justify-self: start;
@@ -212,8 +214,11 @@
   }
   @media (min-width: 768px) { .home-form__more { display: none; } }
   @keyframes home-field-in {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: none; }
+    // margin-top cancels the .75rem grid gap at the start; overflow stays
+    // clipped only while the field is growing.
+    from { opacity: 0; max-height: 0; margin-top: -.75rem; transform: translateY(-8px); overflow: hidden; }
+    60% { opacity: .9; }
+    to { opacity: 1; max-height: 7rem; margin-top: 0; transform: none; overflow: hidden; }
   }
   @media (prefers-reduced-motion: reduce) {
     .home-field.is-revealed { animation: none; }

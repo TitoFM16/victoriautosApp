@@ -9,6 +9,7 @@ const CarDetailComponent = React.lazy(() => import('../components/vitrina-compon
 const VendeForm = React.lazy(() => import('../components/vende-component/VendeVehiculoComponent'));
 const InteresFormComponent = React.lazy(() => import('../components/InteresFormComponent'));
 const CreditCalculatorPage = React.lazy(() => import('../components/financiacion/CreditCalculatorPage'));
+const PrivacyPolicyPage = React.lazy(() => import('../components/PrivacyPolicyPage'));
 
 
 const ClientRoutes = ({ cars }) => {
@@ -22,6 +23,7 @@ const ClientRoutes = ({ cars }) => {
           <Route path="/vende" element={<VendeForm />} />
           <Route path="/interes" element={<InteresFormComponent />} />
           <Route path="/financiamiento" element={<CreditCalculatorPage />} />
+          <Route path="/politicas-de-privacidad" element={<PrivacyPolicyPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 

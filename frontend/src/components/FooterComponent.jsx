@@ -69,6 +69,7 @@ function Footer() {
       </div>
       <div className="site-footer__bottom">
         <span>© {new Date().getFullYear()} Victoriautos Consignataria S.A.S.</span>
+        <Link to="/politicas-de-privacidad" className="site-footer__legal">Políticas de privacidad</Link>
       </div>
     </footer>
   );
