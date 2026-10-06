@@ -191,6 +191,11 @@ function VehicleDetailComponent({
     const images = vehicle.images || [];
     const total = images.length;
     const srcAt = (i) => (images[i] ? `${imagePath}${vehicle.id}/${images[i]}` : undefined);
+    const thumbAt = (i) => (images[i] ? `${imagePath}${vehicle.id}/thumb/${images[i]}` : undefined);
+    // Older photos have no thumb/ variant yet: fall back to the full image once.
+    const showFullOnError = (i) => (event) => {
+      if (event.currentTarget.src.includes('/thumb/')) event.currentTarget.src = srcAt(i);
+    };
     const goPrev = () => setCurrentImage((i) => Math.max(i - 1, 0));
     const goNext = () => setCurrentImage((i) => Math.min(i + 1, total - 1));
     const title = `${vehicle.marca} ${vehicle.linea}`;
@@ -283,7 +288,7 @@ function VehicleDetailComponent({
                     aria-pressed={currentImage === index}
                     onClick={() => setCurrentImage(index)}
                   >
-                    <img src={srcAt(index)} alt="" loading="lazy" decoding="async" />
+                    <img src={thumbAt(index)} onError={showFullOnError(index)} alt="" loading="lazy" decoding="async" />
                   </button>
                 ))}
               </div>

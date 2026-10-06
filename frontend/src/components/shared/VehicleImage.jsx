@@ -2,10 +2,12 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 
 // The shimmer sits behind the image: a missed load event can never hide a photo.
-function VehicleImage({ src, alt, eager = false, className = '', ...imageProps }) {
+// `fallbackSrc` covers photos uploaded before thumbnails existed.
+function VehicleImage({ src: preferredSrc, fallbackSrc, alt, eager = false, className = '', ...imageProps }) {
   const [loadedSource, setLoadedSource] = useState(null);
-  const [failedSource, setFailedSource] = useState(null);
-  const failed = !src || failedSource === src;
+  const [failedSources, setFailedSources] = useState([]);
+  const src = failedSources.includes(preferredSrc) && fallbackSrc ? fallbackSrc : preferredSrc;
+  const failed = !src || failedSources.includes(src);
 
   return (
     <div className={`vehicle-image ${!failed && loadedSource !== src ? 'is-loading' : ''} ${className}`}>
@@ -22,7 +24,7 @@ function VehicleImage({ src, alt, eager = false, className = '', ...imageProps }
           fetchPriority={eager ? 'high' : undefined}
           decoding="async"
           onLoad={() => setLoadedSource(src)}
-          onError={() => setFailedSource(src)}
+          onError={() => setFailedSources((list) => [...list, src])}
         />
       )}
     </div>
@@ -31,6 +33,7 @@ function VehicleImage({ src, alt, eager = false, className = '', ...imageProps }
 
 VehicleImage.propTypes = {
   src: PropTypes.string,
+  fallbackSrc: PropTypes.string,
   alt: PropTypes.string.isRequired,
   eager: PropTypes.bool,
   className: PropTypes.string,

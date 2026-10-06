@@ -270,6 +270,24 @@ monthly public Excel exists, but the advertised bulk link currently redirects aw
 Do not automate vehicle-by-vehicle queries; enable a Fasecolda feed only after the current Excel
 download is restored or Victoriautos receives documented API access and usage permission.
 
+## Optimizing uploaded photos
+
+Every uploaded photo (cars and "vende" offers) is re-encoded to WEBP with its
+longest edge capped at `IMAGE_MAX_DIMENSION` (default 1600px), EXIF rotation
+applied, and a small copy written to `<folder>/thumb/<name>` (long edge
+`IMAGE_THUMB_DIMENSION`, default 640px). Vehicle cards and the gallery
+thumbnail strip load the `thumb/` copy and fall back to the full image when it
+is missing. Corrupt files are rejected with 400.
+
+Photos uploaded before this existed can be brought up to the same standard
+(re-runnable; files are written atomically; empty/unreadable files are skipped
+and reported):
+
+```bash
+uv run python scripts/optimize_images.py --dry-run
+uv run python scripts/optimize_images.py
+```
+
 ## Migrating legacy MongoDB production data
 
 `scripts/migrate_legacy_mongo.py` imports every record from the seven legacy

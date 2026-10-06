@@ -153,6 +153,9 @@ CORS_ORIGINS=["https://victoriautos.com","https://www.victoriautos.com","https:/
 MAX_UPLOAD_SIZE_BYTES=20971520
 MAX_UPLOAD_FILES=6
 WEBP_QUALITY=80
+# Uploads are downscaled to this long edge; a thumb/ copy is made for cards.
+IMAGE_MAX_DIMENSION=1600
+IMAGE_THUMB_DIMENSION=640
 SIMIT_API_URL=http://127.0.0.1:8000/search
 FASECOLDA_API_URL=https://fasecolda-api.onrender.com/search
 PLATE_LOOKUP_MAX_RETRIES=5

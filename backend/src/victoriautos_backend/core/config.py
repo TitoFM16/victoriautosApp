@@ -38,6 +38,10 @@ class Settings(BaseSettings):
     max_upload_size_bytes: int = Field(default=20 * 1024 * 1024, ge=1)
     max_upload_files: int = Field(default=6, ge=1)
     webp_quality: int = 80
+    # Uploaded photos are downscaled so their longest edge fits these bounds;
+    # cards/thumbnail strips load the small variant from `<folder>/thumb/`.
+    image_max_dimension: int = Field(default=1600, ge=320)
+    image_thumb_dimension: int = Field(default=640, ge=160)
 
     # Plate lookup external APIs
     simit_api_url: str = "https://simit-api.onrender.com/search"

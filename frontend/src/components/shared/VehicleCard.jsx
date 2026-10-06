@@ -21,7 +21,8 @@ function VehicleCard({ car, eager = false }) {
     <article className="va-vcard">
       <div className="va-vcard__media">
         <VehicleImage
-          src={car.images?.[0] ? `/images/vehiculos/${car.id}/${car.images[0]}` : undefined}
+          src={car.images?.[0] ? `/images/vehiculos/${car.id}/thumb/${car.images[0]}` : undefined}
+            fallbackSrc={car.images?.[0] ? `/images/vehiculos/${car.id}/${car.images[0]}` : undefined}
           alt={`${name}, modelo ${car.modelo}`}
           eager={eager}
         />
