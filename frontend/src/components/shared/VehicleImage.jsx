@@ -13,10 +13,13 @@ function VehicleImage({ src, alt, eager = false, className = '', ...imageProps }
         <span className="vehicle-image-fallback">Imagen próximamente</span>
       ) : (
         <img
+          width={800}
+          height={600}
           {...imageProps}
           src={src}
           alt={alt}
           loading={eager ? 'eager' : 'lazy'}
+          fetchPriority={eager ? 'high' : undefined}
           decoding="async"
           onLoad={() => setLoadedSource(src)}
           onError={() => setFailedSource(src)}

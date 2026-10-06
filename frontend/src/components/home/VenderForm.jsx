@@ -75,12 +75,12 @@ function VenderForm() {
     });
   }
 
-  const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
-  const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+  const controlClass = 'home-control';
+  const labelClass = 'home-label';
 
   return (
-    <form className="mt-7 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2" onSubmit={handleVenderSubmit}>
-        <div>
+    <form className="home-form" onSubmit={handleVenderSubmit}>
+        <div className="home-field">
           <label className={labelClass} htmlFor='venderMarca'>Marca</label>
           <select
             className={controlClass}
@@ -99,7 +99,7 @@ function VenderForm() {
             ))}
           </select>
         </div>
-        <div>
+        <div className="home-field">
           <label className={labelClass} htmlFor='venderLinea'>Línea</label>
           <select
             className={controlClass}
@@ -119,40 +119,40 @@ function VenderForm() {
             })}
           </select>
         </div>
-        <div>
+        <div className="home-field is-half">
           <label className={labelClass} htmlFor='venderModelo'>Modelo</label>
           <input
             type="text"
-            className={`${controlClass} ${venderModelo && !validateModelo(venderModelo) ? 'border-red-600' : ''}`}
+            className={`${controlClass} ${venderModelo && !validateModelo(venderModelo) ? 'is-invalid' : ''}`}
             id='venderModelo'
             value={venderModelo}
             onChange={handleModeloChange}
             placeholder="Ej: 2020"
           />
           {venderModelo && !validateModelo(venderModelo) && (
-            <p className="mt-1 text-xs font-semibold text-red-700" role="alert">
+            <p className="home-field__error" role="alert">
               El año debe estar entre 1920 y {new Date().getFullYear() + 1}
             </p>
           )}
         </div>
-        <div>
+        <div className="home-field is-half">
           <label className={labelClass} htmlFor='venderKilometraje'>Kilometraje</label>
           <input
             type="text"
-            className={`${controlClass} ${venderKilometraje && !validateKilometraje(venderKilometraje) ? 'border-red-600' : ''}`}
+            className={`${controlClass} ${venderKilometraje && !validateKilometraje(venderKilometraje) ? 'is-invalid' : ''}`}
             id='venderKilometraje'
             value={venderKilometraje}
             onChange={handleKilometrajeChange}
             placeholder="Ej: 50000"
           />
           {venderKilometraje && !validateKilometraje(venderKilometraje) && (
-            <p className="mt-1 text-xs font-semibold text-red-700" role="alert">
+            <p className="home-field__error" role="alert">
               El kilometraje debe ser menor a 10.000.000
             </p>
           )}
         </div>
-        <div className="sm:col-span-2">
-          <button type='submit' className="min-h-13 w-full rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.1em] text-white transition hover:bg-red-800">
+        <div className="home-field home-form__submit-wrap">
+          <button type='submit' className="home-btn home-btn--primary home-form__submit">
             Completar información
           </button>
         </div>

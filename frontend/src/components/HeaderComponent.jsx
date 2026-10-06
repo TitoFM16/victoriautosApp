@@ -1,87 +1,123 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import WhatsappIcon from '../assets/icons/whatsapp-brands-solid.svg';
+import { whatsappUrl } from '../services/whatsapp';
+
+const NAV_ITEMS = [
+  { to: '/', label: 'Inicio', end: true },
+  { to: '/vitrina', label: 'Vehículos' },
+  { to: '/vende', label: 'Vende tu usado' },
+  { to: '/financiamiento', label: 'Financiación' },
+];
 
 const Header = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const updateScroll = () => setScrolled(window.scrollY > 12);
+    const updateScroll = () => setScrolled(window.scrollY > 8);
     updateScroll();
     window.addEventListener('scroll', updateScroll, { passive: true });
     return () => window.removeEventListener('scroll', updateScroll);
   }, []);
 
-  if (location.pathname.startsWith("/admin")) return null;
-
-  const handleNavClick = () => {
+  // Close the menu on any navigation.
+  useEffect(() => {
     setIsOpen(false);
-  };
+  }, [location.pathname]);
 
-  const linkClass = ({ isActive }) =>
-    `border-b-2 px-1 py-2 text-sm font-bold !no-underline transition-colors ${
-      isActive
-        ? 'border-victoria-red text-victoria-dark'
-        : 'border-transparent text-zinc-500 hover:text-victoria-dark'
-    }`;
+  // Escape closes the menu, and the page behind it doesn't scroll while open.
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKey = (event) => {
+      if (event.key === 'Escape') setIsOpen(false);
+    };
+    const onResize = () => {
+      if (window.innerWidth >= 992) setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
+  if (location.pathname.startsWith('/admin')) return null;
+
+  const close = () => setIsOpen(false);
+  const linkClass = ({ isActive }) => `va-nav-link${isActive ? ' is-active' : ''}`;
 
   return (
-    <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
-      <nav className="mx-auto flex h-[76px] max-w-[1400px] items-center justify-between px-5 sm:px-8" aria-label="Navegación principal">
-        <Link className="flex min-w-0 items-center gap-3 !no-underline" to="/" onClick={handleNavClick}>
-          <img 
-            src="/logo.svg"
-            className="h-11 w-11 shrink-0"
-            alt="Victoriautos Consignataria logo" 
-            loading="eager" 
-          />
-          <span className="truncate text-[15px] font-black uppercase tracking-[0.12em] text-victoria-dark sm:text-lg">
-            Victoriautos
-          </span>
-          <span className="hidden border-l border-zinc-300 pl-3 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 sm:block">
-            Consignataria · Pasto
-          </span>
-        </Link>
-        <button
-          className="grid h-11 w-11 place-items-center border border-zinc-300 text-victoria-dark lg:hidden"
-          type="button"
-          aria-controls="mobile-navigation"
-          aria-expanded={isOpen}
-          aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? (
-            <span className="text-2xl font-light leading-none" aria-hidden="true">×</span>
-          ) : (
-            <span className="relative block h-4 w-5" aria-hidden="true">
-              <span className="absolute left-0 top-0 h-0.5 w-5 bg-current" />
-              <span className="absolute left-0 top-[7px] h-0.5 w-5 bg-current" />
-              <span className="absolute left-0 top-[14px] h-0.5 w-5 bg-current" />
+    <>
+      <header className={`site-header${scrolled || isOpen ? ' is-scrolled' : ''}`}>
+        <div className="site-header__inner">
+          <Link className="va-brand" to="/" onClick={close} aria-label="Victoriautos, inicio">
+            <img src="/logo.svg" className="va-brand__logo" alt="" width="44" height="44" loading="eager" />
+            <span className="va-brand__text">
+              <span className="va-brand__name">Victoriautos</span>
+              <span className="va-brand__tag">Consignataria · Pasto</span>
             </span>
-          )}
-        </button>
-        <div className="hidden items-center gap-7 lg:flex">
-          <NavLink className={linkClass} to="/">Inicio</NavLink>
-          <NavLink className={linkClass} to="/vitrina">Vehículos</NavLink>
-          <NavLink className={linkClass} to="/vende">Vende tu usado</NavLink>
-          <NavLink className="bg-victoria-red px-5 py-3 text-sm font-black text-white !no-underline transition hover:bg-red-800" to="/financiamiento">
-            Financiación
-          </NavLink>
-        </div>
-      </nav>
-      {isOpen && (
-        <div id="mobile-navigation" className="border-t border-zinc-200 bg-white px-5 py-5 lg:hidden">
-          <div className="mx-auto flex max-w-[1400px] flex-col gap-2">
-            <NavLink className={linkClass} to="/" onClick={handleNavClick}>Inicio</NavLink>
-            <NavLink className={linkClass} to="/vitrina" onClick={handleNavClick}>Vehículos</NavLink>
-            <NavLink className={linkClass} to="/vende" onClick={handleNavClick}>Vende tu usado</NavLink>
-            <NavLink className="mt-2 bg-victoria-red px-5 py-3 text-center text-sm font-black text-white !no-underline" to="/financiamiento" onClick={handleNavClick}>Financiación</NavLink>
+          </Link>
+
+          <nav className="va-nav" aria-label="Navegación principal">
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.to} className={linkClass} to={item.to} end={item.end}>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="site-header__actions">
+            <a
+              className="va-wa-btn"
+              href={whatsappUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Escríbenos por WhatsApp"
+            >
+              <img src={WhatsappIcon} alt="" width="18" height="18" />
+              <span className="va-wa-btn__label">WhatsApp</span>
+            </a>
+            <button
+              className="va-menu-btn"
+              type="button"
+              aria-controls="mobile-navigation"
+              aria-expanded={isOpen}
+              aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+              onClick={() => setIsOpen((open) => !open)}
+            >
+              <span className={`va-burger${isOpen ? ' is-open' : ''}`} aria-hidden="true">
+                <span /><span /><span />
+              </span>
+            </button>
           </div>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Rendered outside <header>: its backdrop-filter would otherwise trap position:fixed. */}
+      <div className={`va-drawer${isOpen ? ' is-open' : ''}`} id="mobile-navigation" aria-hidden={!isOpen} inert={!isOpen ? '' : undefined}>
+        <button className="va-drawer__scrim" type="button" tabIndex={-1} aria-label="Cerrar menú" onClick={close} />
+        <div className="va-drawer__panel">
+          <nav className="va-drawer__nav" aria-label="Menú móvil">
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.to} className={linkClass} to={item.to} end={item.end} onClick={close}>
+                {item.label}
+                <span className="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+              </NavLink>
+            ))}
+          </nav>
+          <a className="va-wa-btn va-wa-btn--block" href={whatsappUrl()} target="_blank" rel="noopener noreferrer">
+            <img src={WhatsappIcon} alt="" width="20" height="20" />
+            Escríbenos por WhatsApp
+          </a>
+        </div>
+      </div>
+    </>
   );
 };
 

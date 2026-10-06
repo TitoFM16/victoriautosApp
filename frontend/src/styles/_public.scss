@@ -13,6 +13,17 @@
   --va-shadow: 0 2px 5px rgb(48 38 28 / 3%), 0 10px 28px rgb(48 38 28 / 6%);
   --va-shadow-hover: 0 4px 10px rgb(48 38 28 / 5%), 0 16px 36px rgb(48 38 28 / 11%);
   --va-focus: 0 0 0 4px rgb(167 50 42 / 16%);
+  // v2 additions
+  --va-font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --va-surface: #ffffff;
+  --va-surface-2: #f1ede6;
+  --va-accent-soft: #f6e7e5;
+  --va-whatsapp: #1f8f4e;
+  --va-whatsapp-hover: #187540;
+  --va-space-section: clamp(3rem, 6vw, 5.5rem);
+  --va-container: 1240px;
+  --va-header-h: 64px;
+  @media (min-width: 992px) { --va-header-h: 72px; }
 }
 
 // Admin inherits only the shared control/card rounding.
@@ -27,6 +38,36 @@
   min-height: 100vh;
   background: var(--va-canvas);
   color: var(--va-ink);
+  font-family: var(--va-font);
+  font-size: 1rem;
+  line-height: 1.55;
+
+  // Type base: bold, tight headings (no thin/giant display type). :where keeps specificity at zero
+  // so component classes can still set an explicit size.
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--va-font);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  :where(h1) { font-weight: 800; line-height: 1.08; }
+  :where(p) { text-wrap: pretty; }
+  :where(.font-light, .font-thin, .font-extralight) { font-weight: 500; }
+
+  // Shared type/layout helpers for the public pages.
+  .va-h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.08; }
+  .va-h2 { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+  .va-eyebrow { font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--va-accent); }
+  .va-container {
+    width: 100%;
+    max-width: var(--va-container);
+    margin-inline: auto;
+    padding-inline: 16px;
+    @media (min-width: 640px) { padding-inline: 24px; }
+    @media (min-width: 1024px) { padding-inline: 32px; }
+  }
+  .va-section { padding-block: var(--va-space-section); }
 
   // Bootstrap's !important spacing helpers otherwise win over the existing
   // public utility classes and squeeze phone layouts into 48px side gutters.
@@ -75,7 +116,7 @@
 
   label:has(input[type='checkbox']) { min-height: 44px; }
   nav[aria-label='breadcrumb'] { line-height: 2; }
-  nav[aria-label='breadcrumb'] a { display: inline-block; min-height: 44px; }
+  nav[aria-label='breadcrumb'] a { display: inline-flex; align-items: center; min-height: 44px; } // keeps the tap target without lifting the text off the baseline
   :is(div, aside, form, section).bg-white.border { border-color: var(--va-line); border-radius: var(--va-radius-card); }
   .bg-victoria-dark:not(footer) { border-radius: var(--va-radius-panel); }
 
@@ -125,18 +166,6 @@
       transform: translateY(-2px);
     }
   }
-}
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgb(255 255 255 / 88%);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  transition: box-shadow 200ms ease;
-  &.is-scrolled { box-shadow: 0 3px 20px rgb(48 38 28 / 8%); }
-  nav a { min-height: 44px; display: inline-flex; align-items: center; }
 }
 
 .dealership-hero {
@@ -327,14 +356,6 @@
   font-size: .75rem;
   font-weight: 600;
 }
-.site-footer {
-  margin-top: 3rem;
-  border-radius: var(--va-radius-panel) var(--va-radius-panel) 0 0;
-  a[aria-label] { border-radius: var(--va-radius-pill); }
-  nav a { display: inline-flex; align-items: center; min-height: 44px; }
-  nav { gap: .25rem; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .non-admin-header-wrapper *, .non-admin-header-wrapper *::before {

@@ -133,33 +133,40 @@ function Buscador() {
   };
 
   return (
-    <section className="dealership-hero">
+    <section className="home-hero" aria-labelledby="home-hero-title">
       <img
         src={dealershipImage}
         alt="Sala de ventas Victoriautos sobre la Avenida Panamericana en Pasto"
-        className="dealership-hero-image"
+        className="home-hero__image"
+        width="1600"
+        height="900"
         loading="eager"
         fetchPriority="high"
         decoding="async"
       />
-      <div className="dealership-hero-overlay" aria-hidden="true" />
+      <div className="home-hero__overlay" aria-hidden="true" />
 
-      <div className="dealership-hero-content mx-auto grid min-h-[720px] max-w-[1400px] items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(480px,.75fr)] lg:py-20">
-        <div className="max-w-3xl pt-2 lg:pr-8">
-          <p className="mb-7 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.28em] text-white/75 before:h-px before:w-9 before:bg-victoria-red">
-            Consignataria en Pasto, Nariño
-          </p>
-          <h1 className="dealership-hero-title relative z-10 max-w-[760px] !text-5xl font-black leading-[0.9] tracking-[-0.06em] text-white [text-shadow:0_2px_2px_rgba(0,0,0,.95),0_10px_32px_rgba(0,0,0,.95)] sm:!text-7xl sm:[text-shadow:none] xl:!text-[5.75rem]">
+      <div className="home-hero__inner">
+        <div className="home-hero__copy">
+          <p className="home-eyebrow home-eyebrow--light">Consignataria en Pasto, Nariño</p>
+          <h1 id="home-hero-title" className="home-hero__title">
             El carro que sigue en tu historia.
           </h1>
-          <p className="mt-8 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
-            Compra o vende con acompañamiento local, información clara y una selección de vehículos que sí vale la pena conocer.
+          <p className="home-hero__subline">
+            Compra o vende con acompañamiento local, información clara y vehículos que sí vale la pena conocer.
           </p>
-          <div className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-white/20 pt-6 text-sm font-bold text-white/85">
-            <span>Inspección y respaldo</span>
-            <span>Negociación transparente</span>
-            <span>Opciones de financiación</span>
-          </div>
+          <ul className="home-hero__chips">
+            {[
+              ['verified_user', 'Inspección y respaldo'],
+              ['handshake', 'Negociación transparente'],
+              ['payments', 'Opciones de financiación'],
+            ].map(([icon, label]) => (
+              <li key={label}>
+                <span className="material-symbols-outlined" aria-hidden="true">{icon}</span>
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <Suspense fallback={<LoadingComponent />}>

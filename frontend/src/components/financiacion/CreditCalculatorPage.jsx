@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+import { WHATSAPP_DISPLAY, whatsappUrl } from '../../services/whatsapp';
+
+const WhatsAppIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 4.54 0 8.23 3.69 8.23 8.23s-3.69 8.24-8.23 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z" />
+  </svg>
+);
 
 // A helper function to calculate the monthly installment using the annuity formula.
 // monthlyRate is derived from the annual effective rate (1.42% EA)
@@ -35,51 +40,52 @@ const CreditCalculator = () => {
   }, [financedValue, term]);
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
-      <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Financiación</p>
-      <h2 className="mt-3 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Calcular crédito</h2>
+    <div className="vf-calc">
+      <div className="vf-card">
+        <h2 className="vf-section-title">Calcula tu cuota</h2>
+        <p className="vf-section-hint">Ingresa el valor y elige el plazo.</p>
 
-      <div className="mt-6">
-        <label className={labelClass} htmlFor="financedValue">Valor a financiar</label>
-        <input
-          id="financedValue"
-          type="number"
-          value={financedValue}
-          onChange={(e) => setFinancedValue(e.target.value)}
-          placeholder="Ingresa el valor a financiar"
-          className={controlClass}
-        />
-      </div>
-
-      <div className="mt-6">
-        <p className={labelClass}>Plazo en meses</p>
-        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {[12, 24, 36, 48, 60, 72].map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => setTerm(m)}
-              className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-bold transition ${term === m ? 'border-victoria-red bg-victoria-red text-white shadow-sm' : 'border-zinc-300 bg-white text-victoria-dark hover:border-victoria-dark'}`}
-            >
-              {m} meses
-            </button>
-          ))}
+        <div>
+          <label className="vf-label" htmlFor="financedValue">Valor a financiar (COP)</label>
+          <input
+            id="financedValue"
+            type="number"
+            inputMode="numeric"
+            value={financedValue}
+            onChange={(e) => setFinancedValue(e.target.value)}
+            placeholder="Ej: 40000000"
+            className="vf-input"
+          />
+          <p className="vf-help">{financedValue ? formatMoney(parseFloat(financedValue) || 0) : 'Sin puntos ni comas.'}</p>
         </div>
+
+        <fieldset className="vf-pills" style={{ marginTop: '1.5rem' }}>
+          <legend className="vf-label">Plazo en meses</legend>
+          {[12, 24, 36, 48, 60, 72].map((m) => (
+            <label key={m} className="vf-pill">
+              <input type="radio" name="term" value={m} checked={term === m} onChange={() => setTerm(m)} />
+              <span>{m} meses</span>
+            </label>
+          ))}
+        </fieldset>
       </div>
 
-      <div className="mt-8 border-t border-zinc-200 pt-6">
-        <p className="text-sm font-bold text-zinc-600">
-          Tu cuota mensual sería de: <span className="text-xl font-black text-victoria-red">{formatMoney(installment)}</span>
+      <div className="vf-result" aria-live="polite">
+        <p className="vf-result-label">Cuota mensual estimada</p>
+        <p className="vf-result-amount">{installment > 0 ? formatMoney(installment) : '—'}</p>
+        {installment <= 0 && <p className="vf-result-meta">Ingresa el valor a financiar para ver tu cuota.</p>}
+        <p className="vf-result-meta">a {term} meses · tasa desde 1,42% E.A</p>
+        <p className="vf-result-note">Valor estimado, sujeto a estudio de crédito.</p>
+        <a href="#solicitud-credito" className="vf-btn vf-btn--primary vf-btn--block">
+          Solicitar crédito
+        </a>
+        <p className="vf-wa-line">
+          ¿Prefieres escribirnos?
+          <a href={whatsappUrl('Hola Victoriautos, quiero información sobre financiación.')} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcon /> WhatsApp {WHATSAPP_DISPLAY}
+          </a>
         </p>
-        <p className="mt-2 text-xs text-zinc-500">*Tasa de interés desde 1,42% E.A</p>
       </div>
-
-      <a
-        href="#solicitud-credito"
-        className="!no-underline mt-6 inline-block w-full rounded-xl bg-victoria-red px-7 py-4 text-center text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800 sm:w-auto"
-      >
-        Solicitar crédito
-      </a>
     </div>
   );
 };
@@ -112,15 +118,15 @@ const CreditApplicationForm = () => {
   };
 
   return (
-    <form id="solicitud-credito" onSubmit={handleSubmit} className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
-      <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Paso 2</p>
-      <h2 className="mt-3 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Solicitud de crédito</h2>
+    <form id="solicitud-credito" onSubmit={handleSubmit} className="vf-card vf-apply">
+      <h2 className="vf-section-title">Solicitud de crédito</h2>
+      <p className="vf-section-hint">Déjanos tus datos y un asesor te contacta.</p>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-2">
+      <div className="vf-grid">
         <div>
-          <label className={labelClass} htmlFor="nombre">Tu nombre (obligatorio)</label>
+          <label className="vf-label" htmlFor="nombre">Tu nombre (obligatorio)</label>
           <input
-            className={controlClass}
+            className="vf-input"
             id="nombre"
             type="text"
             name="nombre"
@@ -130,9 +136,9 @@ const CreditApplicationForm = () => {
           />
         </div>
         <div>
-          <label className={labelClass} htmlFor="apellido">Tu apellido (obligatorio)</label>
+          <label className="vf-label" htmlFor="apellido">Tu apellido (obligatorio)</label>
           <input
-            className={controlClass}
+            className="vf-input"
             id="apellido"
             type="text"
             name="apellido"
@@ -142,9 +148,9 @@ const CreditApplicationForm = () => {
           />
         </div>
         <div>
-          <label className={labelClass} htmlFor="cedula">Cédula (obligatorio)</label>
+          <label className="vf-label" htmlFor="cedula">Cédula (obligatorio)</label>
           <input
-            className={controlClass}
+            className="vf-input"
             id="cedula"
             type="text"
             name="cedula"
@@ -154,9 +160,9 @@ const CreditApplicationForm = () => {
           />
         </div>
         <div>
-          <label className={labelClass} htmlFor="celular">Celular (obligatorio)</label>
+          <label className="vf-label" htmlFor="celular">Celular (obligatorio)</label>
           <input
-            className={controlClass}
+            className="vf-input"
             id="celular"
             type="tel"
             name="celular"
@@ -165,10 +171,10 @@ const CreditApplicationForm = () => {
             required
           />
         </div>
-        <div className="sm:col-span-2">
-          <label className={labelClass} htmlFor="email">Tu correo electrónico (obligatorio)</label>
+        <div className="vf-span2">
+          <label className="vf-label" htmlFor="email">Tu correo electrónico (obligatorio)</label>
           <input
-            className={controlClass}
+            className="vf-input"
             id="email"
             type="email"
             name="email"
@@ -177,28 +183,27 @@ const CreditApplicationForm = () => {
             required
           />
         </div>
-        <div className="sm:col-span-2">
-          <label className={labelClass} htmlFor="sede">¿Dónde quieres ser atendido?</label>
-          <select id="sede" name="sede" value={formData.sede} onChange={handleChange} className={controlClass}>
+        <div className="vf-span2">
+          <label className="vf-label" htmlFor="sede">¿Dónde quieres ser atendido?</label>
+          <select id="sede" name="sede" value={formData.sede} onChange={handleChange} className="vf-input">
             <option value="Victoriautos Pasto">Victoriautos Pasto</option>
           </select>
         </div>
-        <div className="sm:col-span-2">
-          <label className={labelClass} htmlFor="observaciones">Observaciones</label>
+        <div className="vf-span2">
+          <label className="vf-label" htmlFor="observaciones">Observaciones</label>
           <textarea
             id="observaciones"
             name="observaciones"
             value={formData.observaciones}
             onChange={handleChange}
             rows={4}
-            className="mt-2 w-full rounded-xl border border-zinc-300 bg-white px-3 py-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100"
+            className="vf-input"
           />
         </div>
       </div>
 
-      <label className="mt-6 flex items-start gap-3 text-sm font-bold text-zinc-700" htmlFor="privacyAccepted">
+      <label className="vf-check" htmlFor="privacyAccepted">
         <input
-          className="mt-0.5 h-5 w-5 shrink-0 accent-victoria-red"
           id="privacyAccepted"
           type="checkbox"
           name="privacyAccepted"
@@ -206,23 +211,30 @@ const CreditApplicationForm = () => {
           onChange={handleChange}
           required
         />
-        He leído y acepto las <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer" className="text-victoria-red hover:text-red-800">Políticas de Privacidad</a>
+        <span>He leído y acepto las <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Políticas de Privacidad</a></span>
       </label>
 
-      <button type="submit" className="mt-6 w-full rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800 sm:w-auto">Enviar Solicitud</button>
+      <div className="vf-actions">
+        <button type="submit" className="vf-btn vf-btn--primary vf-btn--block">Enviar Solicitud</button>
+      </div>
+      <p className="vf-reassure">
+        <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+        Tus datos solo se usan para contactarte.
+      </p>
     </form>
   );
 };
 
 const CreditCalculatorPage = () => {
   return (
-    <div className="mx-auto max-w-[700px] px-5 py-10 sm:px-8 sm:py-14">
-      <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
-        <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
-        <span className="mx-2">/</span>
-        <span className="text-zinc-500">Financiación</span>
+    <div className="vf-page vf-page--wide">
+      <nav aria-label="breadcrumb" className="vf-crumbs">
+        <Link to="/">Inicio</Link>
+        <span aria-hidden="true">/</span>
+        <span>Financiación</span>
       </nav>
-      <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Financiación</h1>
+      <h1 className="vf-title">Financiación</h1>
+      <p className="vf-sub">Calcula tu cuota mensual en segundos y solicita tu crédito.</p>
       <CreditCalculator />
       <CreditApplicationForm />
     </div>

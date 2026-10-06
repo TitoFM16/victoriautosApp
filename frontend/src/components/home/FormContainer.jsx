@@ -5,8 +5,8 @@ import LoadingComponent from '../shared/loadingComponent';
 
 const VenderForm = lazy(() => import('./VenderForm'));
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+const controlClass = 'home-control';
+const labelClass = 'home-label';
 
 const FormContainer = ({
   activeTab,
@@ -33,13 +33,13 @@ const FormContainer = ({
   } = formData;
 
   return (
-    <div className="hero-search-card">
-      <div className="hero-search-tabs" role="tablist" aria-label="Comprar o vender">
+    <div className="home-search">
+      <div className="home-search__tabs" role="tablist" aria-label="Comprar o vender">
         <button
           type="button"
           role="tab"
           aria-selected={activeTab === 'comprar'}
-          className={`min-h-14 px-4 text-sm font-black transition ${activeTab === 'comprar' ? 'bg-victoria-red text-white' : 'bg-zinc-50 text-zinc-500 hover:text-victoria-dark'}`}
+          className={`home-search__tab ${activeTab === 'comprar' ? 'is-active' : ''}`}
           onClick={() => setActiveTab('comprar')}
         >
           Quiero comprar
@@ -48,24 +48,21 @@ const FormContainer = ({
           type="button"
           role="tab"
           aria-selected={activeTab === 'vender'}
-          className={`min-h-14 px-4 text-sm font-black transition ${activeTab === 'vender' ? 'bg-victoria-red text-white' : 'bg-zinc-50 text-zinc-500 hover:text-victoria-dark'}`}
+          className={`home-search__tab ${activeTab === 'vender' ? 'is-active' : ''}`}
           onClick={() => setActiveTab('vender')}
         >
           Quiero vender
         </button>
       </div>
 
-      <div className="p-6 sm:p-8">
-        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-victoria-red">
-          {activeTab === 'comprar' ? 'Explora el inventario' : 'Conoce el valor de tu usado'}
-        </p>
-        <h2 className="mt-2 !text-2xl font-black tracking-[-0.035em] sm:!text-3xl">
-          {activeTab === 'comprar' ? 'Encuentra el indicado.' : 'Empecemos por tu vehículo.'}
+      <div className="home-search__body">
+        <h2 className="home-search__title">
+          {activeTab === 'comprar' ? 'Encuentra el indicado' : 'Empecemos por tu vehículo'}
         </h2>
 
         {activeTab === 'comprar' ? (
-          <form className="mt-7 grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2" onSubmit={handleSubmit}>
-            <div>
+          <form className="home-form" onSubmit={handleSubmit}>
+            <div className="home-field">
               <label className={labelClass} htmlFor="tipo">Tipo</label>
               <select className={controlClass} id="tipo" name="tipo" value={tipo} onChange={handleInputChange}>
                 <option value="">Todos los tipos</option>
@@ -83,7 +80,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div>
+            <div className="home-field">
               <label className={labelClass} htmlFor="marca">Marca</label>
               <select className={controlClass} id="marca" name="marca" value={marca} onChange={handleInputChange} disabled={!tipo}>
                 <option value="">{tipo ? 'Todas las marcas' : 'Elige un tipo primero'}</option>
@@ -93,7 +90,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div>
+            <div className="home-field">
               <label className={labelClass} htmlFor="linea">Línea</label>
               <select className={controlClass} id="linea" name="linea" value={linea} onChange={handleInputChange} disabled={!marca}>
                 <option value="">{marca ? 'Todas las líneas' : 'Elige una marca primero'}</option>
@@ -104,7 +101,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div>
+            <div className="home-field is-half">
               <label className={labelClass} htmlFor="modelo">Modelo desde</label>
               {modelo === 'otro' ? (
                 <input
@@ -135,7 +132,7 @@ const FormContainer = ({
               )}
             </div>
 
-            <div>
+            <div className="home-field is-half">
               <label className={labelClass} htmlFor="precio">Presupuesto máximo</label>
               <select className={controlClass} id="precio" name="precio" value={price} onChange={(event) => setPrice(event.target.value)}>
                 <option value="">Cualquier precio</option>
@@ -145,7 +142,7 @@ const FormContainer = ({
               </select>
             </div>
 
-            <div>
+            <div className="home-field">
               <label className={labelClass} htmlFor="kilometraje">Kilometraje máximo</label>
               <select className={controlClass} id="kilometraje" name="kilometraje" value={km} onChange={(event) => setKm(event.target.value)}>
                 <option value="">Cualquier kilometraje</option>
@@ -156,9 +153,9 @@ const FormContainer = ({
               </select>
             </div>
 
-            <button type="submit" className="mt-1 flex min-h-13 items-center justify-center gap-3 rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800 sm:col-span-2">
+            <button type="submit" className="home-btn home-btn--primary home-form__submit">
               Buscar vehículos
-              <img src={SearchIcon} alt="" className="h-5 w-5" />
+              <img src={SearchIcon} alt="" className="home-form__submit-icon" />
             </button>
           </form>
         ) : (

@@ -6,9 +6,9 @@ import ReCAPTCHA from "react-google-recaptcha";
 import LoadingModal from '../shared/LoadingModal';
 import { Modal } from 'bootstrap';
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+const controlClass = 'mt-2 h-12 w-full rounded-xl border border-[var(--va-line)] bg-white px-4 text-base text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-4 text-base text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
+const labelClass = 'text-sm font-semibold text-victoria-dark';
 
 const CompraModalContent = ({ car }) => {
   const [formData, setFormData] = useState({
@@ -100,15 +100,15 @@ const CompraModalContent = ({ car }) => {
   return (
     <>
       <div className="modal fade" id="compraModal" tabIndex="-1" aria-labelledby="compraModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog modal-lg modal-dialog-centered">
           <div className="modal-content public-modal">
-            <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
-              <h2 className="!text-xl font-black tracking-[-0.02em] text-victoria-dark" id="compraModalLabel">Comprar Vehículo</h2>
-              <button type="button" className="grid h-9 w-9 place-items-center border border-zinc-300 text-lg leading-none text-victoria-dark" data-bs-dismiss="modal" aria-label="Close">×</button>
+            <div className="flex items-center justify-between border-b border-[var(--va-line)] px-5 py-4 sm:px-6">
+              <h2 className="!text-xl font-extrabold tracking-[-0.02em] text-victoria-dark" id="compraModalLabel">Comprar Vehículo</h2>
+              <button type="button" className="grid h-11 w-11 place-items-center rounded-full border border-[var(--va-line)] text-xl leading-none text-victoria-dark" data-bs-dismiss="modal" aria-label="Close">×</button>
             </div>
-            <div className="px-6 py-6">
+            <div className="px-5 py-5 sm:px-6">
               <form onSubmit={handleSubmit}>
-                <p className="text-sm text-zinc-600">Diligencia los datos y en breve un asesor te contactará</p>
+                <p className="text-sm text-[var(--va-muted)]">Diligencia los datos y en breve un asesor te contactará</p>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <div>
                     <label className={labelClass} htmlFor="nombre">Nombre</label>
@@ -211,16 +211,16 @@ const CompraModalContent = ({ car }) => {
                 </div>
               </form>
             </div>
-            <div className="flex justify-end gap-3 border-t border-zinc-200 px-6 py-5">
+            <div className="flex justify-end gap-3 border-t border-[var(--va-line)] px-5 py-4 sm:px-6">
               <button
                 type="button"
-                className="border border-zinc-300 px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-victoria-dark transition hover:border-victoria-dark"
+                className="rounded-full border border-[var(--va-line)] bg-white px-6 py-3 text-sm font-semibold text-victoria-dark transition hover:border-victoria-dark"
                 data-bs-dismiss="modal"
               >
                 Cerrar
               </button>
               <button
-                className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                className="rounded-full bg-victoria-red px-8 py-3 text-sm font-semibold text-white transition hover:bg-[var(--va-accent-hover)]"
                 type="submit"
                 onClick={handleSubmit}
               >

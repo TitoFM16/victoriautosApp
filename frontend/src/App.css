@@ -113,52 +113,6 @@ div.step-circle.active{
 /* ---------------------------------------------------------------- */
 
 
-/* ---------------------------------------------------------------- */
-/* Navbar */
-/* ---------------------------------------------------------------- */
-.navbar-page {
-  background-color: #b40505 !important; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  min-height: 65px;
-  contain: layout style paint;
-  will-change: transform;
-  content-visibility: auto;
-}
-
-.navbar-brand {
-  display: inline-flex;
-  align-items: center;
-  font-display: swap;
-  contain: layout style;
-}
-
-.navbar-brand img {
-  margin-right: 8px;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-.navbar-brand svg {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-.navbar-page .nav-link {
-  color: white !important;
-  font-weight: normal;
-  transition: color 0.2s ease;
-}
-
-.navbar-page .nav-link:hover,
-.navbar-page .nav-link.active {
-  color: white !important;
-  font-weight: bold;
-}
-/* ---------------------------------------------------------------- */
-/* Navbar */
-/* ---------------------------------------------------------------- */
-
 
 /* ---------------------------------------------------------------- */
 /* Busca Vehicle Component */
@@ -565,60 +519,7 @@ div.step-circle.active{
 /* Vitrina virtual css*/
 /* ---------------------------------------------------------------- */
 
-/* ---------------------------------------------------------------- */
-/* FOOTER*/
-/* ---------------------------------------------------------------- */
-.links{
-  text-decoration: none;
-  color: inherit;
-}
 
-.footer {
-  background-color: #B30000FA;
-  color: white;
-  padding: 2rem 0;
-  position: relative;
-  z-index: 1;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  content-visibility: auto;
-  contain: layout style paint;
-  margin-top: auto;
-}
-
-.footer-content {
-  width: 90%;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.footer-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin: 1rem 0;
-  height: 2rem;
-  line-height: 2rem;
-}
-
-.social-icons {
-  display: grid;
-  grid-template-columns: repeat(3, 45px);
-  gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.social-icons img {
-  width: 45px;
-  height: 45px;
-  aspect-ratio: 1;
-}
-/* ---------------------------------------------------------------- */
-/* FOOTER*/
-/* ---------------------------------------------------------------- */
 
 
 /* extra small devices (vertical phones) 300 px and up*/
@@ -974,45 +875,10 @@ div.step-circle.active{
 
 
 
-/* Add these rules to the footer section */
-.footer {
-  contain: layout style paint;
-  box-sizing: border-box;
-  position: relative;
-  margin-top: auto;
-}
-
-.footer-content {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
-.footer-title {
-  margin: 1rem 0;
-  height: 2rem;
-  line-height: 2rem;
-}
-
-.social-icons {
-  display: grid;
-  grid-template-columns: repeat(3, 45px);
-  gap: 1rem;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.social-icons img {
-  width: 45px;
-  height: 45px;
-  aspect-ratio: 1;
-}
-
 .main-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 200vh;
+  min-height: 100vh;
 }
 
 .main-content {

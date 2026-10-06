@@ -4,9 +4,15 @@ import { useSelector } from 'react-redux';
 
 import axios from 'axios';
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+const inputClass = (invalid) => `vf-input${invalid ? ' is-invalid' : ''}`;
+
+const FieldError = ({ children }) => (
+    <p className="vf-error" role="alert">
+        <span className="material-symbols-outlined" aria-hidden="true">error</span>
+        {children}
+    </p>
+);
+FieldError.propTypes = { children: PropTypes.node };
 
 const inventoryMarcasFrom = (cars) => [...new Set(cars.map((car) => car.marca).filter(Boolean))]
     .map((brand) => ({ marca: brand }));
@@ -143,12 +149,12 @@ function FormStep2(props) {
     };
 
   return(
-        <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
-            <div className="grid gap-6 sm:grid-cols-2">
+        <div className="vf-fields">
+            <div className="vf-grid">
                 <div>
-                    <label className={labelClass} htmlFor="marca">Marca del vehículo</label>
+                    <label className="vf-label" htmlFor="marca">Marca del vehículo</label>
                     <select
-                        className={controlClass}
+                        className="vf-input"
                         id="marca"
                         name="marca"
                         value={props.marca}
@@ -165,9 +171,9 @@ function FormStep2(props) {
                     </select>
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="linea">Línea del vehículo</label>
+                    <label className="vf-label" htmlFor="linea">Línea del vehículo</label>
                     <select
-                        className={controlClass}
+                        className="vf-input"
                         id="linea"
                         name="linea"
                         value={props.linea}
@@ -187,9 +193,10 @@ function FormStep2(props) {
                     </select>
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="modelo">Modelo (Año)</label>
+                    <label className="vf-label" htmlFor="modelo">Modelo (Año)</label>
                     <input
-                        className={props.modelo && !validateModelo(props.modelo) ? invalidControlClass : controlClass}
+                        className={inputClass(props.modelo && !validateModelo(props.modelo))}
+                        inputMode="numeric"
                         id="modelo"
                         name="modelo"
                         type="text"
@@ -198,15 +205,14 @@ function FormStep2(props) {
                         onChange={handleInputChange}
                     />
                     {props.modelo && !validateModelo(props.modelo) && (
-                        <p className="mt-2 text-xs font-bold text-victoria-red">
-                            El año debe ser válido
-                        </p>
+                        <FieldError>El año debe ser válido</FieldError>
                     )}
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="km">Kilometraje</label>
+                    <label className="vf-label" htmlFor="km">Kilometraje</label>
                     <input
-                        className={props.km && !validateKilometraje(props.km) ? invalidControlClass : controlClass}
+                        className={inputClass(props.km && !validateKilometraje(props.km))}
+                        inputMode="numeric"
                         id="km"
                         name="km"
                         type="text"
@@ -215,15 +221,13 @@ function FormStep2(props) {
                         onChange={handleInputChange}
                     />
                     {props.km && !validateKilometraje(props.km) && (
-                        <p className="mt-2 text-xs font-bold text-victoria-red">
-                            El kilometraje debe ser menor a 10.000.000
-                        </p>
+                        <FieldError>El kilometraje debe ser menor a 10.000.000</FieldError>
                     )}
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="matricula">Ciudad de matrícula</label>
+                    <label className="vf-label" htmlFor="matricula">Ciudad de matrícula</label>
                     <input
-                        className={controlClass}
+                        className="vf-input"
                         id="matricula"
                         name="matricula"
                         type="text"
@@ -233,9 +237,10 @@ function FormStep2(props) {
                     />
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="price">Precio del vehículo</label>
+                    <label className="vf-label" htmlFor="price">Precio del vehículo</label>
                     <input
-                        className={props.price && !validatePrecio(props.price) ? invalidControlClass : controlClass}
+                        className={inputClass(props.price && !validatePrecio(props.price))}
+                        inputMode="numeric"
                         id="price"
                         name="price"
                         type="text"
@@ -244,9 +249,7 @@ function FormStep2(props) {
                         onChange={handleInputChange}
                     />
                     {props.price && !validatePrecio(props.price) && (
-                        <p className="mt-2 text-xs font-bold text-victoria-red">
-                            Por favor ingresa un precio razonable :)
-                        </p>
+                        <FieldError>Por favor ingresa un precio razonable :)</FieldError>
                     )}
                 </div>
             </div>

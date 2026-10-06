@@ -1,13 +1,28 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useLocation, Link } from 'react-router-dom';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
 import LoadingModal from './shared/LoadingModal';
 import { useVehicleDropdowns } from '../hooks/useVehicleDropdowns';
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100 disabled:cursor-not-allowed disabled:bg-zinc-100';
-const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+import { WHATSAPP_DISPLAY, whatsappUrl } from '../services/whatsapp';
+
+const inputClass = (invalid) => `vf-input${invalid ? ' is-invalid' : ''}`;
+
+const FieldError = ({ children }) => (
+  <p className="vf-error" role="alert">
+    <span className="material-symbols-outlined" aria-hidden="true">error</span>
+    {children}
+  </p>
+);
+FieldError.propTypes = { children: PropTypes.node };
+
+const WhatsAppIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 4.54 0 8.23 3.69 8.23 8.23s-3.69 8.24-8.23 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z" />
+  </svg>
+);
 
 const InteresForm = () => {
   const [formData, setFormData] = useState({
@@ -181,7 +196,7 @@ const InteresForm = () => {
     if (location.state?.marca) {
       return (
         <input
-          className={controlClass}
+          className="vf-input"
           id="marca"
           name="marca"
           type="text"
@@ -193,7 +208,7 @@ const InteresForm = () => {
     }
     return (
       <select
-        className={controlClass}
+        className="vf-input"
         id="marca"
         name="marca"
         value={formData.marca}
@@ -216,7 +231,7 @@ const InteresForm = () => {
     if (location.state?.linea) {
       return (
         <input
-          className={controlClass}
+          className="vf-input"
           id="linea"
           name="linea"
           type="text"
@@ -228,7 +243,7 @@ const InteresForm = () => {
     }
     return (
       <select
-        className={controlClass}
+        className="vf-input"
         id="linea"
         name="linea"
         value={formData.linea}
@@ -287,145 +302,171 @@ const InteresForm = () => {
         }}
       />
 
-      <div className="mx-auto max-w-[900px] px-5 py-10 sm:px-8 sm:py-14">
-        <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
-          <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
-          <span className="mx-2">/</span>
-          <span className="text-zinc-500">Interés de compra</span>
+      <div className="vf-page">
+        <nav aria-label="breadcrumb" className="vf-crumbs">
+          <Link to="/">Inicio</Link>
+          <span aria-hidden="true">/</span>
+          <span>Interés de compra</span>
         </nav>
-        <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Interés de compra</h1>
+        <h1 className="vf-title">Interés de compra</h1>
+        <p className="vf-sub">Cuéntanos qué carro buscas y te avisamos apenas tengamos una opción para ti.</p>
 
-        <form onSubmit={handleSubmit} className="public-form-card">
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <label className={labelClass} htmlFor="nombre">Nombre</label>
+        <form onSubmit={handleSubmit} className="vf-card">
+          <section className="vf-section" aria-labelledby="vf-sec-datos">
+            <h2 className="vf-section-title" id="vf-sec-datos">Tus datos</h2>
+            <p className="vf-section-hint">Para saber a quién contactar.</p>
+            <div className="vf-grid">
+              <div>
+                <label className="vf-label" htmlFor="nombre">Nombre</label>
+                <input
+                  className="vf-input"
+                  id="nombre"
+                  name="nombre"
+                  type="text"
+                  placeholder="Escribe tu nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label className="vf-label" htmlFor="apellido">Apellido</label>
+                <input
+                  className="vf-input"
+                  id="apellido"
+                  name="apellido"
+                  type="text"
+                  placeholder="Escribe tu apellido"
+                  value={formData.apellido}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="vf-span2">
+                <label className="vf-label" htmlFor="celular">Celular</label>
+                <input
+                  className={inputClass(formData.celular && !validateCelular(formData.celular))}
+                  id="celular"
+                  name="celular"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ej: 3001234567"
+                  value={formData.celular}
+                  onChange={handleChange}
+                />
+                {formData.celular && !validateCelular(formData.celular) && (
+                  <FieldError>Por favor ingrese un número de celular válido</FieldError>
+                )}
+              </div>
+            </div>
+          </section>
+
+          <section className="vf-section" aria-labelledby="vf-sec-carro">
+            <h2 className="vf-section-title" id="vf-sec-carro">El carro que buscas</h2>
+            <p className="vf-section-hint">Mientras más detalles, mejor la oferta.</p>
+            <div className="vf-grid">
+              <div>
+                <label className="vf-label" htmlFor="marca">Marca</label>
+                {renderMarcaField()}
+              </div>
+
+              <div>
+                <label className="vf-label" htmlFor="linea">Línea</label>
+                {renderLineaField()}
+              </div>
+
+              <div>
+                <label className="vf-label" htmlFor="modelo">Modelo</label>
+                <input
+                  className={inputClass(formData.modelo && !validateModelo(formData.modelo))}
+                  id="modelo"
+                  name="modelo"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ej: 2020"
+                  value={formData.modelo}
+                  onChange={handleChange}
+                />
+                {formData.modelo && !validateModelo(formData.modelo) && (
+                  <FieldError>Por favor ingrese un año válido</FieldError>
+                )}
+              </div>
+
+              <div>
+                <label className="vf-label" htmlFor="km">Kilometraje</label>
+                <input
+                  className={inputClass(formData.km && !validateKilometraje(formData.km))}
+                  id="km"
+                  name="km"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ej: 50000"
+                  value={formData.km}
+                  onChange={handleChange}
+                />
+                {formData.km && !validateKilometraje(formData.km) && (
+                  <FieldError>El kilometraje debe ser menor a 10.000.000</FieldError>
+                )}
+              </div>
+
+              <div className="vf-span2">
+                <label className="vf-label" htmlFor="price">Precio</label>
+                <input
+                  className={inputClass(formData.price && !validatePrecio(formData.price))}
+                  id="price"
+                  name="price"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Ej: $ 50.000.000"
+                  value={formatPrice(formData.price)}
+                  onChange={handleChange}
+                />
+                {formData.price && !validatePrecio(formData.price) && (
+                  <FieldError>Por favor ingresa un precio razonable :)</FieldError>
+                )}
+              </div>
+            </div>
+
+            <label className="vf-check" htmlFor="wppCheckbox">
               <input
-                className={controlClass}
-                id="nombre"
-                name="nombre"
-                type="text"
-                placeholder="Escribe tu nombre"
-                value={formData.nombre}
+                id="wppCheckbox"
+                name="wppcheck"
+                type="checkbox"
+                defaultChecked={formData.wppcheck}
                 onChange={handleChange}
               />
-            </div>
+              <span>¿Aceptas comunicación vía Whatsapp?</span>
+            </label>
+          </section>
 
-            <div>
-              <label className={labelClass} htmlFor="apellido">Apellido</label>
-              <input
-                className={controlClass}
-                id="apellido"
-                name="apellido"
-                type="text"
-                placeholder="Escribe tu apellido"
-                value={formData.apellido}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="celular">Celular</label>
-              <input
-                className={formData.celular && !validateCelular(formData.celular) ? invalidControlClass : controlClass}
-                id="celular"
-                name="celular"
-                type="text"
-                placeholder="Ej: 3001234567"
-                value={formData.celular}
-                onChange={handleChange}
-              />
-              {formData.celular && !validateCelular(formData.celular) && (
-                <p className="mt-2 text-xs font-bold text-victoria-red">
-                  Por favor ingrese un número de celular válido
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="marca">Marca</label>
-              {renderMarcaField()}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="linea">Línea</label>
-              {renderLineaField()}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="modelo">Modelo</label>
-              <input
-                className={formData.modelo && !validateModelo(formData.modelo) ? invalidControlClass : controlClass}
-                id="modelo"
-                name="modelo"
-                type="text"
-                placeholder="Ej: 2020"
-                value={formData.modelo}
-                onChange={handleChange}
-              />
-              {formData.modelo && !validateModelo(formData.modelo) && (
-                <p className="mt-2 text-xs font-bold text-victoria-red">
-                  Por favor ingrese un año válido
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="km">Kilometraje</label>
-              <input
-                className={formData.km && !validateKilometraje(formData.km) ? invalidControlClass : controlClass}
-                id="km"
-                name="km"
-                type="text"
-                placeholder="Ej: 50000"
-                value={formData.km}
-                onChange={handleChange}
-              />
-              {formData.km && !validateKilometraje(formData.km) && (
-                <p className="mt-2 text-xs font-bold text-victoria-red">
-                  El kilometraje debe ser menor a 10.000.000
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className={labelClass} htmlFor="price">Precio</label>
-              <input
-                className={formData.price && !validatePrecio(formData.price) ? invalidControlClass : controlClass}
-                id="price"
-                name="price"
-                type="text"
-                placeholder="Ej: $ 50.000.000"
-                value={formatPrice(formData.price)}
-                onChange={handleChange}
-              />
-              {formData.price && !validatePrecio(formData.price) && (
-                <p className="mt-2 text-xs font-bold text-victoria-red">
-                  Por favor ingresa un precio razonable :)
-                </p>
-              )}
-            </div>
-          </div>
-
-          <label className="mt-6 flex items-center gap-3 text-sm font-bold text-zinc-700" htmlFor="wppCheckbox">
-            <input
-              className="h-5 w-5 accent-victoria-red"
-              id="wppCheckbox"
-              name="wppcheck"
-              type="checkbox"
-              defaultChecked={formData.wppcheck}
-              onChange={handleChange}
-            />
-            ¿Aceptas comunicación vía Whatsapp?
-          </label>
-
-          <div className="mt-6">
+          <div className="vf-captcha">
             <ReCAPTCHA
               sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
               onChange={handleCaptchaChange}
             />
           </div>
 
-          <button type="submit" className="mt-6 rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800">Enviar</button>
+          <div className="vf-actions">
+            <button
+              type="submit"
+              className="vf-btn vf-btn--primary vf-btn--block"
+              disabled={formData.showLoadingModal && formData.submitStatus === 'loading'}
+              aria-busy={formData.showLoadingModal && formData.submitStatus === 'loading'}
+            >
+              {formData.showLoadingModal && formData.submitStatus === 'loading' ? 'Enviando...' : 'Enviar'}
+            </button>
+          </div>
+          <p className="vf-reassure">
+            <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+            Tus datos solo se usan para contactarte.
+          </p>
+
+          <p className="vf-wa-line">
+            ¿Prefieres escribirnos?
+            <a href={whatsappUrl('Hola Victoriautos, quiero información sobre un carro que estoy buscando.')} target="_blank" rel="noopener noreferrer">
+              <WhatsAppIcon /> WhatsApp {WHATSAPP_DISPLAY}
+            </a>
+          </p>
         </form>
       </div>
     </>

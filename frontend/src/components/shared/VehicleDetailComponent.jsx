@@ -1,24 +1,51 @@
-import { useState, lazy } from 'react';
+import { useState, useEffect, useMemo, lazy } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { formatMoney } from '../../shared/utils';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
 import VehicleImage from './VehicleImage';
+import VehicleCard from './VehicleCard';
 
 const LoadingComponent = lazy(() => import('./loadingComponent'));
 
-const featureRows = [
-  ['Marca', 'marca'],
-  ['Línea', 'linea'],
-  ['Modelo', 'modelo'],
-  ['Kilometraje', 'km'],
-  ['Cilindraje', 'cilindraje'],
-  ['Transmisión', 'transmision'],
-  ['Dirección', 'direccion'],
-  ['Combustible', 'combustible'],
-  ['Color', 'color'],
+// [label, key, material symbol]. Only public car fields (never vin/chasis/motor/etc.).
+const specTiles = [
+  ['Marca', 'marca', 'directions_car'],
+  ['Línea', 'linea', 'label'],
+  ['Modelo', 'modelo', 'calendar_month'],
+  ['Kilometraje', 'km', 'speed'],
+  ['Cilindraje', 'cilindraje', 'settings'],
+  ['Transmisión', 'transmision', 'manage_history'],
+  ['Dirección', 'direccion', 'tune'],
+  ['Combustible', 'combustible', 'local_gas_station'],
+  ['Tracción', 'traccion', 'route'],
+  ['Frenos', 'frenos', 'stop_circle'],
+  ['Airbag', 'airbag', 'health_and_safety'],
+  ['Color', 'color', 'palette'],
+  ['Matrícula', 'matricula', 'badge'],
 ];
+
+// Admin keeps the original compact table.
+const featureRows = specTiles
+  .filter(([, key]) => ['marca', 'linea', 'modelo', 'km', 'cilindraje', 'transmision', 'direccion', 'combustible', 'color'].includes(key))
+  .map(([label, key]) => [label, key]);
+
+const toNumber = (value) => {
+  const parsed = parseFloat(String(value ?? '').replace(/[^\d.-]/g, ''));
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const hasValue = (value) => value !== undefined && value !== null && String(value).trim() !== '';
+
+const formatSpec = (key, value) => {
+  if (key === 'km') {
+    const n = toNumber(value);
+    return n === null ? String(value) : `${n.toLocaleString('es-CO')} km`;
+  }
+  return String(value);
+};
 
 function VehicleDetailComponent({
   vehicle,
@@ -28,6 +55,7 @@ function VehicleDetailComponent({
   apiEndpoint,
   redirectPath,
   showClientInfo = false,
+  mobileBar = null,
   children
 }) {
   const [currentImage, setCurrentImage] = useState(0);
@@ -36,7 +64,45 @@ function VehicleDetailComponent({
   const [updatedVehicle, setUpdatedVehicle] = useState({ ...vehicle });
   const [mainImageLoaded, setMainImageLoaded] = useState(false);
   const [thumbnailsLoaded, setThumbnailsLoaded] = useState({});
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [portraitMap, setPortraitMap] = useState({});
+  const allCars = useSelector((state) => state.cars?.cars);
   const navigate = useNavigate();
+
+  const imageCount = vehicle?.images?.length || 0;
+
+  useEffect(() => {
+    if (!lightboxOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowRight') setCurrentImage((i) => Math.min(i + 1, imageCount - 1));
+      if (e.key === 'ArrowLeft') setCurrentImage((i) => Math.max(i - 1, 0));
+    };
+    document.addEventListener('keydown', onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [lightboxOpen, imageCount]);
+
+  const similarCars = useMemo(() => {
+    if (!vehicle || !Array.isArray(allCars)) return [];
+    const price = toNumber(vehicle.price);
+    return allCars
+      .filter((c) => String(c.id) !== String(vehicle.id))
+      .map((c) => {
+        const cp = toNumber(c.price);
+        const diff = price && cp ? Math.abs(cp - price) / price : 1;
+        const sameTipo = c.tipo && c.tipo === vehicle.tipo;
+        return { car: c, score: (sameTipo ? 0 : 1) + diff };
+      })
+      .filter(({ score }) => score < 1.35)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 3)
+      .map(({ car }) => car);
+  }, [allCars, vehicle]);
 
   const toggleEditModal = () => setEditModalOpen(!editModalOpen);
 
@@ -120,6 +186,185 @@ function VehicleDetailComponent({
   const metaTitle = `${vehicle.marca} ${vehicle.linea} ${vehicle.modelo} - Victoriautos`;
   const metaDescription = `${vehicle.marca} ${vehicle.linea} ${vehicle.modelo}, ${vehicle.km}km, ${vehicle.combustible}, ${vehicle.transmision}. Precio: $${formatMoney(vehicle.price)}`;
   const metaImage = `${window.location.origin}${imagePath}${vehicle.id}/${vehicle.images[0]}`;
+
+  if (mode === 'client') {
+    const images = vehicle.images || [];
+    const total = images.length;
+    const srcAt = (i) => (images[i] ? `${imagePath}${vehicle.id}/${images[i]}` : undefined);
+    const goPrev = () => setCurrentImage((i) => Math.max(i - 1, 0));
+    const goNext = () => setCurrentImage((i) => Math.min(i + 1, total - 1));
+    const title = `${vehicle.marca} ${vehicle.linea}`;
+    const kmNumber = toNumber(vehicle.km);
+    const chips = [
+      hasValue(vehicle.modelo) && { icon: 'calendar_month', text: String(vehicle.modelo) },
+      kmNumber !== null && { icon: 'speed', text: `${kmNumber.toLocaleString('es-CO')} km` },
+      hasValue(vehicle.transmision) && { icon: 'manage_history', text: vehicle.transmision },
+      hasValue(vehicle.combustible) && { icon: 'local_gas_station', text: vehicle.combustible },
+    ].filter(Boolean);
+    const tiles = specTiles.filter(([, key]) => hasValue(vehicle[key]));
+
+    return (
+      <div className="public-vehicle-detail vd-page">
+        <Helmet>
+          <title>{metaTitle}</title>
+          <meta name="description" content={metaDescription} />
+          <meta property="og:title" content={metaTitle} />
+          <meta property="og:description" content={metaDescription} />
+          <meta property="og:image" content={metaImage} />
+          <meta property="og:url" content={window.location.href} />
+          <meta property="og:type" content="website" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={metaTitle} />
+          <meta name="twitter:description" content={metaDescription} />
+          <meta name="twitter:image" content={metaImage} />
+        </Helmet>
+
+        <nav aria-label="breadcrumb" className="vd-breadcrumb">
+          <Link to="/">Inicio</Link>
+          <span aria-hidden="true">/</span>
+          <Link to="/vitrina">Vitrina</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{title}</span>
+        </nav>
+
+        <div className="vd-grid">
+          <section className="vd-gallery" aria-label="Galería de fotos">
+            <div
+              className="vd-stage"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {srcAt(currentImage) ? (
+                <button
+                  type="button"
+                  className="vd-stage-btn"
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label="Ampliar foto"
+                >
+                  <img
+                    key={currentImage}
+                    className={portraitMap[currentImage] ? 'is-portrait' : ''}
+                    src={srcAt(currentImage)}
+                    alt={`${title}, modelo ${vehicle.modelo}, foto ${currentImage + 1}`}
+                    fetchPriority={currentImage === 0 ? 'high' : undefined}
+                    onLoad={(e) => {
+                      const { naturalWidth, naturalHeight } = e.currentTarget;
+                      setPortraitMap((prev) => (
+                        prev[currentImage] === (naturalHeight > naturalWidth) ? prev : { ...prev, [currentImage]: naturalHeight > naturalWidth }
+                      ));
+                    }}
+                    style={{ touchAction: 'pan-y pinch-zoom' }}
+                  />
+                </button>
+              ) : (
+                <span className="vd-stage-empty">Imagen próximamente</span>
+              )}
+              {total > 1 && (
+                <>
+                  <button type="button" className="vd-nav vd-prev" onClick={goPrev} disabled={currentImage === 0} aria-label="Foto anterior">
+                    <span className="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                  </button>
+                  <button type="button" className="vd-nav vd-next" onClick={goNext} disabled={currentImage === total - 1} aria-label="Foto siguiente">
+                    <span className="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                  </button>
+                  <span className="vd-counter" aria-live="polite">{currentImage + 1} / {total}</span>
+                </>
+              )}
+            </div>
+            {total > 1 && (
+              <div className="vd-thumbs">
+                {images.map((image, index) => (
+                  <button
+                    key={image}
+                    type="button"
+                    className={`vd-thumb ${currentImage === index ? 'is-active' : ''}`}
+                    aria-label={`Ver foto ${index + 1}`}
+                    aria-pressed={currentImage === index}
+                    onClick={() => setCurrentImage(index)}
+                  >
+                    <img src={srcAt(index)} alt="" loading="lazy" decoding="async" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <aside className="vd-summary">
+            <Link to="/vitrina" className="vd-back">
+              <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+              Vitrina
+            </Link>
+            <h1 className="vd-title">{title}</h1>
+            <ul className="vd-chips">
+              {chips.map((chip) => (
+                <li key={chip.icon}>
+                  <span className="material-symbols-outlined" aria-hidden="true">{chip.icon}</span>
+                  {chip.text}
+                </li>
+              ))}
+            </ul>
+            <p className="vd-price">$ {formatMoney(vehicle.price)}</p>
+            {children}
+          </aside>
+
+          <section className="vd-specs" aria-labelledby="vd-specs-title">
+            <h2 id="vd-specs-title">Características principales</h2>
+            <dl className="vd-spec-grid">
+              {tiles.map(([label, key, icon]) => (
+                <div key={key} className="vd-spec">
+                  <span className="material-symbols-outlined" aria-hidden="true">{icon}</span>
+                  <div>
+                    <dt>{label}</dt>
+                    <dd>{formatSpec(key, vehicle[key])}</dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+          </section>
+        </div>
+
+        {similarCars.length > 0 && (
+          <section className="vd-similar" aria-labelledby="vd-similar-title">
+            <h2 id="vd-similar-title">Vehículos similares</h2>
+            <div className="vd-similar-grid">
+              {similarCars.map((c) => (
+                <VehicleCard key={c.id} car={c} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {mobileBar}
+
+        {lightboxOpen && total > 0 && (
+          <div className="vd-lightbox" role="dialog" aria-modal="true" aria-label="Galería ampliada">
+            <button type="button" className="vd-lightbox-backdrop" onClick={() => setLightboxOpen(false)} aria-label="Cerrar galería" tabIndex={-1} />
+            <button type="button" className="vd-lightbox-close" onClick={() => setLightboxOpen(false)} aria-label="Cerrar galería" autoFocus>
+              <span className="material-symbols-outlined" aria-hidden="true">close</span>
+            </button>
+            <img
+              src={srcAt(currentImage)}
+              alt={`${title}, foto ${currentImage + 1} de ${total}`}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            />
+            {total > 1 && (
+              <>
+                <button type="button" className="vd-nav vd-prev" onClick={goPrev} disabled={currentImage === 0} aria-label="Foto anterior">
+                  <span className="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </button>
+                <button type="button" className="vd-nav vd-next" onClick={goNext} disabled={currentImage === total - 1} aria-label="Foto siguiente">
+                  <span className="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                </button>
+                <span className="vd-counter">{currentImage + 1} / {total}</span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`${mode === 'client' ? 'public-vehicle-detail' : ''} mx-auto max-w-[1400px] px-5 py-10 sm:px-8 sm:py-14`}>
@@ -350,6 +595,7 @@ VehicleDetailComponent.propTypes = {
   apiEndpoint: PropTypes.string.isRequired,
   redirectPath: PropTypes.string.isRequired,
   showClientInfo: PropTypes.bool,
+  mobileBar: PropTypes.node,
   children: PropTypes.node
 };
 

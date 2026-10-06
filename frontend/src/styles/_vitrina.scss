@@ -1,0 +1,188 @@
+// Vitrina (inventory) styles. Classes prefixed vt-.
+.vt-page {
+  max-width: var(--va-container);
+  margin-inline: auto;
+  padding: 20px 16px 56px;
+  @media (min-width: 640px) { padding: 28px 24px 64px; }
+  @media (min-width: 1024px) { padding-inline: 32px; }
+}
+
+.vt-header {
+  padding-bottom: 20px;
+  h1 {
+    margin: 8px 0 6px;
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--va-ink);
+  }
+}
+.vt-breadcrumb {
+  display: flex; gap: 8px; align-items: center;
+  font-size: .8125rem; color: var(--va-muted);
+  a { color: var(--va-accent); text-decoration: none; font-weight: 600; &:hover { text-decoration: underline; } }
+}
+.vt-subline { margin: 0; color: var(--va-muted); font-size: 1rem; }
+
+.vt-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  @media (min-width: 992px) { grid-template-columns: 260px minmax(0, 1fr); gap: 28px; align-items: start; }
+}
+.vt-main { min-width: 0; }
+
+// Sidebar
+.vt-sidebar { position: sticky; top: calc(var(--va-header-h, 80px) + 16px); }
+.vt-filter-card {
+  background: var(--va-surface);
+  border: 1px solid var(--va-line);
+  border-radius: var(--va-radius-card);
+  box-shadow: var(--va-shadow);
+  padding: 18px;
+}
+.vt-filter-head {
+  display: flex; align-items: center; justify-content: space-between;
+  p { margin: 0; font-weight: 700; font-size: 1rem; color: var(--va-ink); }
+}
+.vt-link-btn {
+  background: none; border: 0; padding: 4px 6px; min-height: 36px;
+  color: var(--va-accent); font-weight: 600; font-size: .875rem;
+  &:hover { text-decoration: underline; }
+}
+.vt-fields { display: grid; gap: 14px; margin-top: 12px; }
+.vt-field {
+  label { display: block; margin-bottom: 6px; font-size: .8125rem; font-weight: 600; color: var(--va-muted); }
+  select {
+    width: 100%; min-height: 46px; padding: 0 12px;
+    border: 1px solid var(--va-line); border-radius: var(--va-radius-sm);
+    background: var(--va-surface); color: var(--va-ink); font-size: 1rem;
+    &:focus { outline: 2px solid var(--va-accent); outline-offset: 1px; box-shadow: var(--va-focus); }
+  }
+}
+
+// Toolbar
+.vt-toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.vt-count { margin: 0; margin-right: auto; font-weight: 600; color: var(--va-ink); font-size: .9375rem; order: 2; }
+.vt-filter-btn {
+  order: 1;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 16px;
+  background: var(--va-surface); border: 1px solid var(--va-line); border-radius: var(--va-radius-pill);
+  font-weight: 600; color: var(--va-ink);
+}
+.vt-filter-badge {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: var(--va-radius-pill); background: var(--va-accent); color: #fff; font-size: .75rem; font-weight: 700;
+}
+.vt-sort {
+  order: 3; display: inline-flex; align-items: center; gap: 8px; margin: 0;
+  span { font-size: .8125rem; color: var(--va-muted); font-weight: 600; @media (max-width: 575px) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
+  select {
+    min-height: 44px; padding: 0 12px; max-width: 100%;
+    border: 1px solid var(--va-line); border-radius: var(--va-radius-pill);
+    background: var(--va-surface); color: var(--va-ink); font-size: .9375rem; font-weight: 500;
+  }
+}
+@media (max-width: 575px) {
+  .vt-count { order: 3; flex-basis: 100%; margin-right: 0; }
+  .vt-sort { order: 2; margin-left: auto; }
+}
+@media (min-width: 992px) {
+  .vt-count { order: 1; }
+}
+
+// Active chips
+.vt-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+.vt-chip {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px;
+  background: var(--va-accent-soft); color: var(--va-accent); border: 0; border-radius: var(--va-radius-pill);
+  font-weight: 600; font-size: .875rem;
+  span { font-size: 1.125rem; line-height: 1; }
+  &:hover { background: #f0d8d5; }
+}
+.vt-chip-clear {
+  background: none; border: 0; min-height: 36px; padding: 0 8px; color: var(--va-muted);
+  font-weight: 600; font-size: .875rem; text-decoration: underline;
+}
+
+// Grid
+.vt-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px;
+  @media (min-width: 576px) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  @media (min-width: 1280px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+// Skeleton
+.vt-skeleton {
+  background: var(--va-surface); border: 1px solid var(--va-line); border-radius: var(--va-radius-card);
+  padding-bottom: 18px; overflow: hidden;
+}
+.vt-skeleton-media, .vt-skeleton-line {
+  background: linear-gradient(100deg, var(--va-surface-2) 30%, #faf8f3 50%, var(--va-surface-2) 70%);
+  background-size: 200% 100%; animation: vt-shimmer 1.4s ease-in-out infinite;
+}
+.vt-skeleton-media { aspect-ratio: 4 / 3; }
+.vt-skeleton-line { height: 14px; border-radius: 8px; margin: 16px 16px 0; &.vt-short { width: 45%; } }
+@keyframes vt-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+// Empty
+.vt-empty {
+  text-align: center; padding: 40px 20px;
+  background: var(--va-surface); border: 1px solid var(--va-line); border-radius: var(--va-radius-panel);
+  > .material-symbols-outlined { font-size: 44px; color: var(--va-accent); }
+  h2 { margin: 8px 0; font-size: clamp(1.25rem, 1rem + 1vw, 1.6rem); font-weight: 800; letter-spacing: -0.02em; color: var(--va-ink); }
+  p { margin: 0 auto; max-width: 460px; color: var(--va-muted); }
+}
+.vt-empty-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 20px; }
+
+// Buttons
+.vt-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 22px; border-radius: var(--va-radius-pill);
+  font-weight: 600; font-size: 1rem; text-decoration: none; border: 1px solid transparent; cursor: pointer;
+}
+.vt-btn-primary { background: var(--va-accent); color: #fff; &:hover { background: var(--va-accent-hover); color: #fff; } }
+.vt-btn-secondary { background: var(--va-surface); color: var(--va-ink); border-color: var(--va-line); &:hover { border-color: var(--va-ink); } }
+.vt-btn-wa { background: var(--va-whatsapp); color: #fff; &:hover { background: var(--va-whatsapp-hover); color: #fff; } }
+
+// Bottom sheet (phones/tablets)
+.vt-sheet-root {
+  position: fixed; inset: 0; z-index: 1050; visibility: hidden; pointer-events: none;
+  transition: visibility 0s linear 260ms;
+  &.is-open { visibility: visible; pointer-events: auto; transition-delay: 0s; }
+}
+.vt-sheet-backdrop {
+  position: absolute; inset: 0; background: rgb(36 35 34 / 50%); opacity: 0; transition: opacity 240ms ease;
+  .is-open > & { opacity: 1; }
+}
+.vt-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column; max-height: 88vh; max-height: 88dvh;
+  background: var(--va-surface); border-radius: var(--va-radius-panel) var(--va-radius-panel) 0 0;
+  box-shadow: 0 -16px 48px rgb(36 35 34 / 22%);
+  transform: translateY(100%); transition: transform 280ms cubic-bezier(.2, .8, .2, 1);
+  .is-open > & { transform: translateY(0); }
+  @media (min-width: 640px) { left: 50%; right: auto; width: 520px; transform: translate(-50%, 100%); .is-open > & { transform: translate(-50%, 0); } }
+}
+.vt-sheet-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--va-line);
+  h2 { margin: 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
+}
+.vt-sheet-close {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: 1px solid var(--va-line); border-radius: 50%; background: var(--va-surface); color: var(--va-ink);
+}
+.vt-sheet-body { margin: 0; padding: 16px 20px; overflow-y: auto; flex: 1; align-content: start; }
+.vt-sheet-foot {
+  display: grid; grid-template-columns: auto 1fr; gap: 12px;
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid var(--va-line); background: var(--va-surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-sheet, .vt-sheet-backdrop, .vt-skeleton-media, .vt-skeleton-line { transition: none; animation: none; }
+}

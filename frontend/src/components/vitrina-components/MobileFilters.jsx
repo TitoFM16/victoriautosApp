@@ -1,48 +1,36 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const selectClass = 'mt-2 h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isOpen, onClose, handleClearFilters, resultCount }) => {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [isOpen, onClose]);
 
-const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isOpen, onClose, handleClearFilters }) => {
+  const total = resultCount ?? filteredCars.length;
+
   return (
-    <>
-      <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div
-        className={`fixed inset-x-0 bottom-0 z-50 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-6 shadow-[0_-20px_60px_rgba(0,0,0,.25)] transition-transform lg:hidden ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Filtros"
-      >
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Filtros</p>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500 transition hover:text-victoria-red"
-              onClick={handleClearFilters}
-            >
-              Limpiar
-            </button>
-            <button
-              type="button"
-              className="grid h-9 w-9 place-items-center border border-zinc-300 text-victoria-dark"
-              onClick={onClose}
-              aria-label="Cerrar filtros"
-            >
-              <span className="text-xl font-light leading-none">×</span>
-            </button>
-          </div>
+    <div className={`vt-sheet-root ${isOpen ? 'is-open' : ''}`} aria-hidden={!isOpen}>
+      <div className="vt-sheet-backdrop" onClick={onClose} aria-hidden="true" />
+      <div className="vt-sheet" role="dialog" aria-modal="true" aria-label="Filtros">
+        <div className="vt-sheet-head">
+          <h2>Filtros</h2>
+          <button type="button" className="vt-sheet-close" onClick={onClose} aria-label="Cerrar filtros" tabIndex={isOpen ? 0 : -1}>
+            <span className="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
         </div>
 
-        <div className="mt-6 space-y-5 pb-4">
-          <div>
-            <label className={labelClass} htmlFor="marca-mobile">Marca</label>
+        <div className="vt-sheet-body vt-fields">
+          <div className="vt-field">
+            <label htmlFor="marca-mobile">Marca</label>
             <select
-              className={selectClass}
               name="marca"
               id="marca-mobile"
               value={filter.marca}
@@ -58,10 +46,9 @@ const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isO
                 ))}
             </select>
           </div>
-          <div>
-            <label className={labelClass} htmlFor="linea-mobile">Línea</label>
+          <div className="vt-field">
+            <label htmlFor="linea-mobile">Línea</label>
             <select
-              className={selectClass}
               name="linea"
               id="linea-mobile"
               value={filter.linea}
@@ -77,10 +64,9 @@ const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isO
                 ))}
             </select>
           </div>
-          <div>
-            <label className={labelClass} htmlFor="modelo-mobile">Modelo</label>
+          <div className="vt-field">
+            <label htmlFor="modelo-mobile">Modelo</label>
             <select
-              className={selectClass}
               name="modelo"
               id="modelo-mobile"
               value={filter.modelo}
@@ -98,15 +84,16 @@ const MobileFilters = ({ filter, handleFilter, distinctValues, filteredCars, isO
           </div>
         </div>
 
-        <button
-          type="button"
-          className="w-full rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
-          onClick={onClose}
-        >
-          Ver resultados
-        </button>
+        <div className="vt-sheet-foot">
+          <button type="button" className="vt-btn vt-btn-secondary" onClick={handleClearFilters} tabIndex={isOpen ? 0 : -1}>
+            Limpiar
+          </button>
+          <button type="button" className="vt-btn vt-btn-primary" onClick={onClose} tabIndex={isOpen ? 0 : -1}>
+            {`Ver ${total} ${total === 1 ? 'resultado' : 'resultados'}`}
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -121,7 +108,8 @@ MobileFilters.propTypes = {
   filteredCars: PropTypes.array.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  handleClearFilters: PropTypes.func.isRequired
+  handleClearFilters: PropTypes.func.isRequired,
+  resultCount: PropTypes.number
 };
 
 export default MobileFilters;

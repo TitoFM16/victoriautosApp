@@ -5,23 +5,30 @@ import CarCarousel from "./CarCarouselComponent";
 
 const InvitaVenta = lazy(() => import('./InvitaVentaComponent'));
 const LoadingComponent = lazy(() => import('../shared/loadingComponent'));
+
+const TRUST_ITEMS = [
+    ['verified', 'Vehículos revisados', 'Selección con inspección y respaldo.'],
+    ['handshake', 'Negociación clara', 'Información directa para decidir tranquilo.'],
+    ['location_on', 'Atención local', 'Visítanos en la Avenida Panamericana.'],
+    ['payments', 'Financiación', 'Opciones para facilitar tu compra.'],
+];
+
 function Home() {
     return(
         <div className="homepage-shell bg-victoria-cream">
             <Buscador />
-            <section className="feature-section" aria-label="Razones para elegir Victoriautos">
-                <div className="feature-grid">
-                    {[
-                        ['01', 'Selección', 'Vehículos revisados y bien presentados.'],
-                        ['02', 'Claridad', 'Información directa para decidir tranquilo.'],
-                        ['03', 'Cercanía', 'Atención local en la Avenida Panamericana.'],
-                    ].map(([number, title, description]) => (
-                        <div className="feature-card" key={number}>
-                            <p><span className="feature-number">{number}</span> {title}</p>
-                            <p>{description}</p>
-                        </div>
+            <section className="home-trust" aria-label="Razones para elegir Victoriautos">
+                <ul className="home-trust__bar">
+                    {TRUST_ITEMS.map(([icon, title, description]) => (
+                        <li className="home-trust__item" key={title}>
+                            <span className="home-trust__icon material-symbols-outlined" aria-hidden="true">{icon}</span>
+                            <div>
+                                <p className="home-trust__title">{title}</p>
+                                <p className="home-trust__text">{description}</p>
+                            </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
             </section>
             <CarCarousel />
             <Suspense fallback={<LoadingComponent/>}>

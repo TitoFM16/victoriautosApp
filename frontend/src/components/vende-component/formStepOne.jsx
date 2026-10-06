@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types';
 
-const controlClass = 'mt-2 h-12 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const invalidControlClass = 'mt-2 h-12 w-full rounded-xl border border-victoria-red bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
+const inputClass = (invalid) => `vf-input${invalid ? ' is-invalid' : ''}`;
+
+const FieldError = ({ children }) => (
+    <p className="vf-error" role="alert">
+        <span className="material-symbols-outlined" aria-hidden="true">error</span>
+        {children}
+    </p>
+);
+FieldError.propTypes = { children: PropTypes.node };
 
 function FormStep1(props) {
     const validateCelular = (value) => {
@@ -32,12 +38,12 @@ function FormStep1(props) {
     };
 
     return(
-        <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
-            <div className="grid gap-6 sm:grid-cols-2">
+        <div className="vf-fields">
+            <div className="vf-grid">
                 <div>
-                    <label className={labelClass} htmlFor="nombre">Nombre</label>
+                    <label className="vf-label" htmlFor="nombre">Nombre</label>
                     <input
-                        className={controlClass}
+                        className="vf-input"
                         id="nombre"
                         name="nombre"
                         type="text"
@@ -47,9 +53,9 @@ function FormStep1(props) {
                     />
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="apellido">Apellido</label>
+                    <label className="vf-label" htmlFor="apellido">Apellido</label>
                     <input
-                        className={controlClass}
+                        className="vf-input"
                         id="apellido"
                         name="apellido"
                         type="text"
@@ -59,9 +65,10 @@ function FormStep1(props) {
                     />
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="celular">Celular</label>
+                    <label className="vf-label" htmlFor="celular">Celular</label>
                     <input
-                        className={props.celular && !validateCelular(props.celular) ? invalidControlClass : controlClass}
+                        className={inputClass(props.celular && !validateCelular(props.celular))}
+                        inputMode="numeric"
                         id="celular"
                         name="celular"
                         type="text"
@@ -70,15 +77,13 @@ function FormStep1(props) {
                         onChange={handleInputChange}
                     />
                     {props.celular && !validateCelular(props.celular) && (
-                        <p className="mt-2 text-xs font-bold text-victoria-red">
-                            Por favor ingrese un número de celular válido
-                        </p>
+                        <FieldError>Por favor ingrese un número de celular válido</FieldError>
                     )}
                 </div>
                 <div>
-                    <label className={labelClass} htmlFor="email">Email</label>
+                    <label className="vf-label" htmlFor="email">Email</label>
                     <input
-                        className={props.email && !validateEmail(props.email) ? invalidControlClass : controlClass}
+                        className={inputClass(props.email && !validateEmail(props.email))}
                         id="email"
                         name="email"
                         type="email"
@@ -87,23 +92,20 @@ function FormStep1(props) {
                         onChange={handleInputChange}
                     />
                     {props.email && !validateEmail(props.email) && (
-                        <p className="mt-2 text-xs font-bold text-victoria-red">
-                            Por favor ingrese un email válido
-                        </p>
+                        <FieldError>Por favor ingrese un email válido</FieldError>
                     )}
                 </div>
             </div>
 
-            <label className="mt-6 flex items-center gap-3 text-sm font-bold text-zinc-700" htmlFor="wppCheckbox">
+            <label className="vf-check" htmlFor="wppCheckbox">
                 <input
-                    className="h-5 w-5 accent-victoria-red"
-                    id="wppCheckbox"
+                                        id="wppCheckbox"
                     name="wppcheck"
                     type="checkbox"
                     defaultChecked={props.wppcheck}
                     onChange={props.handleChange}
                 />
-                ¿Aceptas comunicación vía Whatsapp?
+                <span>¿Aceptas comunicación vía Whatsapp?</span>
             </label>
         </div>
     );

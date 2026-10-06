@@ -1,28 +1,20 @@
 import PropTypes from 'prop-types';
 
-const selectClass = 'mt-2 h-11 w-full rounded-xl border border-zinc-300 bg-white px-3 text-sm text-victoria-dark outline-none transition focus:border-victoria-red focus:ring-2 focus:ring-red-100';
-const labelClass = 'text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500';
-
 const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleClearFilters }) => {
   return (
-    <div className="lg:col-span-1">
-      <div className="border border-zinc-200 bg-white p-6">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] font-black uppercase tracking-[0.25em] text-victoria-red">Filtros</p>
-          <button
-            type="button"
-            className="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-500 transition hover:text-victoria-red"
-            onClick={handleClearFilters}
-          >
+    <aside className="vt-sidebar" aria-label="Filtros">
+      <div className="vt-filter-card">
+        <div className="vt-filter-head">
+          <p>Filtros</p>
+          <button type="button" className="vt-link-btn" onClick={handleClearFilters}>
             Limpiar
           </button>
         </div>
 
-        <div className="mt-6 space-y-5">
-          <div>
-            <label className={labelClass} htmlFor="marca">Marca</label>
+        <div className="vt-fields">
+          <div className="vt-field">
+            <label htmlFor="marca">Marca</label>
             <select
-              className={selectClass}
               name="marca"
               id="marca"
               value={filter.marca}
@@ -38,10 +30,9 @@ const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleCle
                 ))}
             </select>
           </div>
-          <div>
-            <label className={labelClass} htmlFor="linea">Línea</label>
+          <div className="vt-field">
+            <label htmlFor="linea">Línea</label>
             <select
-              className={selectClass}
               name="linea"
               id="linea"
               value={filter.linea}
@@ -57,10 +48,9 @@ const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleCle
                 ))}
             </select>
           </div>
-          <div>
-            <label className={labelClass} htmlFor="modelo">Modelo</label>
+          <div className="vt-field">
+            <label htmlFor="modelo">Modelo</label>
             <select
-              className={selectClass}
               name="modelo"
               id="modelo"
               value={filter.modelo}
@@ -78,7 +68,7 @@ const Filters = ({ filter, handleFilter, distinctValues, filteredCars, handleCle
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 

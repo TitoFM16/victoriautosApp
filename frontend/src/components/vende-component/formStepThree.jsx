@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 // Constants for image resizing
@@ -66,6 +66,50 @@ const photoSlots = [
   { name: 'motorImg', label: 'Motor' },
 ];
 
+function PhotoTile({ name, label, file, fileName, onChange }) {
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  // Preview comes from the file already held in the parent's state.
+  useEffect(() => {
+    if (file && typeof file === 'object') {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setPreviewUrl('');
+    return undefined;
+  }, [file]);
+
+  return (
+    <label className={`vf-tile${previewUrl ? ' has-file' : ''}`} htmlFor={name}>
+      <input type="file" id={name} name={name} onChange={onChange} accept="image/*" />
+      {previewUrl ? (
+        <>
+          <img src={previewUrl} alt={`Vista previa: ${label}`} />
+          <span className="vf-tile-caption">
+            {label}
+            <span className="material-symbols-outlined" aria-hidden="true">check_circle</span>
+          </span>
+        </>
+      ) : (
+        <>
+          <span className="material-symbols-outlined" aria-hidden="true">add_a_photo</span>
+          <span className="vf-tile-label">{label}</span>
+          <span className="vf-tile-hint">{fileName || 'Toca para subir'}</span>
+        </>
+      )}
+    </label>
+  );
+}
+
+PhotoTile.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  file: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  fileName: PropTypes.string,
+  onChange: PropTypes.func.isRequired
+};
+
 function FormStep3(props) {
   const [fileNames, setFileNames] = useState({
     frenteImg: props.frenteImg ? props.frenteImg.name : '',
@@ -106,31 +150,17 @@ function FormStep3(props) {
   };
 
   return (
-    <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_18px_50px_rgba(17,19,21,0.06)] sm:p-10">
-      <div className="grid gap-6 sm:grid-cols-2">
+    <div className="vf-fields">
+      <div className="vf-tiles">
         {photoSlots.map(({ name, label }) => (
-          <div key={name}>
-            <label className="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500" htmlFor={name}>{label}</label>
-            <div className="mt-2 flex overflow-hidden rounded-xl border border-zinc-300">
-              <label
-                className="flex shrink-0 cursor-pointer items-center bg-zinc-100 px-4 text-xs font-black uppercase tracking-[0.1em] text-victoria-dark transition hover:bg-zinc-200"
-                htmlFor={name}
-              >
-                Buscar
-              </label>
-              <input
-                type="file"
-                className="hidden"
-                id={name}
-                name={name}
-                onChange={handleFileChange}
-                accept="image/*"
-              />
-              <span className="flex h-12 flex-1 items-center truncate bg-white px-3 text-sm text-zinc-500">
-                {fileNames[name] || 'Ningún archivo seleccionado'}
-              </span>
-            </div>
-          </div>
+          <PhotoTile
+            key={name}
+            name={name}
+            label={label}
+            file={props[name]}
+            fileName={fileNames[name]}
+            onChange={handleFileChange}
+          />
         ))}
       </div>
     </div>

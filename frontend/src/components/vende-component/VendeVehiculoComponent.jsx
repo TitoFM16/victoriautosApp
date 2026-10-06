@@ -6,6 +6,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import LoadingModal from '../shared/LoadingModal';
 import PropTypes from 'prop-types';
 import { event_gtag } from '../../utils/analytics';
+import { WHATSAPP_DISPLAY, whatsappUrl } from '../../services/whatsapp';
 
 import FormStep0 from './formStepZero';
 import FormStep1 from './formStepOne';
@@ -165,11 +166,13 @@ function VendeForm() {
         setCurrentStep(prev => prev <= 0 ? 0 : prev - 1);
     }
 
+    const isSubmitting = showLoadingModal && submitStatus === 'loading';
+
     const previousButton = () => {
         if (currentStep > 1) {
             return (
                 <button
-                    className="border border-zinc-300 px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-victoria-dark transition hover:border-victoria-dark"
+                    className="vf-btn vf-btn--secondary"
                     type="button"
                     onClick={_prev}
                 >
@@ -184,7 +187,7 @@ function VendeForm() {
         if (currentStep < 3 && currentStep >= 1) {
             return (
                 <button
-                    className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                    className="vf-btn vf-btn--primary"
                     type="button"
                     onClick={_next}
                 >
@@ -196,11 +199,13 @@ function VendeForm() {
         if (currentStep === 3) {
             return (
                 <button
-                    className="rounded-xl bg-victoria-red px-6 py-3 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-red-800"
+                    className="vf-btn vf-btn--primary"
                     type="submit"
                     onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    aria-busy={isSubmitting}
                 >
-                    Enviar
+                    {isSubmitting ? 'Enviando...' : 'Enviar'}
                 </button>
             );
         }
@@ -209,9 +214,9 @@ function VendeForm() {
     const empecemosButton = () => {
         if (currentStep === 0) {
             return (
-                <div className="mt-9">
+                <div className="vf-actions">
                     <button
-                        className="rounded-xl bg-victoria-red px-7 py-4 text-xs font-black uppercase tracking-[0.15em] text-white transition hover:bg-red-800"
+                        className="vf-btn vf-btn--primary vf-btn--block"
                         type="button"
                         onClick={_next}
                     >
@@ -281,14 +286,15 @@ function VendeForm() {
 
     return (
         <React.Fragment>
-            <div className="mx-auto max-w-[900px] px-5 py-10 sm:px-8 sm:py-14">
-                <nav aria-label="breadcrumb" className="text-xs font-bold uppercase tracking-[0.12em] text-zinc-500">
-                    <Link to="/" className="!no-underline text-victoria-red hover:text-red-800">Inicio</Link>
-                    <span className="mx-2">/</span>
-                    <span className="text-zinc-500">Vende Tu Vehículo</span>
+            <div className="vf-page">
+                <nav aria-label="breadcrumb" className="vf-crumbs">
+                    <Link to="/">Inicio</Link>
+                    <span aria-hidden="true">/</span>
+                    <span>Vende Tu Vehículo</span>
                 </nav>
-                <h1 className="mt-4 border-b border-zinc-200 pb-7 !text-4xl font-black leading-none tracking-[-0.05em] text-victoria-dark sm:!text-5xl">Compramos tu usado</h1>
-                <div className="public-form-card">
+                <h1 className="vf-title">Compramos tu usado</h1>
+                <p className="vf-sub">Cuéntanos de tu carro y te hacemos una oferta.</p>
+                <div className="vf-card">
                     <Step0
                         currentStep={currentStep}
                         handleChange={handleChange}
@@ -329,12 +335,24 @@ function VendeForm() {
                         />
                     </form>
                     {(previousButton() || nextButton()) && (
-                        <div className="mt-6 flex justify-between gap-3">
-                            {previousButton()}
+                        <div className="vf-footer">
+                            {previousButton() || <span className="vf-footer-spacer" aria-hidden="true" />}
                             {nextButton()}
                         </div>
                     )}
+                    {currentStep >= 1 && (
+                        <p className="vf-reassure">
+                            <span className="material-symbols-outlined" aria-hidden="true">lock</span>
+                            Tus datos solo se usan para contactarte.
+                        </p>
+                    )}
                     {empecemosButton()}
+                    <p className="vf-wa-line">
+                        ¿Prefieres escribirnos?
+                        <a href={whatsappUrl('Hola Victoriautos, quiero vender mi vehículo.')} target="_blank" rel="noopener noreferrer">
+                            WhatsApp {WHATSAPP_DISPLAY}
+                        </a>
+                    </p>
                 </div>
             </div>
             <LoadingModal
@@ -361,8 +379,8 @@ function Step0(props){
     }
     return(
         <div>
-            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">¿Tienes un vehículo para la venta?</p>
-            <p className="mt-3 text-base text-zinc-600">¡En 3 simples pasos te lo compramos!</p>
+            <h2 className="vf-intro-head">¿Tienes un vehículo para la venta?</h2>
+            <p className="vf-intro-sub">¡En 3 simples pasos te lo compramos!</p>
             <FormStep0/>
         </div>
     )
@@ -386,8 +404,9 @@ function Step1(props) {
     }
     return(
         <div>
-            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Datos de Contacto</p>
             <CircleSteps currentStep={props.currentStep} />
+            <h2 className="vf-section-title">Datos de Contacto</h2>
+            <p className="vf-section-hint">Para poder comunicarnos contigo.</p>
             <FormStep1  nombre={props.nombre}
                         apellido={props.apellido}
                         celular={props.celular}
@@ -422,8 +441,9 @@ function Step2(props) {
     }
     return(
         <div>
-            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Datos del Vehículo</p>
             <CircleSteps currentStep={props.currentStep} />
+            <h2 className="vf-section-title">Datos del Vehículo</h2>
+            <p className="vf-section-hint">Cuéntanos cómo es tu carro.</p>
             <FormStep2
                 marca={props.marca}
                 linea={props.linea}
@@ -461,8 +481,9 @@ function Step3(props) {
     }
     return(
         <React.Fragment>
-            <p className="mt-8 !text-2xl font-black tracking-[-0.03em] text-victoria-dark sm:!text-3xl">Fotografías del Vehículo</p>
             <CircleSteps currentStep={props.currentStep} />
+            <h2 className="vf-section-title">Fotografías del Vehículo</h2>
+            <p className="vf-section-hint">Sube las 6 fotos para que podamos valorar tu carro.</p>
             <FormStep3  frenteImg={props.frenteImg}
                         traseroImg={props.traseroImg}
                         lateralIzqImg={props.lateralIzqImg}
@@ -498,23 +519,33 @@ function CircleSteps(props){
         return null
     }
     const steps = [
-        { number: 1, label: 'Datos de contacto' },
-        { number: 2, label: 'Datos del Vehículo' },
-        { number: 3, label: 'Fotos del Vehículo' },
+        { number: 1, label: 'Tus datos' },
+        { number: 2, label: 'Tu vehículo' },
+        { number: 3, label: 'Fotos' },
     ];
+    const current = steps.find((step) => step.number === props.currentStep);
+    const percent = Math.round((props.currentStep / steps.length) * 100);
     return(
-        <div className="mt-6 flex items-center justify-center gap-3 sm:gap-6">
-            {steps.map((step) => {
-                const active = props.currentStep === step.number;
-                return (
-                    <div key={step.number} className="flex items-center gap-2">
-                        <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-black ${active ? 'bg-victoria-red text-white' : 'border border-zinc-300 text-zinc-400'}`}>
-                            {step.number}
-                        </span>
-                        <span className={`hidden text-xs font-bold sm:inline ${active ? 'text-victoria-dark' : 'text-zinc-400'}`}>{step.label}</span>
-                    </div>
-                );
-            })}
+        <div className="vf-stepper">
+            <p className="vf-stepper-compact">Paso {props.currentStep} de {steps.length} · {current?.label}</p>
+            <ol className="vf-stepper-list">
+                {steps.map((step) => {
+                    const state = props.currentStep === step.number ? 'is-current' : props.currentStep > step.number ? 'is-done' : '';
+                    return (
+                        <li key={step.number} className={`vf-stepper-item ${state}`} aria-current={state === 'is-current' ? 'step' : undefined}>
+                            <span className="vf-stepper-dot" aria-hidden="true">
+                                {state === 'is-done'
+                                    ? <span className="material-symbols-outlined">check</span>
+                                    : step.number}
+                            </span>
+                            {step.label}
+                        </li>
+                    );
+                })}
+            </ol>
+            <div className="vf-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} aria-label="Progreso">
+                <div className="vf-progress-bar" style={{ width: `${percent}%` }} />
+            </div>
         </div>
     )
 }
@@ -537,7 +568,7 @@ const Captcha = ({ onChange, currentStep }) => {
     }
 
     return (
-        <div className="mt-6 flex justify-center">
+        <div className="vf-captcha">
             <ReCAPTCHA
                 sitekey={"6Ld0PcgqAAAAAFbIAfRwUtK5CNjuJli7-iyxtbeJ"}
                 onChange={onChange}

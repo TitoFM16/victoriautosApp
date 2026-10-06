@@ -10,6 +10,7 @@ import LoadingComponent from './shared/loadingComponent';
 import Header from './HeaderComponent';
 
 import Footer from './FooterComponent';
+import WhatsAppFab from './shared/WhatsAppFab';
 const LoginComponent = lazy(() => import('./Login/loginComponent'));
 const AdminRoutes = lazy(() => import('../routes/AdminRoutes'));
 const ClientRoutes = lazy(() => import('../routes/ClientRoutes'));
@@ -111,6 +112,7 @@ function Main() {
           )}
           <Footer />
         </main>
+        {!isAdminRoute && <WhatsAppFab />}
       </Suspense>
     </div>
   );
