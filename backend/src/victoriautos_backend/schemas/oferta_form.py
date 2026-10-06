@@ -3,7 +3,7 @@ import uuid
 
 from pydantic import BaseModel
 
-from victoriautos_backend.schemas.common import ORMModel
+from victoriautos_backend.schemas.common import ORMModel, PrivacyConsentIn
 
 
 class OfertaFormFields(BaseModel):
@@ -20,7 +20,7 @@ class OfertaFormFields(BaseModel):
     price: str
 
 
-class OfertaFormCreate(OfertaFormFields):
+class OfertaFormCreate(OfertaFormFields, PrivacyConsentIn):
     """Multipart form fields; `car_images` files are handled separately."""
 
     recaptcha_token: str
@@ -56,5 +56,6 @@ class OfertaFormPublic(ORMModel):
     price: str
     images: list[str]
     status: str
+    privacy_accepted_at: datetime.datetime | None
     created_at: datetime.datetime
     updated_at: datetime.datetime

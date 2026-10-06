@@ -181,6 +181,7 @@ const InteresForm = () => {
         apellido: formData.apellido,
         celular: formData.celular,
         wpp_check: formData.wppcheck,
+        privacy_accepted: formData.privacy,
         marca: formData.marca,
         linea: formData.linea,
         modelo: formData.modelo,

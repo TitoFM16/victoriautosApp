@@ -94,6 +94,7 @@ const CompraModalContent = ({ car }) => {
         email: formData.email,
         cedula: formData.cedula,
         wpp_check: formData.wppcheck,
+        privacy_accepted: formData.privacy,
         car_id: car,
         recaptcha_token: formData.captcha
       });

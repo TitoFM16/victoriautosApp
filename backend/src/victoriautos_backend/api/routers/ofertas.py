@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
@@ -8,6 +9,7 @@ from victoriautos_backend.api.deps import AdminUser, DbSession
 from victoriautos_backend.core.config import settings
 from victoriautos_backend.core.rate_limit import limiter
 from victoriautos_backend.models.oferta_form import OfertaForm
+from victoriautos_backend.schemas.common import PRIVACY_REQUIRED_MESSAGE
 from victoriautos_backend.schemas.oferta_form import (
     OfertaFormCreate,
     OfertaFormPublic,
@@ -38,10 +40,16 @@ async def _oferta_form_create_form(
     price: Annotated[str, Form()],
     recaptcha_token: Annotated[str, Form()],
     wpp_check: Annotated[bool, Form()] = False,
+    privacy_accepted: Annotated[bool, Form()] = False,
 ) -> OfertaFormCreate:
     # See admin.py's `_car_admin_create_form` - FastAPI can't bind a `Form()`-wrapped
     # Pydantic model alongside a separate `File()` list parameter, so fields are
     # declared individually here instead.
+    if not privacy_accepted:
+        # Checked here (not only by the schema) so it surfaces as a 422, not a 500.
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=PRIVACY_REQUIRED_MESSAGE
+        )
     return OfertaFormCreate(
         nombre=nombre,
         apellido=apellido,
@@ -55,6 +63,7 @@ async def _oferta_form_create_form(
         matricula=matricula,
         price=price,
         recaptcha_token=recaptcha_token,
+        privacy_accepted=privacy_accepted,
     )
 
 
@@ -76,7 +85,10 @@ async def create_oferta(
         images = await process_images(car_images, upload_dir)
 
     oferta = OfertaForm(
-        id=oferta_id, **oferta_in.model_dump(exclude={"recaptcha_token"}), images=images
+        id=oferta_id,
+        **oferta_in.model_dump(exclude={"recaptcha_token", "privacy_accepted"}),
+        images=images,
+        privacy_accepted_at=datetime.now(UTC),
     )
     db.add(oferta)
     await db.commit()

@@ -429,6 +429,18 @@ These were explicitly chosen (not assumed) when porting from the Node app:
   `passport-local-mongoose` PBKDF2 hashes are verified for compatibility and upgraded
   to Argon2id on successful login (see the legacy migration instructions above).
 
+## Privacy consent on lead forms
+
+`POST /api/compra/`, `/api/interescompra/`, `/api/ofertas/` (multipart field) and
+`/api/vende/` require `privacy_accepted: true` - the prior, express authorization
+Ley 1581 de 2012 requires before storing a lead's personal data. Missing or `false`
+returns 422 ("Debes aceptar la política de tratamiento de datos personales.") and
+nothing is stored. On success the server stamps `privacy_accepted_at` (its own
+clock, timezone-aware) on the record; it is returned in the admin/response schemas.
+Rows imported from the legacy app have `privacy_accepted_at = NULL` because the old
+site never asked for consent. The policy itself is the frontend page
+`/politicas-de-privacidad`.
+
 ## Breaking changes from the old API
 
 The JSON contract is now consistent snake_case throughout - the old API mixed

@@ -3,10 +3,10 @@ import uuid
 
 from pydantic import BaseModel
 
-from victoriautos_backend.schemas.common import ORMModel
+from victoriautos_backend.schemas.common import ORMModel, PrivacyConsentIn
 
 
-class InteresFormCreate(BaseModel):
+class InteresFormCreate(PrivacyConsentIn):
     nombre: str
     apellido: str
     celular: str
@@ -47,5 +47,6 @@ class InteresFormPublic(ORMModel):
     km: str
     price: str
     status: str
+    privacy_accepted_at: datetime.datetime | None
     created_at: datetime.datetime
     updated_at: datetime.datetime

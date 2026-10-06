@@ -101,6 +101,7 @@ function VendeForm() {
             celular: formData.celular,
             email: formData.email,
             wpp_check: formData.wppcheck,
+            privacy_accepted: formData.privacy,
             marca: formData.marca,
             linea: formData.linea,
             modelo: formData.modelo,

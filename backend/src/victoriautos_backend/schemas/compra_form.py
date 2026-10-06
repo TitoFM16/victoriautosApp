@@ -1,13 +1,11 @@
 import datetime
 import uuid
 
-from pydantic import BaseModel
-
 from victoriautos_backend.schemas.car import CarPublic
-from victoriautos_backend.schemas.common import ORMModel
+from victoriautos_backend.schemas.common import ORMModel, PrivacyConsentIn
 
 
-class CompraFormCreate(BaseModel):
+class CompraFormCreate(PrivacyConsentIn):
     nombre: str
     apellido: str
     celular: str
@@ -27,6 +25,7 @@ class CompraFormPublic(ORMModel):
     cedula: str
     wpp_check: bool
     status: str
+    privacy_accepted_at: datetime.datetime | None
     car: CarPublic | None
     created_at: datetime.datetime
     updated_at: datetime.datetime

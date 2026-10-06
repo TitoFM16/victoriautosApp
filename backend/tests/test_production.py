@@ -78,6 +78,7 @@ async def test_upload_limits(
             "matricula": "Bogota",
             "price": "50000000",
             "recaptcha_token": "bypassed",
+            "privacy_accepted": "true",
         }
     )
     count = settings.max_upload_files + (boundary == "count")

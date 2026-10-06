@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Request, Response, status
 from sqlalchemy import select
@@ -29,7 +30,10 @@ async def create_compra_form(
     remote_ip = request.client.host if request.client else None
     await verify_recaptcha_token(payload.recaptcha_token, remote_ip)
 
-    compra_form = CompraForm(**payload.model_dump(exclude={"recaptcha_token"}))
+    compra_form = CompraForm(
+        **payload.model_dump(exclude={"recaptcha_token", "privacy_accepted"}),
+        privacy_accepted_at=datetime.now(UTC),
+    )
     db.add(compra_form)
     await db.commit()
     await db.refresh(compra_form)

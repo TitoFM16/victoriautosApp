@@ -1,4 +1,6 @@
-from sqlalchemy import ARRAY, Boolean, String
+from datetime import datetime
+
+from sqlalchemy import ARRAY, Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from victoriautos_backend.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -23,3 +25,8 @@ class OfertaForm(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     price: Mapped[str] = mapped_column(String, default="")
     images: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, server_default="{}")
     status: Mapped[str] = mapped_column(String, default="PENDING")
+    # When the lead accepted the data-processing policy (server clock). NULL for
+    # records imported from the legacy app, which never asked for consent.
+    privacy_accepted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )

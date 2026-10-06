@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Boolean, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from victoriautos_backend.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -20,6 +21,11 @@ class CompraForm(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     cedula: Mapped[str] = mapped_column(String, nullable=False)
     wpp_check: Mapped[bool] = mapped_column(Boolean, default=False)
     status: Mapped[str] = mapped_column(String, default="PENDING")
+    # When the lead accepted the data-processing policy (server clock). NULL for
+    # records imported from the legacy app, which never asked for consent.
+    privacy_accepted_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     car_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("cars.id", ondelete="SET NULL"), nullable=True

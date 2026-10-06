@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, Request, status
 from sqlalchemy import select
 
@@ -21,7 +23,11 @@ async def list_vende_submissions(db: DbSession, _admin: AdminUser) -> list[Ofert
 async def create_vende_submission(
     request: Request, payload: VendeFormCreate, db: DbSession
 ) -> OfertaForm:
-    oferta = OfertaForm(**payload.model_dump(), images=[])
+    oferta = OfertaForm(
+        **payload.model_dump(exclude={"privacy_accepted"}),
+        images=[],
+        privacy_accepted_at=datetime.now(UTC),
+    )
     db.add(oferta)
     await db.commit()
     await db.refresh(oferta)

@@ -23,6 +23,7 @@ async def test_compra_create_requires_recaptcha(client: AsyncClient):
             "email": "juan@example.com",
             "cedula": "123456789",
             "recaptcha_token": "",
+            "privacy_accepted": True,
         },
     )
     assert response.status_code == 400
@@ -40,6 +41,7 @@ async def test_compra_create_and_admin_only_listing(
             "email": "juan@example.com",
             "cedula": "123456789",
             "recaptcha_token": "any-token",
+            "privacy_accepted": True,
         },
     )
     assert create_response.status_code == 201
@@ -69,6 +71,7 @@ async def test_interes_create_and_admin_crud(
             "km": "0-50000",
             "price": "40-50 millones",
             "recaptcha_token": "any-token",
+            "privacy_accepted": True,
         },
     )
     assert create_response.status_code == 201
@@ -103,6 +106,7 @@ async def test_ofertas_create_with_images(
         "matricula": "Cali",
         "price": "50000000",
         "recaptcha_token": "any-token",
+        "privacy_accepted": True,
     }
     files = {"car_images": ("offer.jpg", _test_image_bytes(), "image/jpeg")}
 
@@ -135,6 +139,7 @@ async def test_vende_create_no_recaptcha_needed(client: AsyncClient, admin_clien
             "km": "90000",
             "matricula": "Medellin",
             "price": "30000000",
+            "privacy_accepted": True,
         },
     )
     assert response.status_code == 201
@@ -184,6 +189,7 @@ async def test_admin_match_leads(
             "km": "0-20000",
             "price": "80-90 millones",
             "recaptcha_token": "bypassed",
+            "privacy_accepted": "true",
         },
     )
     assert interes_response.status_code == 201

@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Request, status
 from sqlalchemy import select
@@ -30,7 +31,10 @@ async def create_interes_form(
     remote_ip = request.client.host if request.client else None
     await verify_recaptcha_token(payload.recaptcha_token, remote_ip)
 
-    interes_form = InteresForm(**payload.model_dump(exclude={"recaptcha_token"}))
+    interes_form = InteresForm(
+        **payload.model_dump(exclude={"recaptcha_token", "privacy_accepted"}),
+        privacy_accepted_at=datetime.now(UTC),
+    )
     db.add(interes_form)
     await db.commit()
     await db.refresh(interes_form)
