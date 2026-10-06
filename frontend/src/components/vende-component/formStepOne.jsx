@@ -105,7 +105,7 @@ function FormStep1(props) {
                     defaultChecked={props.wppcheck}
                     onChange={props.handleChange}
                 />
-                <span>¿Aceptas comunicación vía Whatsapp?</span>
+                <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
             </label>
         </div>
     );

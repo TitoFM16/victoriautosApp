@@ -435,7 +435,7 @@ const InteresForm = () => {
                 defaultChecked={formData.wppcheck}
                 onChange={handleChange}
               />
-              <span>¿Aceptas comunicación vía Whatsapp?</span>
+              <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
             </label>
           </section>
 

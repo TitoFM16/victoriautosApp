@@ -200,7 +200,7 @@ const CompraModalContent = ({ car }) => {
                     checked={formData.wppcheck}
                     onChange={handleChange}
                   />
-                  ¿Aceptas comunicación vía Whatsapp?
+                  <span>¿Aceptas comunicación vía Whatsapp? <a href="/politicas-de-privacidad" target="_blank" rel="noopener noreferrer">Ver política de privacidad</a></span>
                 </label>
 
                 <div className="mt-6">
