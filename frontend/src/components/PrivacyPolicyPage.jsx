@@ -3,6 +3,7 @@ import { WHATSAPP_DISPLAY, whatsappUrl } from '../services/whatsapp';
 
 const LAST_UPDATED = '5 de octubre de 2026';
 const COMPANY = 'Victoriautos Consignataria S.A.S.';
+const CONTACT_EMAIL = 'info@victoriautos.com';
 const contactHref = whatsappUrl('Hola Victoriautos, quiero hacer una consulta sobre mis datos personales.');
 
 // Política de Tratamiento de Datos Personales conforme a la Ley Estatutaria
@@ -31,7 +32,10 @@ const PrivacyPolicyPage = () => (
         <li><strong>NIT:</strong> 901.050.942-5</li>
         <li><strong>Domicilio y dirección:</strong> Calle 16 #35-69, Avenida Panamericana, San Juan de Pasto, Nariño, Colombia.</li>
         <li>
-          <strong>Canal de atención:</strong> WhatsApp{' '}
+          <strong>Correo electrónico:</strong> <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </li>
+        <li>
+          <strong>Otros canales:</strong> WhatsApp{' '}
           <a href={contactHref} target="_blank" rel="noopener noreferrer">{WHATSAPP_DISPLAY}</a>{' '}
           y atención presencial en nuestra sala de ventas, de lunes a viernes de 8:00 a.m. a 6:00 p.m. y sábados y
           festivos de 8:00 a.m. a 4:00 p.m.
@@ -109,7 +113,9 @@ const PrivacyPolicyPage = () => (
 
       <h2>7. Procedimiento para consultas y reclamos</h2>
       <p>
-        Puedes ejercer tus derechos a través de nuestro WhatsApp{' '}
+        Puedes ejercer tus derechos escribiendo a{' '}
+        <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Solicitud sobre datos personales')}`}>{CONTACT_EMAIL}</a>,
+        a nuestro WhatsApp{' '}
         <a href={contactHref} target="_blank" rel="noopener noreferrer">{WHATSAPP_DISPLAY}</a>{' '}
         o de forma presencial en nuestra sala de ventas. Tu solicitud debe incluir tu nombre completo, número de
         identificación, la descripción de lo que solicitas y el medio por el cual quieres recibir respuesta.
