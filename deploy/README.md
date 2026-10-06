@@ -424,6 +424,20 @@ An optional later improvement is an encrypted off-box S3 copy with lifecycle rul
 S3 is not required by these scripts. Local nightly copies do not protect against
 loss of the EC2 disk; keep the pre-cutover copy off-box now.
 
+### Off-box copy to the Mac
+
+The Mac pulls finished backup sets every day at 22:00 Colombia time (30 minutes
+after the server's 02:30 UTC run) into `~/victoriautos-backups/nightly/`,
+verifying each dump header and tarball before keeping it, and keeps the newest
+30 sets. If the Mac is asleep at 22:00, launchd runs the job on wake; a failed
+run shows a macOS notification and is logged in `pull.log` there.
+
+```bash
+bash deploy/scripts/install_backup_pull.sh   # install or reinstall the launchd job
+bash deploy/scripts/pull_backups.sh          # pull now, by hand
+launchctl bootout "gui/$(id -u)/com.victoriautos.pull-backups"   # uninstall
+```
+
 pm2 logs and the old `error.txt` rotate weekly, retaining four compressed rotations
 with copytruncate (a small write race is inherent). Check for an existing pm2
 logrotate module to avoid double rotation. New API output goes to journald:
